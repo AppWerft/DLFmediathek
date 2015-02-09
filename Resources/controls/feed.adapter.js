@@ -17,7 +17,7 @@ module.exports = function(_args) {
                 ok : true,
                 items : channel.item
             };
-            //    _args.onload(result);
+             _args.onload(result);
         }
     });
     xhr.open('GET', _args.url);

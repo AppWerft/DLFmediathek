@@ -166,7 +166,7 @@ module.exports = function(_args) {
     };
     /* hiding of todays display */
     self.hideCurrent = function() {
-        self.list.setTop(0);
+        self.list.setTop(7);
         self.containerforcurrenttext.setTop(-200);
     };
 

@@ -1,30 +1,29 @@
 var Moment = require('vendor/moment');
 
-module.exports = function(station) {
-    if (!station)
-        return;
-    var model = require('model/stations')[station];
+module.exports = function(_args) {
     var self = require('ui/generic.window')({
         title : 'Deutschlandradio',
-        subtitle : 'Heutiges Tagesprogramm',
-        station : station
+        subtitle : _args.title,
+        station : _args.station
     });
     self.list = Ti.UI.createListView({
         height : Ti.UI.FILL,
-        backgroundColor : station,
+        backgroundColor : _args.station,
         templates : {
-            'schema' : require('TEMPLATES').schema,
+            'podcastlist' : require('TEMPLATES').podcastlist,
         },
-        defaultItemTemplate : 'schema',
+        defaultItemTemplate : 'podcastlist',
         sections : [Ti.UI.createListSection({})]
     });
     var items = [];
+    
     require('controls/feed.adapter')({
-        url : model.rss,
+        url : _args.url,
         onload : function(_feeditems) {
             _feeditems.items.forEach(function(item) {
+                console.log(item);
                 items.push({
-                    start : {
+                    pubdate : {
                         text : Moment(item.pubDate).format('HH:mm')
                     },
                     description : {
@@ -32,9 +31,10 @@ module.exports = function(station) {
                         height : ( typeof item.description == 'string') ? Ti.UI.SIZE : 0,
 
                     },
+                    image:{image: item.image},
                     title : {
                         text : item.title,
-                        color: model.color
+                        color: _args.color
                     }
                 });
 
