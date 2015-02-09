@@ -1,1 +1,0 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/Resources/vendor/XMLTools.js

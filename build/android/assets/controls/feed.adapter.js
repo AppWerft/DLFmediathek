@@ -1,1 +1,0 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/Resources/controls/feed.adapter.js

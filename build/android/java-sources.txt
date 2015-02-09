@@ -1,8 +1,0 @@
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/android/support/v7/appcompat/R.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/de/appwerft/dlrmediathek/ApplicationStylesheet.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/de/appwerft/dlrmediathek/AssetCryptImpl.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/de/appwerft/dlrmediathek/DlrmediathekActivity.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/de/appwerft/dlrmediathek/DlrmediathekAppInfo.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/de/appwerft/dlrmediathek/DlrmediathekApplication.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/de/appwerft/dlrmediathek/R.java"
-"/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/build/android/gen/ti/modules/titanium/ui/R.java"
