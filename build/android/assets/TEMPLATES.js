@@ -1,0 +1,1 @@
+/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/Resources/TEMPLATES.js
