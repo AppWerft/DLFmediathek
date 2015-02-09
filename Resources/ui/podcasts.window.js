@@ -7,6 +7,7 @@ module.exports = function(station) {
     setTimeout(function() {
         var m = 'model/' + station;
         var model = require(m);
+        var color = require('model/stations')[station].color;
         self.list = Ti.UI.createScrollView({
             scrollType : 'vertical',
             layout : 'horizontal',
@@ -25,19 +26,20 @@ module.exports = function(station) {
                 left : 0,
                 itemId : {
                     title : (item.a) ? item.a.img.alt : item.img.alt,
-                    url : (item.a) ? item.a.img.alt : item.href,
+                    url : (item.a) ? item.a.href : item.href,
                 }
             }));
         });
         self.add(self.list);
         self.list.addEventListener('click', function(_e) {
-            require('ui/podcastlist.window')({
-                color : model.color,
-                url : _e.source.itemId.url,
-                title : _e.source.itemId.title,
-                station : station
-            });
+            if (_e.source.itemId)
+                require('ui/podcastlist.window')({
+                    color : color,
+                    url : _e.source.itemId.url,
+                    title : _e.source.itemId.title,
+                    station : station
+                });
         });
-    }, 10);
+    }, 100);
     self.open();
 };

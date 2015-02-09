@@ -42,7 +42,6 @@ module.exports = function(_event) {
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
                 var nextItem = FlipViewCollection.getViews()[FlipViewCollection.getCurrentPage()].itemId.name;
-                console.log('Current=' + currentItem + ' nextItem=' + nextItem);
                 if (Player.isPlaying()) {
                     Player.stop();
                     Player.release();
@@ -90,7 +89,6 @@ module.exports = function(_event) {
                     menuitem.setVisible(true);
             });
             Ti.App.addEventListener('app:play', function(_event) {
-                console.log(_event.item);
                 var self = Ti.UI.createAlertDialog({
                     message : _event.item.title,
                     ok : 'Beitrag anhören',
@@ -98,7 +96,6 @@ module.exports = function(_event) {
                 });
                 self.show();
                 self.addEventListener('click', function(_e) {
-                    console.log(_e);
                     if (_e.index < 0)
                         return;
                     if (Player.isPlaying()) {

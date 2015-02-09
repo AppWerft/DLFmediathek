@@ -77,6 +77,7 @@ exports.podcastlist = {
     },
     childTemplates : [{
         type : 'Ti.UI.ImageView',
+        bindId : 'image',
         properties : {
             left : 0,
             top : 0,
@@ -90,7 +91,7 @@ exports.podcastlist = {
             width : Ti.UI.FILL,
             layout : 'vertical',
             left : 100,
-            right : 10
+            right : 20
         },
         childTemplates : [{
             type : 'Ti.UI.Label',
@@ -98,7 +99,7 @@ exports.podcastlist = {
             properties : {
                 top : 5,
                 font : {
-                    fontSize : 22,
+                    fontSize : 20,
                     fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
                 },
@@ -124,14 +125,42 @@ exports.podcastlist = {
             type : 'Ti.UI.Label',
             bindId : 'pubdate',
             properties : {
-                left : 5,
+                left : 0,
                 touchEnabled : false,
-                top : 5,
+                top : 0,
                 color : '#777',
                 font : {
-                    fontSize : 24,
+                    fontSize : 16,
                     fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
+                },
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'duration',
+            properties : {
+                left : 0,
+                touchEnabled : false,
+                top : 0,
+                color : '#777',
+                font : {
+                    fontSize : 16,
+                    fontWeight : 'bold',
+                    fontFamily : 'ScalaSansBold'
+                },
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'author',
+            properties : {
+                left : 0,
+                touchEnabled : false,
+                top : 0,
+                color : '#777',
+                font : {
+                    fontSize : 16,
+                    
+                    fontFamily : 'ScalaSans'
                 },
             }
         }]
@@ -224,7 +253,7 @@ exports.podcast = {
         }]
     }]
 };
-
+/*
 exports.podcastlist = {
     properties : {
         height : Ti.UI.SIZE,
@@ -256,3 +285,4 @@ exports.podcastlist = {
     }]
 };
 
+*/

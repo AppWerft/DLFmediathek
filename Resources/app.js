@@ -5,6 +5,8 @@
         exitOnClose : true,
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
+    window.addEventListener('open', require('ui/main.menu'));
+
     var Model = require('model/stations');
     var pages = [];
     for (var station in Model) {
@@ -14,7 +16,7 @@
             podcasts : Model[station].podcasts,
             live : Model[station].live,
             stream : Model[station].stream,
-            
+
         }));
     };
     var FlipModule = require('de.manumaticx.androidflip');
@@ -29,11 +31,10 @@
         window.FlipViewCollection.peakNext(true);
     });
     window.add(window.FlipViewCollection);
-    window.addEventListener('open', require('ui/main.menu'));
-    
+
     setTimeout(function() {
         window.FlipViewCollection.flipToView(1);
-    }, 2000);
+    }, 3000);
 
     window.open();
 })();

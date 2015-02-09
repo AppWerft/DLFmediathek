@@ -9,24 +9,24 @@ module.exports = function(_args) {
     var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
     if (!_args.nocache && Ti.App.Properties.hasProperty(url)) {
         _args.onload(JSON.parse(Ti.App.Properties.getString(url)));
-        console.log('delivering of cached infos');
         return;
     }
-    var xhr = Ti.Network.createHTTPClient({
-        onload : function() {
-            var obj = new XMLTools(this.responseXML).toObject();
-            if (obj.item && toType(obj.item) != 'array') {
-                obj.item = [obj.item];
+    setTimeout(function() {
+        var xhr = Ti.Network.createHTTPClient({
+            onload : function() {
+                var obj = new XMLTools(this.responseXML).toObject();
+                if (obj.item && toType(obj.item) != 'array') {
+                    obj.item = [obj.item];
+                }
+                var result = {
+                    payload : obj,
+                    hash : Ti.Utils.md5HexDigest(this.responseText)
+                };
+                Ti.App.Properties.setString(url, JSON.stringify(result));
+                _args.onload(result);
             }
-            var result = {
-                payload : obj,
-                hash : Ti.Utils.md5HexDigest(this.responseText)
-            };
-            Ti.App.Properties.setString(url, JSON.stringify(result));
-            _args.onload(result);
-            console.log('Info: rendering ready');
-        }
-    });
-    xhr.open('GET', url);
-    xhr.send();
+        });
+        xhr.open('GET', url);
+        xhr.send();
+    }, 100 + 1000 * Math.random());
 };

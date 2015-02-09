@@ -16,25 +16,31 @@ module.exports = function(_args) {
         sections : [Ti.UI.createListSection({})]
     });
     var items = [];
-    
     require('controls/feed.adapter')({
         url : _args.url,
         onload : function(_feeditems) {
             _feeditems.items.forEach(function(item) {
-                console.log(item);
+                console.log(item.description);
+                var res = /<img src="(.*?)" /gmi.exec(item.description);
+                console.log(res);
+                var image = (res) ? res[1] : '';
                 items.push({
                     pubdate : {
-                        text : Moment(item.pubDate).format('HH:mm')
+                        text : Moment(item.pubDate).format('LLL')
                     },
-                    description : {
-                        html : ( typeof item.description == 'string') ? item.description : '',
-                        height : ( typeof item.description == 'string') ? Ti.UI.SIZE : 0,
-
+                    image : {
+                        image : image,
+                        defaultImage : '/images/' + _args.station+ '.png'
                     },
-                    image:{image: item.image},
                     title : {
                         text : item.title,
-                        color: _args.color
+                        color : _args.color
+                    },
+                    duration : {
+                        text : 'Dauer: ' + item['itunes:duration'].trim(),
+                    },
+                    author : {
+                        text : 'Autor: ' + item['itunes:author'].trim(),
                     }
                 });
 
