@@ -178,8 +178,6 @@ module.exports = function(_args) {
             onload : function(_res) {
                 dataItems = [];
                 _res.payload.item.forEach(function(item) {
-                    console.log(item);
-
                     var autor = item.author;
                     if ( typeof autor == 'string') {
                         autor = autor.split(', ')[1] + ' ' + autor.split(', ')[0];
@@ -219,9 +217,8 @@ module.exports = function(_args) {
     else
         clearInterval(self.cron);
     self.list.addEventListener('itemclick', function(_e) {
-        console.log(JSON.parse(_e.itemId));
         Ti.App.fireEvent('app:play', {
-              item : JSON.parse(_e.itemId)
+            item : JSON.parse(_e.itemId)
         });
     });
     return self;

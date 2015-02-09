@@ -1,1 +1,0 @@
-module.exports=function(e){var t=Ti.UI.createWindow({fullscreen:!0,itemId:e,orientationModes:[Ti.UI.PORTRAIT,Ti.UI.UPSIDE_PORTRAIT]});t.addEventListener("open",require("ui/rss.menu")),t.open()};

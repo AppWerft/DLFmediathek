@@ -1,4 +1,4 @@
-[{
+module.exports = [{
     "href" : "http://www.deutschlandradiokultur.de/podcast-alltag-anders.2008.de.podcast.xml",
 
     "img" : {

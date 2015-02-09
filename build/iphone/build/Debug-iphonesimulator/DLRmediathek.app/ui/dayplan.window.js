@@ -1,0 +1,1 @@
+/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/Resources/ui/dayplan.window.js

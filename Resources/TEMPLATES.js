@@ -85,3 +85,34 @@ exports.podcast = {
     }]
 };
 
+exports.podcastlist = {
+    properties : {
+        height : Ti.UI.SIZE,
+        backgroundColor : 'white',
+    },
+    childTemplates : [{
+        type : 'Ti.UI.ImageView',
+        bindId : 'image',
+        properties : {
+            left : 0,
+            touchEnabled : false,
+            top : 0,
+            width : 80,
+            height : 80
+        }
+    }, {
+        type : 'Ti.UI.Label',
+        bindId : 'title',
+        properties : {
+            color : '#060',
+            font : {
+                fontSize : 24,
+                fontWeight : 'bold',
+                fontFamily : 'ScalaSansBold'
+            },
+            left : 100,
+            width : Ti.UI.FILL,
+        }
+    }]
+};
+

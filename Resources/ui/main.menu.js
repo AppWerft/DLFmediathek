@@ -8,7 +8,7 @@ var Player = Ti.Media.createAudioPlayer({
 var currentItem = null;
 
 module.exports = function(_event) {
-    var currentStation = '';
+    var currentStation = 'dlf';
     АктйонБар.title = 'DeutschlandRadio';
     АктйонБар.subtitle = 'Mediathek';
     АктйонБар.titleFont = "ScalaSansBold";
@@ -19,16 +19,22 @@ module.exports = function(_event) {
         activity.onCreateOptionsMenu = function(_menuevent) {
             var currentPage = FlipViewCollection.views[0];
             _menuevent.menu.clear();
-
             _menuevent.menu.add({
                 title : 'Tagesplan',
-                itemId : '0',
+                itemId : '2',
                 icon : Ti.App.Android.R.drawable.ic_action_rss,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
             }).addEventListener("click", function(_e) {
-                require('ui/rss.window')(currentStation);
+                require('ui/dayplan.window')(currentStation);
             });
-
+            _menuevent.menu.add({
+                title : 'Podcasts',
+                itemId : '3',
+                icon : Ti.App.Android.R.drawable.ic_action_rss,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+            }).addEventListener("click", function(_e) {
+                require('ui/podcasts.window')(currentStation);
+            });
             _menuevent.menu.add({
                 title : 'RadioStart',
                 itemId : '1',
@@ -77,7 +83,7 @@ module.exports = function(_event) {
             FlipViewCollection.addEventListener('flipped', function(_e) {
                 currentStation = FlipViewCollection.getViews()[_e.index].itemId.name;
                 activity.actionBar.logo = '/images/' + currentStation + '.png';
-                var menuitem = _menuevent.menu.findItem('0');
+                var menuitem = _menuevent.menu.findItem('2');
                 if (currentStation == 'drw')
                     menuitem.setVisible(false);
                 else
