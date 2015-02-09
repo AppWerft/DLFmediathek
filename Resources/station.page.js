@@ -16,7 +16,7 @@ module.exports = function(_args) {
         width : 200,
         right : -200,
         opacity : 0.9,
-        top : 0,
+        top : 0, 
         height : 40,
         color : 'white',
         text : 'Heute',
