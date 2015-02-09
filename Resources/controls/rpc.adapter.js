@@ -7,7 +7,6 @@ var toType = function(obj) {
 
 module.exports = function(_args) {
     var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
-    console.log(_args);
     if (!_args.nocache && Ti.App.Properties.hasProperty(url)) {
         _args.onload(JSON.parse(Ti.App.Properties.getString(url)));
         console.log('delivering of cached infos');
@@ -15,16 +14,17 @@ module.exports = function(_args) {
     }
     var xhr = Ti.Network.createHTTPClient({
         onload : function() {
-            var json = new XMLTools(this.responseXML).toObject();
-            if (json.item && toType(json.item) != 'array') {
-                json.item = [json.item];
+            var obj = new XMLTools(this.responseXML).toObject();
+            if (obj.item && toType(obj.item) != 'array') {
+                obj.item = [obj.item];
             }
-            var payload = {
-                payload : json,
+            var result = {
+                payload : obj,
                 hash : Ti.Utils.md5HexDigest(this.responseText)
             };
-            Ti.App.Properties.setString(url, JSON.stringify(payload));
-            _args.onload(payload);
+            Ti.App.Properties.setString(url, JSON.stringify(result));
+            _args.onload(result);
+            console.log('Info: rendering ready');
         }
     });
     xhr.open('GET', url);

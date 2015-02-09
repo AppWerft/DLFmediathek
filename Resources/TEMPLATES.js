@@ -1,10 +1,12 @@
 exports.podcast = {
     properties : {
-        height : Ti.UI.SIZE
+        height : Ti.UI.SIZE,
+        backgroundColor : 'white',
+        itemId : ''
     },
     childTemplates : [{
         type : 'Ti.UI.Label',
-        bindId : start,
+        bindId : 'start',
         properties : {
             left : 5,
             touchEnabled : false,
@@ -23,6 +25,7 @@ exports.podcast = {
             right : 3,
             top : 3,
             touchEnabled : false,
+            visible : false,
             image : '/images/menu.png',
             width : 15,
             height : 15
@@ -31,29 +34,53 @@ exports.podcast = {
         type : 'Ti.UI.View',
         properties : {
             width : Ti.UI.FILL,
+            layout : 'vertical',
+            left : 70,
+            right : 25
         },
         childTemplates : [{
             type : 'Ti.UI.Label',
             bindId : 'title',
             properties : {
                 color : '#060',
+                top : 5,
                 font : {
                     fontSize : 22,
                     fontWeight : 'bold',
-                    fontFamily : 'TheSans-B7Bold'
+                    fontFamily : 'ScalaSansBold'
                 },
-                left : Ti.UI.CONF.padding,
+                left : 0,
                 width : Ti.UI.FILL,
-            },
-            events : {}
+            }
+
         }, {
             type : 'Ti.UI.Label',
             bindId : 'subtitle',
-            properties : {}
+            properties : {
+                left : 0,
+                top : 0,
+                touchEnabled : false,
+                font : {
+                    fontSize : 16,
+                    fontFamily : 'ScalaSans'
+                },
+                color : '#333'
+            }
         }, {
             type : 'Ti.UI.Label',
             bindId : 'autor',
-            properties : {}
+            properties : {
+                left : 0,
+                top : 0,
+                bottom : 10,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 12,
+                    fontFamily : 'ScalaSans'
+                },
+                color : '#333'
+            }
         }]
     }]
 };

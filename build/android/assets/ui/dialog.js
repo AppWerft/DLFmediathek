@@ -1,1 +1,1 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/Resources/ui/dialog.js
+module.exports=function(t){var e=Ti.UI.createAlertDialog({message:t.title,ok:"Beitrag anhören",androidView:view,title:t.sendung.text});e.show(),e.addEventListener("click",function(){Ti.App.fireEvent("app:play",t)}),console.log(t)};

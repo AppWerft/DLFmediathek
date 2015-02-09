@@ -1,1 +1,1 @@
-/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek/Resources/ui/rss.menu.js
+var АктйонБар=require("com.alcoapps.actionbarextras");module.exports=function(e){АктйонБар.title="DeutschlandRadio",АктйонБар.subtitle="Heutiges Programm",АктйонБар.titleFont="ScalaSansBold",АктйонБар.subtitleColor="#ccc";var t=e.source.getActivity();t.actionBar.logo="/images"+e.source.itemId+".png",t&&(t.onCreateOptionsMenu=function(e){e.menu.clear(),t.actionBar.displayHomeAsUp=!0},t.invalidateOptionsMenu())};

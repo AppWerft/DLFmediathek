@@ -1,5 +1,6 @@
 var Moment = require('vendor/moment');
 Moment.locale('de');
+
 module.exports = function(_args) {
     var self = Ti.UI.createView({
         backgroundColor : '#fff',
@@ -9,14 +10,13 @@ module.exports = function(_args) {
             podcasts : _args.podcasts,
             live : _args.live,
             stream : _args.stream
-
         },
     });
     var calendartrigger = Ti.UI.createView({
         width : 200,
         right : -200,
         opacity : 0.9,
-        top : 0, 
+        top : 0,
         height : 40,
         color : 'white',
         text : 'Heute',
@@ -53,7 +53,6 @@ module.exports = function(_args) {
             value : self.date.toDate(),
             locale : 'de'
         });
-
         picker.showDatePickerDialog({
             value : self.date.toDate(),
             callback : function(e) {
@@ -78,7 +77,6 @@ module.exports = function(_args) {
         _e.source.children[0].setText(Moment(self.date).format('LL'));
         self.updatePodcasts();
     });
-
     self.containerforcurrenttext = Ti.UI.createScrollView({
         top : -200,
         scrollType : 'vertical',
@@ -96,14 +94,19 @@ module.exports = function(_args) {
         height : 7,
         backgroundColor : _args.color
     }));
-    self.list = Ti.UI.createTableView({
-        top : 7
+
+    self.list = Ti.UI.createListView({
+        top : 7,
+        height : Ti.UI.FILL,
+        backgroundColor : _args.color,
+        templates : {
+            'podcast' : require('TEMPLATES').podcast,
+        },
+        defaultItemTemplate : 'podcast',
+        sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
-    var rows = [];
-    self.list.addEventListener('click', function(_e) {
-
-    });
+    var dataItems = [];
     var currentHash = '';
     self.showCurrent = function() {
         self.list.animate({
@@ -161,36 +164,64 @@ module.exports = function(_args) {
             }
         });
     };
+    /* hiding of todays display */
     self.hideCurrent = function() {
         self.list.setTop(0);
         self.containerforcurrenttext.setTop(-200);
     };
+
     self.updatePodcasts = function() {
-        // self.list.setData([]);
         require('controls/rpc.adapter')({
             url : _args.podcasts,
             nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
             date : self.date.format('DD.MM.YYYY'),
             onload : function(_res) {
-                rows = [];
-                self.list.backgroundColor = _args.color;
+                dataItems = [];
                 _res.payload.item.forEach(function(item) {
-                    rows.push(require('ui/list.row')(item, _args.color));
+                    console.log(item);
+
+                    var autor = item.author;
+                    if ( typeof autor == 'string') {
+                        autor = autor.split(', ')[1] + ' ' + autor.split(', ')[0];
+                    } else
+                        autor = autor.text;
+                    dataItems.push({
+                        properties : {
+                            accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
+                            itemId : JSON.stringify(item),
+                        },
+                        start : {
+                            text : item.datetime.split(' ')[1].substr(0, 5)
+                        },
+                        title : {
+                            color : _args.color,
+                            text : item.sendung.text
+                        },
+                        subtitle : {
+                            text : item.title || '',
+                        },
+                        autor : {
+                            text : (autor != undefined) ? 'Autor: ' + autor : ''
+                        }
+                    });
                 });
-                self.list.setData(rows);
+                self.list.sections[0].setItems(dataItems);
+                self.list.setSections([self.list.sections[0]]);
                 if (self.date.isSame(Moment().startOf('day')))
                     self.showCurrent();
             }
         });
     };
+
     self.updatePodcasts();
     if (self.date.isSame(Moment().startOf('day')))
         self.cron = setInterval(self.updatePodcasts, 60000);
     else
         clearInterval(self.cron);
-    self.list.addEventListener('click', function(_e) {
+    self.list.addEventListener('itemclick', function(_e) {
+        console.log(JSON.parse(_e.itemId));
         Ti.App.fireEvent('app:play', {
-            item : _e.rowData.itemId
+              item : JSON.parse(_e.itemId)
         });
     });
     return self;
