@@ -6,17 +6,18 @@ var toType = function(obj) {
 };
 
 module.exports = function(_args) {
+    console.log(_args);
     var xhr = Ti.Network.createHTTPClient({
         onload : function() {
-            var obj = new XMLTools(this.responseXML).toObject();
-            console.log(obj.item);
-            if (obj.item && toType(obj.item) != 'array') {
-                obj.item = [obj.item];
+            var channel = new XMLTools(this.responseXML).toObject().channel;
+            if (channel.item && toType(channel.item) != 'array') {
+                channel.item = [channel.item];
             }
             var result = {
-                payload : obj
+                ok : true,
+                items : channel.item
             };
-        //    _args.onload(result);
+            //    _args.onload(result);
         }
     });
     xhr.open('GET', _args.url);
