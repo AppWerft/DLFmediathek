@@ -3,7 +3,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "Andruck",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/1/199682a5a4470885e7a2c7cbabdc0deev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "/images/podcasts/andruck.jpg",
         "title" : "Andruck"
     }
 }, {
@@ -11,7 +11,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "Aus Kultur- und Sozialiwssenschaften",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/a/a802ebc40a23c25667285d72bb3fc2aev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "/images/podcasts/kulturwissenschaft.jpg",
         "title" : "Aus Kultur- und Sozialiwssenschaften"
     }
 }, {
@@ -19,48 +19,37 @@ module.exports = [{
 
     "img" : {
         "alt" : "Bücher für junge Leser",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/c/c43a25f6c22802c637147fa3c57522a5v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-        "title" : "Bücher für junge Leser"
+        "src" : "/images/podcasts/jungeleser.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-buechermarkt.701.de.podcast.xml",
-
     "img" : {
         "alt" : "Büchermarkt",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/a/adf15aa00050edbec0db27186bb950e4v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-        "title" : "Büchermarkt"
+        "src" : "http://www.deutschlandfunk.de/media/thumbs/a/adf15aa00050edbec0db27186bb950e4v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-campus-karriere.681.de.podcast.xml",
-
     "img" : {
         "alt" : "Campus und Karriere",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/0/0af7c3d06003d5074e393013cb639d7cv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-        "title" : "Campus und Karriere"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-campus-karriere.1801.de.podcast.xml",
-
     "img" : {
         "alt" : "",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/1/110b998c47ab642c840a7744f022de3cv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-        "title" : ""
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation.685.de.podcast.xml",
-
     "img" : {
         "alt" : "Computer und Kommunikation Beiträge",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/5/583bd6c8cf8bbc5ee1b42d265b704b77v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-        "title" : "Computer und Kommunikation Beiträge"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation-komplette-sendung.416.de.podcast.xml",
-
     "img" : {
         "alt" : "Computer und Kommunikation Sendung",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/d/d4a13a32cde15fff1f5bdbfc3688d14av1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-        "title" : "Computer und Kommunikation Sendung"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-corso.808.de.podcast.xml",

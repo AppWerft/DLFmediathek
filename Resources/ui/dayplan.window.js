@@ -24,6 +24,10 @@ module.exports = function(station) {
         onload : function(_feeditems) {
             _feeditems.items.forEach(function(item) {
                 items.push({
+                    properties : {
+                        accessoryType : (item.link) ? Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
+                        itemId : JSON.stringify(item),
+                    },
                     start : {
                         text : Moment(item.pubDate).format('HH:mm')
                     },
@@ -34,13 +38,29 @@ module.exports = function(station) {
                     },
                     title : {
                         text : item.title,
-                        color: model.color
+                        color : model.color
                     }
                 });
 
             });
             self.list.sections[0].setItems(items);
         }
+    });
+    self.list.addEventListener('itemclick', function(_e) {
+        var item = JSON.parse(_e.itemId);
+        var win = require('ui/generic.window')({
+            subtitle : item.title,
+            title : 'Deutschlandradio',
+            station : station
+        });
+        console.log(item.link);
+        var web = Ti.UI.createWebView({
+            borderRadius : 1,
+            enableZoomControls : false,
+            url : item.link
+        });
+        win.add(web);
+        win.open();
     });
     self.add(self.list);
     self.open();

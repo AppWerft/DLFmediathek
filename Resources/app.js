@@ -34,7 +34,7 @@
 
     setTimeout(function() {
         window.FlipViewCollection.flipToView(1);
-    }, 3000);
+    }, 5000);
 
     window.open();
 })();
