@@ -15,33 +15,30 @@ var Module = function() {
     });
     this._player.addEventListener('change', function(_e) {
         Ti.API.error(_e.state + '    ' + _e.description);
-        switch (_e.state) {
-        case 5:
-            // stopped
-            that._equalizer.animate({
-                opacity : 0
-            });
+        switch (_e.description) {
+        case 'initialized':
+            that._control.image = '/images/stop.png';
+            Ti.Media.vibrate();
+            break;
+        case 'stopped':
+            that._equalizer.opacity = 0;
             that._control.image = '/images/play.png';
             break;
-        case 4:
-            // starting
-            that._equalizer.animate({
-                opacity : 0
-            });
-
+         case 'stopping':
+            that._equalizer.opacity = 0;
+            that._control.image = '/images/leer.png';
+            break;   
+        case 'starting':
             that._control.image = '/images/leer.png';
             break;
-        case 2:
-            //paused
-            that._equalizer.animate({
-                opacity : 0
-            });
+        case 'paused':
+            that._equalizer.opacity = 0;
             that._control.image = '/images/play.png';
             break;
-        case 3:
-            //playing
+        case 'playing':
             that._equalizer.animate({
-                opacity : 1
+                opacity : 1,
+                duration : 700
             });
             that._control.image = '/images/pause.png';
             break;
@@ -66,8 +63,8 @@ Module.prototype = {
         }));
         this._container = Ti.UI.createView({
             bubbleParent : false,
-            touchEnabled:false,
-            height : 120,
+            touchEnabled : false,
+            height : 150,
             bottom : 0,
             backgroundColor : 'white'
         });
@@ -84,15 +81,16 @@ Module.prototype = {
         this._duration = Ti.UI.createLabel({
             bottom : 5,
             bubbleParent : false,
-            touchEnabled:false,
+            touchEnabled : false,
             font : {
                 fontSize : 10
             },
             right : 10,
         });
         this._title = Ti.UI.createLabel({
-            bottom : 70,bubbleParent : false,
-            touchEnabled:false,
+            bottom : 70,
+            bubbleParent : false,
+            touchEnabled : false,
             color : '#555',
             height : 36,
             height : Ti.UI.SIZE,
@@ -116,7 +114,7 @@ Module.prototype = {
             width : 200,
             height : 33,
             bubbleParent : false,
-            touchEnabled:false,
+            touchEnabled : false,
             scalesPageToFit : true,
             url : '/images/equalizer.gif',
             bottom : 30,
@@ -138,7 +136,7 @@ Module.prototype = {
             }
         });
         this._view.addEventListener('click', function() {
-            Ti.API.error('Info: background of player clicked' );
+            Ti.API.error('Info: background of player clicked');
             that.stopPlayer();
         });
         return this._view;
@@ -157,7 +155,7 @@ Module.prototype = {
     },
     stopPlayer : function(args) {
         if (this._player.isPlaying() || this._player.isPaused()) {
-            Ti.API.error('Info: try 2 stop player - was playing or paused' );
+            Ti.API.error('Info: try 2 stop player - was playing or paused');
             this._player.stop();
             this._player.release();
         }

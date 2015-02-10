@@ -23,10 +23,13 @@ module.exports = function(station) {
         url : model.rss,
         onload : function(_feeditems) {
             _feeditems.items.forEach(function(item) {
+                console.log(item.link);
+                if ( typeof item.link != 'string')
+                    item.link = null;
                 items.push({
                     properties : {
                         accessoryType : (item.link) ? Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
-                        itemId : JSON.stringify(item),
+                        itemId : (item.link) ? JSON.stringify(item) : undefined,
                     },
                     start : {
                         text : Moment(item.pubDate).format('HH:mm')
@@ -47,20 +50,21 @@ module.exports = function(station) {
         }
     });
     self.list.addEventListener('itemclick', function(_e) {
-        var item = JSON.parse(_e.itemId);
-        var win = require('ui/generic.window')({
-            subtitle : item.title,
-            title : 'Deutschlandradio',
-            station : station
-        });
-        console.log(item.link);
-        var web = Ti.UI.createWebView({
-            borderRadius : 1,
-            enableZoomControls : false,
-            url : item.link
-        });
-        win.add(web);
-        win.open();
+        if (_e.itemId) {
+            var item = JSON.parse(_e.itemId);
+            var win = require('ui/generic.window')({
+                subtitle : item.title,
+                title : 'Deutschlandradio',
+                station : station
+            });
+            var web = Ti.UI.createWebView({
+                borderRadius : 1,
+                enableZoomControls : false,
+                url : item.link
+            });
+            win.add(web);
+            win.open();
+        }
     });
     self.add(self.list);
     self.open();

@@ -9,7 +9,7 @@ var currentItem = null;
 
 module.exports = function(_event) {
     var currentStation = 'dlf';
-    АктйонБар.title = 'DeutschlandRadio';
+    АктйонБар.title = 'DRadio';
     АктйонБар.subtitle = 'Mediathek';
     АктйонБар.titleFont = "ScalaSansBold";
     АктйонБар.subtitleColor = "#ccc";
@@ -26,15 +26,15 @@ module.exports = function(_event) {
                 title : 'Tagesplan',
                 itemId : '2',
                 icon : Ti.App.Android.R.drawable.ic_action_rss,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
                 require('ui/dayplan.window')(currentStation);
             });
             _menuevent.menu.add({
                 title : 'Podcasts',
                 itemId : '3',
-                icon : Ti.App.Android.R.drawable.ic_action_rss,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+                icon : Ti.App.Android.R.drawable.ic_action_feed,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
                 require('ui/podcasts.window')(currentStation);
             });
