@@ -67,5 +67,8 @@ module.exports = function(_args) {
             duration : item['itunes:duration']
         });
     });
+    self.addEventListener('close',function(){
+        Player.stopPlayer();
+    });
     self.open();
 };

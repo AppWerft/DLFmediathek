@@ -1,12 +1,15 @@
 var Module = function() {
     this._player = Ti.Media.createAudioPlayer({
-        allowBackground : true
+        allowBackground : true,
+        volume : 1
     });
     var that = this;
     this._player.addEventListener('progress', function(_e) {
         that._progress.setValue(_e.progress / 1000);
     });
     this._player.addEventListener('complete', function(_e) {
+        Ti.API.error(_e.error);
+        Ti.API.error('completed code = ' + _e.code);
         that._player.release();
         that._view.setVisible(false);
     });
@@ -14,12 +17,29 @@ var Module = function() {
         Ti.API.error(_e.state + '    ' + _e.description);
         switch (_e.state) {
         case 5:
+            // stopped
             that._equalizer.animate({
                 opacity : 0
             });
-             that._control.image = '/images/play.png';
+            that._control.image = '/images/play.png';
+            break;
+        case 4:
+            // starting
+            that._equalizer.animate({
+                opacity : 0
+            });
+
+            that._control.image = '/images/leer.png';
+            break;
+        case 2:
+            //paused
+            that._equalizer.animate({
+                opacity : 0
+            });
+            that._control.image = '/images/play.png';
             break;
         case 3:
+            //playing
             that._equalizer.animate({
                 opacity : 1
             });
@@ -36,18 +56,22 @@ Module.prototype = {
         });
         this._view.add(Ti.UI.createView({
             opacity : 0.5,
+            touchEnabled : false,
             backgroundColor : (args.color) ? args.color : 'black'
         }));
         this._view.add(Ti.UI.createView({
             opacity : 0.5,
+            touchEnabled : false,
             backgroundColor : 'black'
         }));
-        this._view.add(Ti.UI.createView({
+        this._container = Ti.UI.createView({
             bubbleParent : false,
+            touchEnabled:false,
             height : 120,
             bottom : 0,
             backgroundColor : 'white'
-        }));
+        });
+        this._view.add(this._container);
         this._progress = Ti.UI.createProgressBar({
             bottom : 20,
             left : 80,
@@ -59,13 +83,16 @@ Module.prototype = {
         });
         this._duration = Ti.UI.createLabel({
             bottom : 5,
+            bubbleParent : false,
+            touchEnabled:false,
             font : {
                 fontSize : 10
             },
             right : 10,
         });
         this._title = Ti.UI.createLabel({
-            bottom : 70,
+            bottom : 70,bubbleParent : false,
+            touchEnabled:false,
             color : '#555',
             height : 36,
             height : Ti.UI.SIZE,
@@ -79,6 +106,7 @@ Module.prototype = {
         this._control = Ti.UI.createImageView({
             width : 50,
             height : 50,
+            bubbleParent : false,
             left : 10,
             image : '/images/play.png',
             bottom : 15
@@ -87,6 +115,8 @@ Module.prototype = {
             borderRadius : 1,
             width : 200,
             height : 33,
+            bubbleParent : false,
+            touchEnabled:false,
             scalesPageToFit : true,
             url : '/images/equalizer.gif',
             bottom : 30,
@@ -101,23 +131,37 @@ Module.prototype = {
 
         var that = this;
         this._control.addEventListener('click', function() {
-            that._player.stop();
-            that._player.release();
-            that._view.setVisible(false);
+            if (that._player.isPlaying()) {
+                that._player.pause();
+            } else if (that._player.isPaused()) {
+                that._player.play();
+            }
         });
-
+        this._view.addEventListener('click', function() {
+            Ti.API.error('Info: background of player clicked' );
+            that.stopPlayer();
+        });
         return this._view;
     },
     startPlayer : function(args) {
-        console.log(args);
+        Ti.App.fireEvent('app:stop');
         this._view.setVisible(true);
         this._progress.setMax(args.sec);
+        this._progress.setValue(0);
         this._player.setUrl(args.url);
+        Ti.API.error(args.url);
         this._title.setText(args.title);
         this._duration.setText(args.duration);
         this._view.add(this._equalizer);
-
         this._player.start();
+    },
+    stopPlayer : function(args) {
+        if (this._player.isPlaying() || this._player.isPaused()) {
+            Ti.API.error('Info: try 2 stop player - was playing or paused' );
+            this._player.stop();
+            this._player.release();
+        }
+        this._view.setVisible(false);
     }
 };
 

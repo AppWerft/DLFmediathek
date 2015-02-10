@@ -56,81 +56,59 @@ module.exports = [{
 
     "img" : {
         "alt" : "Deutschlandrundfahrt",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/b/b8707d9b4456326914cf2ac183b1a2b2v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Deutschlandrundfahrt"
+        "src" : "/images/podcasts/rundfahrt.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-die-reportage.1077.de.podcast.xml",
 
     "img" : {
         "alt" : "Die Reportage",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/7/742c1afca9105ab7e2d8b36ed9527d04v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Die Reportage"
+        "src" : "/images/podcasts/reportage.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-echtzeit.2148.de.podcast.xml",
 
     "img" : {
         "alt" : "Echtzeit",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/c/c8fd217af63348a67fe02c54e217766av1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Echtzeit"
+        "src" : "/images/podcasts/echtzeit.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-fruehkritik.2151.de.podcast.xml",
-
     "img" : {
         "alt" : "Frühkritik",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/d/d14ea9aa6d82d5d30d7b5c53b1e4db88v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Frühkritik"
+        "src" : "/images/podcasts/fruehkritik.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-fazit.1014.de.podcast.xml",
-
     "img" : {
         "alt" : "Fazit",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/3/3ae86074ebfe77c6c2cb08ad7c309483v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Fazit"
+        "src" : "/images/podcasts/fazit.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-im-gespraech.971.de.podcast.xml",
 
     "img" : {
-        "alt" : "- Im Gespräch",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/5/53950c1c9f68977358f884801c105cd2v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "- Im Gespräch"
+        "alt" : "Im Gespräch",
+        "src" : "/images/podcasts/imgespraech.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-interview.1009.de.podcast.xml",
-
     "img" : {
         "alt" : "Interview Deutschlandradio Kultur",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/c/caae6eddc8a0a42c59c575b17a98e95bv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Interview Deutschlandradio Kultur"
+        "src" : "/images/podcasts/interviews.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-kakadu.1924.de.podcast.xml",
 
     "img" : {
         "alt" : "Kakadu",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/a/ab2d687ab9f70ddc7ebab0cfc70f58dav1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Kakadu"
+        "src" : "/images/podcasts/kakadu.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-kommentar.997.de.podcast.xml",
-
     "img" : {
         "alt" : "Kommentar",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/d/debb5e1c3f45ffb09d7e3ae2e0430092v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Kommentar"
+    "src" : "/images/podcasts/kommentar.jpg"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-kompressor.2157.de.podcast.xml",

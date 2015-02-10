@@ -13,6 +13,9 @@ module.exports = function(_event) {
     АктйонБар.subtitle = 'Mediathek';
     АктйонБар.titleFont = "ScalaSansBold";
     АктйонБар.subtitleColor = "#ccc";
+    //dropdown = АктйонБар.createDropdown({
+    //    titles : ["Spielplan des Tages", "Podcasts", "Third"]
+    //});
     var activity = _event.source.getActivity();
     if (activity) {
         var FlipViewCollection = _event.source.FlipViewCollection;
@@ -87,6 +90,12 @@ module.exports = function(_event) {
                     menuitem.setVisible(false);
                 else
                     menuitem.setVisible(true);
+            });
+            Ti.App.addEventListener('app:stop', function(_event) {
+                if (Player.isPlaying()) {
+                    Player.stop();
+                    Player.release();
+                }
             });
             Ti.App.addEventListener('app:play', function(_event) {
                 var self = Ti.UI.createAlertDialog({
