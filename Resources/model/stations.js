@@ -7,6 +7,7 @@ module.exports = {
         podcasts : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=4&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=200'
     },
     drk : {
+        hoerkunst : 'http://www.deutschlandradiokultur.de/hoerkunst.1656.de.html',
         rss: 'http://www.deutschlandradiokultur.de/programmvorschau.282.de.rss',
         color : '#E95D0F',
         stream : 'http://www.dradio.de/streaming/dkultur.m3u',

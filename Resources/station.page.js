@@ -1,5 +1,6 @@
 var Moment = require('vendor/moment');
 Moment.locale('de');
+
 const HEIGHT_OF_CURRENTBOX = 150;
 
 module.exports = function(_args) {

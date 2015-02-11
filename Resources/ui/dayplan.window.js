@@ -1,4 +1,5 @@
-var Moment = require('vendor/moment');
+var Model = require('model/stations'),
+    Moment = require('vendor/moment');
 
 module.exports = function(station) {
     if (!station)

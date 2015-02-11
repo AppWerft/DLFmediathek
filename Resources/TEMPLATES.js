@@ -180,6 +180,87 @@ exports.podcastlist = {
         }]
     }]
 };
+exports.hoerkunst = {
+    properties : {
+        height : Ti.UI.SIZE,
+        backgroundColor : 'white',
+        itemId : ''
+    },
+    childTemplates : [{
+        type : 'Ti.UI.ImageView',
+        bindId : 'image',
+        properties : {
+            left : 0,
+            top : 5,
+            touchEnabled : false,
+            width : 120,
+            height : 90
+        }
+    }, {
+        type : 'Ti.UI.View',
+        properties : {
+            width : Ti.UI.FILL,
+            layout : 'vertical',
+            left : 130,
+            right : 20
+        },
+        childTemplates : [{
+            type : 'Ti.UI.Label',
+            bindId : 'subtitle',
+            properties : {
+                top : 5,
+                font : {
+                    fontSize : 20,
+                    fontFamily : 'ScalaSansBold'
+                },
+                left : 0,
+                height : Ti.UI.SIZE,
+                width : Ti.UI.FILL,
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'title',
+            properties : {
+                top : 5,
+                font : {
+                    fontSize : 20,
+                    fontFamily : 'ScalaSansBold'
+                },
+                left : 0,
+                width : Ti.UI.FILL,
+            }
+
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'description',
+            properties : {
+                left : 0,
+                top : 0,
+                text : '',
+                touchEnabled : false,
+                font : {
+                    fontSize : 16,
+                    fontFamily : 'ScalaSans'
+                },
+                color : '#333'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'pubdate',
+            properties : {
+                left : 0,
+                touchEnabled : false,
+                top : 0,
+                color : '#777',
+                font : {
+                    fontSize : 16,
+                    fontWeight : 'bold',
+                    fontFamily : 'ScalaSansBold'
+                },
+            }
+        }]
+    }]
+};
 
 exports.podcast = {
     properties : {
@@ -229,7 +310,6 @@ exports.podcast = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
                 },
                 left : 0,

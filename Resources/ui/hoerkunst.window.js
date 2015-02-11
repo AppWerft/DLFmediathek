@@ -1,13 +1,61 @@
+var Model = require('model/stations'),
+    Moment = require('vendor/moment');
+
 module.exports = function(station) {
-    var win = require('ui/generic.window')({
+    station = 'drk';
+    var color = Model[station].color;
+    var self = require('ui/generic.window')({
         title : 'Klangkunst',
         subtitle : 'Hörspiel und Feature',
         station : station
     });
-    require('controls/klangkunst.adapter')({
-        url : 'http://www.deutschlandradiokultur.de/hoerkunst.1656.de.html',
-        done : function() {
+    self.list = Ti.UI.createListView({
+        backgroundColor : station,
+        templates : {
+            'hoerkunst' : require('TEMPLATES').hoerkunst,
+        },
+        defaultItemTemplate : 'hoerkunst',
+        sections : [Ti.UI.createListSection({})]
+    });
+    self.add(self.list);
+    require('controls/hoerkunst.adapter')({
+        station : station,
+        done : function(_items) {
+            var items = [];
+            _items.forEach(function(item) {
+                console.log(item);
+                items.push({
+                    properties : {
+                        accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
+                        itemId : JSON.stringify(item)
+                    },
+                    image : {
+                        image : item.image
+                    },
+                    title : {
+                        text : item.title
+                    },
+                    subtitle : {
+                        text : (item.subtitle) ? item.subtitle.toUpperCase() : '',
+                        height : (item.subtitle) ? Ti.UI.SIZE : 0,
+                        color : color,
+                    },
+                    description : {
+                        text : item.description
+                    },
+                    pubdate : {
+                        text : item.pubdate
+                    }
+                });
+            });
+            self.list.sections[0].setItems(items);
         }
     });
-    win.open();
+    self.list.addEventListener('itemclick', function(_e) {
+        var win = require('ui/hoerkunstdetail.window')({
+            item : JSON.parse(_e.itemId),
+            station : station
+        }).open();
+    });
+    self.open();
 };

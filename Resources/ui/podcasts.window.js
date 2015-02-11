@@ -1,3 +1,6 @@
+var Model = require('model/stations'),
+    Moment = require('vendor/moment');
+    
 module.exports = function(station) {
     var self = require('ui/generic.window')({
         title : 'Deutschlandradio',

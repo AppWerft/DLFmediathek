@@ -1,3 +1,6 @@
+var Model = require('model/stations'),
+    Moment = require('vendor/moment');
+    
 module.exports = function(args) {
     var parent = args.self,
         color = args.color;
