@@ -63,7 +63,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_ohr,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
-                 require('ui/klangkunst.window')(currentStationName);
+                 require('ui/hoerkunst.window')(currentStationName);
             });
 
             _menuevent.menu.add({
