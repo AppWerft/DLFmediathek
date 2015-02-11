@@ -6,7 +6,6 @@ var toType = function(obj) {
 };
 
 module.exports = function(_args) {
-    console.log(_args);
     var xhr = Ti.Network.createHTTPClient({
         onload : function() {
             var channel = new XMLTools(this.responseXML).toObject().channel;
@@ -17,7 +16,7 @@ module.exports = function(_args) {
                 ok : true,
                 items : channel.item
             };
-             _args.onload(result);
+             _args.done(result);
         }
     });
     xhr.open('GET', _args.url);

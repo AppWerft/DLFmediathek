@@ -32,4 +32,5 @@
     });
     window.add(window.FlipViewCollection);
     window.open();
+   
 })();
