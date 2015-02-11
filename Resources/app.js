@@ -24,17 +24,12 @@
         orientation : FlipModule.ORIENTATION_HORIZONTAL,
         overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
         views : pages,
-        currentPage : 0,
+        currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX',0),
         height : Ti.UI.FILL
     });
     window.addEventListener('focus', function() {
         window.FlipViewCollection.peakNext(true);
     });
     window.add(window.FlipViewCollection);
-
-    setTimeout(function() {
-        window.FlipViewCollection.flipToView(1);
-    }, 5000);
-
     window.open();
 })();

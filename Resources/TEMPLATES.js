@@ -20,15 +20,16 @@ exports.schema = {
         }
     }, {
         type : 'Ti.UI.ImageView',
+        bindId : 'onair',
         properties : {
-            opacity : 0.2,
-            right : 3,
-            top : 3,
-            touchEnabled : false,
+            left : 10,
+            top : 40,
+            bottom : 10,
+            touchEnabled : true,
             visible : false,
-            image : '/images/menu.png',
-            width : 15,
-            height : 15
+            image : '/images/play.png',
+            width : 40,
+            height : 40
         }
     }, {
         type : 'Ti.UI.View',
@@ -36,6 +37,7 @@ exports.schema = {
             width : Ti.UI.FILL,
             layout : 'vertical',
             left : 70,
+            top : 5,
             right : 25
         },
         childTemplates : [{
@@ -52,6 +54,18 @@ exports.schema = {
                 width : Ti.UI.FILL,
             }
 
+        }, {
+            type : 'Ti.UI.WebView',
+            bindId : 'equalizer',
+            properties : {
+                left : 0,
+                top : 0,
+                touchEnabled : false,
+                borderRadius : 1,
+                enableZoomControls : false,
+                height : 0,
+                width : 200
+            }
         }, {
             type : 'Ti.UI.Label',
             bindId : 'description',
@@ -159,7 +173,7 @@ exports.podcastlist = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    
+
                     fontFamily : 'ScalaSans'
                 },
             }
@@ -254,35 +268,35 @@ exports.podcast = {
     }]
 };
 /*
-exports.podcastlist = {
-    properties : {
-        height : Ti.UI.SIZE,
-        backgroundColor : 'white',
-    },
-    childTemplates : [{
-        type : 'Ti.UI.ImageView',
-        bindId : 'image',
-        properties : {
-            left : 0,
-            touchEnabled : false,
-            top : 0,
-            width : 80,
-            height : 80
-        }
-    }, {
-        type : 'Ti.UI.Label',
-        bindId : 'title',
-        properties : {
-            color : '#060',
-            font : {
-                fontSize : 24,
-                fontWeight : 'bold',
-                fontFamily : 'ScalaSansBold'
-            },
-            left : 100,
-            width : Ti.UI.FILL,
-        }
-    }]
-};
+ exports.podcastlist = {
+ properties : {
+ height : Ti.UI.SIZE,
+ backgroundColor : 'white',
+ },
+ childTemplates : [{
+ type : 'Ti.UI.ImageView',
+ bindId : 'image',
+ properties : {
+ left : 0,
+ touchEnabled : false,
+ top : 0,
+ width : 80,
+ height : 80
+ }
+ }, {
+ type : 'Ti.UI.Label',
+ bindId : 'title',
+ properties : {
+ color : '#060',
+ font : {
+ fontSize : 24,
+ fontWeight : 'bold',
+ fontFamily : 'ScalaSansBold'
+ },
+ left : 100,
+ width : Ti.UI.FILL,
+ }
+ }]
+ };
 
-*/
+ */

@@ -8,7 +8,7 @@ var Player = Ti.Media.createAudioPlayer({
 var currentItem = null;
 
 module.exports = function(_event) {
-    var currentStation = 'dlf';
+    var currentStationName = 'dlf';
     АктйонБар.title = 'DRadio';
     АктйонБар.subtitle = 'Mediathek';
     АктйонБар.titleFont = "ScalaSansBold";
@@ -20,7 +20,9 @@ module.exports = function(_event) {
     if (activity) {
         var FlipViewCollection = _event.source.FlipViewCollection;
         activity.onCreateOptionsMenu = function(_menuevent) {
-            var currentPage = FlipViewCollection.views[0];
+           
+            var currentPage = FlipViewCollection.views[Ti.App.Properties.getInt('LAST_STATION_NDX',0)];
+            activity.actionBar.logo = '/images/' + Ti.App.Properties.getString('LAST_STATION','dlf') + '.png';
             _menuevent.menu.clear();
             _menuevent.menu.add({
                 title : 'Tagesplan',
@@ -28,7 +30,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_rss,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
-                require('ui/dayplan.window')(currentStation);
+                require('ui/dayplan.window')(currentStationName);
             });
             _menuevent.menu.add({
                 title : 'Podcasts',
@@ -36,7 +38,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_feed,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
-                require('ui/podcasts.window')(currentStation);
+                require('ui/podcasts.window')(currentStationName);
             });
             _menuevent.menu.add({
                 title : 'RadioStart',
@@ -81,12 +83,13 @@ module.exports = function(_event) {
                 };
             });
             activity.actionBar.displayHomeAsUp = false;
-
             FlipViewCollection.addEventListener('flipped', function(_e) {
-                currentStation = FlipViewCollection.getViews()[_e.index].itemId.name;
-                activity.actionBar.logo = '/images/' + currentStation + '.png';
+                currentStationName = FlipViewCollection.getViews()[_e.index].itemId.name;
+                Ti.App.Properties.setInt('LAST_STATION_NDX',_e.index);
+                 Ti.App.Properties.setString('LAST_STATION',currentStationName);
+                activity.actionBar.logo = '/images/' + currentStationName + '.png';
                 var menuitem = _menuevent.menu.findItem('2');
-                if (currentStation == 'drw')
+                if (currentStationName == 'drw')
                     menuitem.setVisible(false);
                 else
                     menuitem.setVisible(true);
