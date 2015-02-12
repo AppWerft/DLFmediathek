@@ -25,7 +25,6 @@ module.exports = function(station) {
                 autor = autor.split(', ')[1] + ' ' + autor.split(', ')[0];
             } else
                 autor = autor.text;
-            console.log(item.station);
             dataItems.push({
                 properties : {
                     accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
