@@ -14,7 +14,6 @@ exports.schema = {
             color : '#777',
             font : {
                 fontSize : 24,
-                fontWeight : 'bold',
                 fontFamily : 'ScalaSansBold'
             },
         }
@@ -47,7 +46,6 @@ exports.schema = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
                 },
                 left : 0,
@@ -114,7 +112,6 @@ exports.podcastlist = {
                 top : 5,
                 font : {
                     fontSize : 20,
-                    fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
                 },
                 left : 0,
@@ -145,7 +142,6 @@ exports.podcastlist = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
                 },
             }
@@ -159,7 +155,6 @@ exports.podcastlist = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
                 },
             }
@@ -173,7 +168,6 @@ exports.podcastlist = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-
                     fontFamily : 'ScalaSans'
                 },
             }
@@ -254,7 +248,6 @@ exports.hoerkunst = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    fontWeight : 'bold',
                     fontFamily : 'ScalaSansBold'
                 },
             }
@@ -278,21 +271,20 @@ exports.podcast = {
             color : '#777',
             font : {
                 fontSize : 24,
-                fontWeight : 'bold',
                 fontFamily : 'ScalaSansBold'
             },
         }
     }, {
         type : 'Ti.UI.ImageView',
+        bindId : 'fav',
         properties : {
-            opacity : 0.2,
-            right : 3,
-            top : 3,
-            touchEnabled : false,
-            visible : false,
-            image : '/images/menu.png',
-            width : 15,
-            height : 15
+            opacity :0.5,
+            left : 10,
+            top : 30,
+            bubbleParent : false,
+            image : '/images/favadd.png',
+            width : 32,
+            height : 32
         }
     }, {
         type : 'Ti.UI.View',
@@ -347,36 +339,3 @@ exports.podcast = {
         }]
     }]
 };
-/*
- exports.podcastlist = {
- properties : {
- height : Ti.UI.SIZE,
- backgroundColor : 'white',
- },
- childTemplates : [{
- type : 'Ti.UI.ImageView',
- bindId : 'image',
- properties : {
- left : 0,
- touchEnabled : false,
- top : 0,
- width : 80,
- height : 80
- }
- }, {
- type : 'Ti.UI.Label',
- bindId : 'title',
- properties : {
- color : '#060',
- font : {
- fontSize : 24,
- fontWeight : 'bold',
- fontFamily : 'ScalaSansBold'
- },
- left : 100,
- width : Ti.UI.FILL,
- }
- }]
- };
-
- */

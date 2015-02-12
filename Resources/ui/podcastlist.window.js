@@ -23,7 +23,7 @@ module.exports = function(_args) {
     var items = [];
     require('controls/feed.adapter')({
         url : _args.url,
-        onload : function(_feeditems) {
+        done : function(_feeditems) {
             _feeditems.items.forEach(function(item) {
                 var res = /<img src="(.*?)" /gmi.exec(item.description);
                 var image = (res) ? res[1] : null;

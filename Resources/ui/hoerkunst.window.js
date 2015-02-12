@@ -59,3 +59,16 @@ module.exports = function(station) {
     });
     self.open();
 };
+
+function addEvent() {
+    var intent = Ti.Android.createIntent({
+        action : Ti.Android.ACTION_EDIT,
+        type : 'vnd.android.cursor.item/event'
+    });
+    intent.putExtra('title', 'My title');
+    intent.putExtra('description', 'My description');
+    intent.putExtra('eventLocation', 'My location');
+    intent.putExtra('beginTime', dateFromInMiliseconds);
+    intent.putExtra('endTime', dateToInMiliseconds);
+    Ti.Android.currentActivity.startActivity(intent);
+}
