@@ -36,22 +36,24 @@ exports.getAll = function(_args) {
     xhr.send();
 };
 exports.setAlarm = function(_item) {
-    var requestCode = parseInt(Ti.Utils.md5HexDigest(JSON.stringify(_item)).replace(/[\D]/g,'').substr(0,8));
-    var pubdate = Moment(_item.pubdate.split(' | ')[1].replace(' Uhr',''), 'DD.MM.YYYY HH:mm');
+    var requestCode = parseInt(Ti.Utils.md5HexDigest(JSON.stringify(_item)).replace(/[\D]/g, '').substr(0, 8));
+    var pubdate = Moment(_item.pubdate.split(' | ')[1].replace(' Uhr', ''), 'DD.MM.YYYY HH:mm');
     var alarm = {
         requestCode : requestCode, // must be INT to identify the alarm
         second : 0,
         minute : pubdate.minute(),
         hour : pubdate.hour(),
         day : pubdate.date(),
-        month :pubdate.month(),
+        month : pubdate.month(),
         year : pubdate.year(),
         contentTitle : 'Hörkunst im DeutschlandRadio',
         contentText : _item.title,
-       // playSound : true,
-       // sound : ''
+        playSound : true,
+        sound : Ti.Filesystem.getResRawDirectory() + 'hoerkunstjingle', //Set a custom sound to play
+
     };
-    console.log(pubdate);
-    console.log(alarm);
     alarmManager.addAlarmNotification(alarm);
+    Ti.UI.createNotification({
+        message : 'Erinnerung an „' + _item.title + '“ gesetzt.'
+    }).show();
 };
