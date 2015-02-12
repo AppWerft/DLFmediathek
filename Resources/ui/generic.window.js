@@ -17,8 +17,9 @@ module.exports = function(_args) {
         if (activity) {
             activity.onCreateOptionsMenu = function() {
                 activity.actionBar.displayHomeAsUp = true;
+                if (_args.station)
                 activity.actionBar.logo = '/images/' + _args.station + '.png';
-               
+
             };
             activity.actionBar.onHomeIconItemSelected = function() {
                 self.close();

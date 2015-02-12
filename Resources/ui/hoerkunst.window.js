@@ -1,5 +1,7 @@
 var Model = require('model/stations'),
-    Moment = require('vendor/moment');
+    Moment = require('vendor/moment'),
+    Hoerkunst =require('controls/hoerkunst.adapter'),
+    alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
 module.exports = function(station) {
     station = 'drk';
@@ -18,7 +20,7 @@ module.exports = function(station) {
         sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
-    require('controls/hoerkunst.adapter')({
+    Hoerkunst.getAll({
         station : station,
         done : function(_items) {
             var items = [];
@@ -31,6 +33,10 @@ module.exports = function(station) {
                     },
                     image : {
                         image : item.image
+                    },
+                    alarm : {
+                        image : '/images/alarm.png',
+                        opacity : 0.4
                     },
                     title : {
                         text : item.title
@@ -52,10 +58,16 @@ module.exports = function(station) {
         }
     });
     self.list.addEventListener('itemclick', function(_e) {
-        var win = require('ui/hoerkunstdetail.window')({
-            item : JSON.parse(_e.itemId),
-            station : station
-        }).open();
+        if (_e.bindId && _e.bindId == 'alarm') {
+            var item = _e.section.getItemAt(_e.itemIndex);
+            console.log(item);
+            Hoerkunst.setAlarm(JSON.parse(item.properties.itemId));
+            _e.section.updateItemAt(_e.itemIndex, item);
+        } else
+            var win = require('ui/hoerkunstdetail.window')({
+                item : JSON.parse(_e.itemId),
+                station : station
+            }).open();
     });
     self.open();
 };

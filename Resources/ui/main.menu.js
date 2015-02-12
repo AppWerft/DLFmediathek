@@ -63,7 +63,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_ohr,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
-                 require('ui/hoerkunst.window')(currentStationName);
+                require('ui/hoerkunst.window')(currentStationName);
             });
 
             _menuevent.menu.add({
@@ -74,7 +74,14 @@ module.exports = function(_event) {
             }).addEventListener("click", function(_e) {
                 require('ui/podcasts.window')(currentStationName);
             });
-
+            _menuevent.menu.add({
+                title : 'Meine Vormerkliste',
+                itemId : '5',
+                icon : Ti.App.Android.R.drawable.ic_action_fav,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+            }).addEventListener("click", function(_e) {
+                require('ui/favs.window')().open();
+            });
             // end of click handling
 
             /* Handling of PlayIcon*/

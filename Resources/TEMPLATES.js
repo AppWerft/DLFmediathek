@@ -174,6 +174,7 @@ exports.podcastlist = {
         }]
     }]
 };
+
 exports.hoerkunst = {
     properties : {
         height : Ti.UI.SIZE,
@@ -189,6 +190,16 @@ exports.hoerkunst = {
             touchEnabled : false,
             width : 120,
             height : 90
+        }
+    }, {
+        type : 'Ti.UI.ImageView',
+        bindId : 'alarm',
+        properties : {
+            left : 5,
+            top : 100,
+            opacity : 0.9,
+            width : 40,
+            height : 40
         }
     }, {
         type : 'Ti.UI.View',
@@ -255,6 +266,7 @@ exports.hoerkunst = {
     }]
 };
 
+/************/
 exports.podcast = {
     properties : {
         height : Ti.UI.SIZE,
@@ -278,10 +290,10 @@ exports.podcast = {
         type : 'Ti.UI.ImageView',
         bindId : 'fav',
         properties : {
-            opacity :0.5,
+            opacity : 0.5,
             left : 10,
-            top : 30,
-            bubbleParent : false,
+            top : 32,
+            bubbleParent : true,
             image : '/images/favadd.png',
             width : 32,
             height : 32
@@ -301,7 +313,7 @@ exports.podcast = {
                 color : '#060',
                 top : 5,
                 font : {
-                    fontSize : 22,
+                    fontSize : 20,
                     fontFamily : 'ScalaSansBold'
                 },
                 left : 0,
@@ -335,6 +347,104 @@ exports.podcast = {
                     fontFamily : 'ScalaSans'
                 },
                 color : '#333'
+            }
+        }]
+    }]
+};
+
+exports.favorite = {
+    properties : {
+        height : Ti.UI.SIZE,
+        backgroundColor : 'white',
+        itemId : ''
+    },
+    childTemplates : [{
+        type : 'Ti.UI.ImageView',
+        bindId : 'logo',
+        properties : {
+            opacity : 1,
+            left : 0,
+            top : 0,
+            bubbleParent : true,
+            image : '',
+            width : 60,
+            height : 60
+        }
+    }, {
+        type : 'Ti.UI.ImageView',
+        bindId : 'trash',
+        properties : {
+            opacity : 0.4,
+            left : 0,
+            top : 70,
+            bubbleParent : true,
+            image : '',
+            width : 50,
+            height : 50
+        }
+    }, {
+        type : 'Ti.UI.View',
+        properties : {
+            width : Ti.UI.FILL,
+            layout : 'vertical',
+            left : 70,
+            right : 25
+        },
+        childTemplates : [{
+            type : 'Ti.UI.Label',
+            bindId : 'subtitle',
+            properties : {
+                color : '#060',
+                top : 5,
+                font : {
+                    fontSize : 22,
+                    fontFamily : 'ScalaSansBold'
+                },
+                left : 0,
+                width : Ti.UI.FILL,
+            }
+
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'title',
+            properties : {
+                left : 0,
+                top : 0,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 18,
+                    fontFamily : 'ScalaSansBold'
+                },
+                color : '#555'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'autor',
+            properties : {
+                left : 0,
+                top : 0,
+                bottom : 10,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 12,
+                    fontFamily : 'ScalaSans'
+                },
+                color : '#333'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'pubdate',
+            properties : {
+                left : 0,
+                touchEnabled : false,
+                top : 0,
+                color : '#777',
+                font : {
+                    fontSize : 14,
+                    fontFamily : 'ScalaSans'
+                },
             }
         }]
     }]

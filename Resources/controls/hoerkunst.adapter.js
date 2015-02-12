@@ -1,8 +1,14 @@
-var Moment = require('vendor/moment');
-var XMLTools = require('vendor/XMLTools');
-var Model = require('model/stations');
+var Moment = require('vendor/moment'),
+    XMLTools = require('vendor/XMLTools'),
+    Model = require('model/stations'),
+    alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 // http://jsfiddle.net/wkk95aov/
-module.exports = function(_args) {
+
+//http://www.deutschlandradiokultur.de/hoerkunst.1656.de.rss
+exports.getAll = function(_args) {
+    if (Ti.App.Properties.hasProperty('HOERKUNST')) {
+        _args.done(JSON.parse(Ti.App.Properties.getString('HOERKUNST')));
+    }
     var xhr = Ti.Network.createHTTPClient({
         onload : function() {
             var page = this.responseText.replace(/\n/mg, ' '),
@@ -19,35 +25,32 @@ module.exports = function(_args) {
                     subtitle : (header.span) ? header.span.text : null,
                     description : article[1].p.text,
                     image : article[0].a.img.src,
-                    pubdate : article[1].p.a.text.replace(/[\s]{3,}/,' ')
+                    pubdate : article[1].p.a.text.replace(/[\s]{3,}/, ' ')
                 });
-
             };
+            Ti.App.Properties.setString('HOERKUNST', JSON.stringify(items));
             _args.done(items);
         }
     });
     xhr.open('GET', Model[_args.station].hoerkunst);
     xhr.send();
 };
-
-var _1 = {
-    "h3" : {
-        "a" : {
-            "span" : {
-                "text" : "Familienleben",
-                "class" : "drk-overline"
-            },
-            "text" : "Mein privates Glück",
-            "href" : "familienleben-mein-privates-glueck.964.de.html?dram:article_id=305228"
-        }
-    },
-    "p" : {
-        "text" : "Es ist ein verhängnisvoller Tag, der Tag, an dem Georgs Schwester Johanna allein in die Ferien nach Würzburg fährt und sein Onkel Adam unerwartet zu Besuch kommt. ",
-        "a" : {
-            "text" : "Hörspiel |                   11.02.2015 21:30 Uhr",
-            "href" : "familienleben-mein-privates-glueck.964.de.html?dram:article_id=305228",
-            "class" : "drk-sendestrecke"
-        }
-    },
-    "class" : "drk-small"
+exports.setAlarm = function(_item) {
+    var requestCode = parseInt(Ti.Utils.md5HexDigest(JSON.stringify(_item)));
+    var date = Moment(_item.pubdate.split(' | ')[1], 'DD.MM.YYYY HH:mm');
+    var alarm = {
+        requestCode : requestCode, // must be INT to identify the alarm
+        second : 0,
+        minute : date.minute(),
+        hour : date.hour,
+        day : date.date,
+        month :date.month,
+        year : date.year,
+        contentTitle : 'Hörkunst im DeutschlandRadio',
+        contentText : _item.title,
+        playSound : true,
+        sound : ''
+    };
+    console.log(alarm);
+    alarmManager.addAlarmNotification(alarm);
 };

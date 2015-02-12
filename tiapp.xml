@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
     <id>de.appwerft.dlrmediathek</id>
-    <name>DLRmediathek</name>
+    <name>DRadioüberall</name>
     <publisher>fuerst</publisher>
     <url>http://</url>
     <description>undefined</description>
@@ -37,9 +37,9 @@
             </dict>
         </plist>
     </ios>
-    <version>1.0.21</version>
+    <version>1.0.23</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="21" android:versionName="1.0.21">
+        <manifest android:versionCode="23" android:versionName="1.0.23">
             <application android:theme="@style/Theme.Dlrmediathek"/>
             <uses-sdk android:maxSdkVersion="21"
                 android:minSdkVersion="10" android:targetSdkVersion="14"/>
@@ -50,6 +50,7 @@
         <module platform="android">com.alcoapps.actionbarextras</module>
         <module platform="iphone">ti.sq</module>
         <module platform="android">ti.sq</module>
+        <module platform="android">bencoding.alarmmanager</module>
     </modules>
     <deployment-targets>
         <target device="android">true</target>

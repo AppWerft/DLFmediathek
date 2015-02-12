@@ -1,3 +1,4 @@
+var Favs = new (require('controls/favorites.adapter'))();
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
@@ -140,6 +141,10 @@ module.exports = function(_args) {
                         subtitle : {
                             text : item.title || '',
                         },
+                        fav : {
+                            image : Favs.isFav(item) ? '/images/fav.png' : '/images/favadd.png',
+                            opacity : Favs.isFav(item) ? 0.8 : 0.5
+                        },
                         autor : {
                             text : (autor != undefined) ? 'Autor: ' + autor : ''
                         }
@@ -160,7 +165,8 @@ module.exports = function(_args) {
                     self.list.animate({
                         top : 0,
                         duration : 600
-                    });return;
+                    });
+                    return;
                     self.list.setMarker({
                         sectionIndex : 0,
                         itemIndex : 0
@@ -174,10 +180,20 @@ module.exports = function(_args) {
         self.cron = setInterval(self.updatePodcasts, 60000);
     else
         clearInterval(self.cron);
+
     self.list.addEventListener('itemclick', function(_e) {
-        Ti.App.fireEvent('app:play', {
-            item : JSON.parse(_e.itemId)
-        });
+        if (_e.bindId && _e.bindId == 'fav') {
+            var item = _e.section.getItemAt(_e.itemIndex);
+            var isfav = Favs.toggleFav(JSON.parse(item.properties.itemId));
+            item.fav.image = isfav ? '/images/fav.png' : '/images/favadd.png';
+            item.fav.opacity = isfav ? 0.8 : 0.5;
+
+            _e.section.updateItemAt(_e.itemIndex, item);
+        } else {
+            Ti.App.fireEvent('app:play', {
+                item : JSON.parse(_e.itemId)
+            });
+        }
     });
     return self;
 };

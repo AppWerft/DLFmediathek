@@ -4,7 +4,6 @@ var Model = require('model/stations'),
 module.exports = function(args) {
     var parent = args.self,
         color = args.color;
-
     var self = Ti.UI.createView({
         width : 200,
         right : -200,
@@ -52,7 +51,7 @@ module.exports = function(args) {
                 if (!e.cancel) {
                     parent.date = Moment(e.value).startOf('day');
                     self.children[0].setText(Moment(parent.date).format('LL'));
-                    self.updatePodcasts();
+                    parent.updatePodcasts();
                 }
             }
         });
