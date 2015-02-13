@@ -1,6 +1,6 @@
 var Model = require('model/stations'),
     Moment = require('vendor/moment'),
-    Hoerkunst =require('controls/hoerkunst.adapter'),
+    klangkunst =require('controls/klangkunst.adapter'),
     alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
 module.exports = function(station) {
@@ -14,13 +14,13 @@ module.exports = function(station) {
     self.list = Ti.UI.createListView({
         backgroundColor : station,
         templates : {
-            'hoerkunst' : require('TEMPLATES').hoerkunst,
+            'klangkunst' : require('TEMPLATES').klangkunst,
         },
-        defaultItemTemplate : 'hoerkunst',
+        defaultItemTemplate : 'klangkunst',
         sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
-    Hoerkunst.getAll({
+    klangkunst.getAll({
         station : station,
         done : function(_items) {
             var items = [];
@@ -61,13 +61,14 @@ module.exports = function(station) {
         if (_e.bindId && _e.bindId == 'alarm') {
             var item = _e.section.getItemAt(_e.itemIndex);
             console.log(item);
-            Hoerkunst.setAlarm(JSON.parse(item.properties.itemId));
+            klangkunst.setAlarm(JSON.parse(item.properties.itemId));
             _e.section.updateItemAt(_e.itemIndex, item);
         } else
-            var win = require('ui/hoerkunstdetail.window')({
+            
+            var win = require('ui/klangkunstdetail.window')({
                 item : JSON.parse(_e.itemId),
                 station : station
-            }).open();
+            });
     });
     self.open();
 };

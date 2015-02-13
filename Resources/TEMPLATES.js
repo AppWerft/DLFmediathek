@@ -175,7 +175,7 @@ exports.podcastlist = {
     }]
 };
 
-exports.hoerkunst = {
+exports.klangkunst = {
     properties : {
         height : Ti.UI.SIZE,
         backgroundColor : 'white',

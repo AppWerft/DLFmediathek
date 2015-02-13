@@ -58,12 +58,12 @@ module.exports = function(_event) {
                 require('ui/dayplan.window')(currentStationName);
             });
             _menuevent.menu.add({
-                title : 'Hörkunst',
+                title : 'Klangkunst',
                 itemId : '4',
                 icon : Ti.App.Android.R.drawable.ic_action_ohr,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
-                require('ui/hoerkunst.window')(currentStationName);
+                require('ui/klangkunst.window')(currentStationName);
             });
 
             _menuevent.menu.add({

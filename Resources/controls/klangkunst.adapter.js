@@ -1,7 +1,7 @@
 var Moment = require('vendor/moment'),
     XMLTools = require('vendor/XMLTools'),
-    Model = require('model/stations'),
-    alarmManager = require('bencoding.alarmmanager').createAlarmManager();
+    Model = require('model/stations');
+
 // http://jsfiddle.net/wkk95aov/
 
 //http://www.deutschlandradiokultur.de/hoerkunst.1656.de.rss
@@ -37,6 +37,7 @@ exports.getAll = function(_args) {
 };
 
 exports.setAlarm = function(_item) {
+    var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
     var requestCode = parseInt(Ti.Utils.md5HexDigest(JSON.stringify(_item)).replace(/[\D]/g, '').substr(0, 8));
     var pubdate = Moment(_item.pubdate.split(' | ')[1].replace(' Uhr', ''), 'DD.MM.YYYY HH:mm');
     var alarm = {
@@ -50,8 +51,8 @@ exports.setAlarm = function(_item) {
         contentTitle : 'Hörkunst im DeutschlandRadio',
         contentText : _item.title,
         playSound : true,
-        sound : Ti.Filesystem.getResRawDirectory() + 'hoerkunstjingle', //Set a custom sound to play
-
+        icon : Ti.App.Android.R.drawable.appicon,
+        sound : Ti.Filesystem.getResRawDirectory() + 'alarm', //Set a custom sound to play
     };
     alarmManager.addAlarmNotification(alarm);
     Ti.UI.createNotification({
