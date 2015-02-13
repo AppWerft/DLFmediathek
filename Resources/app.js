@@ -5,12 +5,12 @@
     var sound = Ti.Media.createSound();
     require('bencoding.alarmmanager').enableLogging();
     var alarm = {
-        requestCode : 1, // must be INT to identify the alarm
+        requestCode : Math.round(Math.random()*1000), // must be INT to identify the alarm
         second : 0,
         minute : 2,
         contentTitle : 'DeutschlandRadio Mediathek',
         contentText : 'Testmeldung',
-        playSound : true,
+        playSound : false,
         vibrate : true,
         icon : Ti.App.Android.R.drawable.appicon,
         sound : Ti.Filesystem.getResRawDirectory() + 'alarm', //Set a custom sound to play
@@ -23,7 +23,6 @@
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
     window.addEventListener('open', require('ui/main.menu'));
-
     var Model = require('model/stations');
     var pages = [];
     for (var station in Model) {
