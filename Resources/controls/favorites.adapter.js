@@ -8,7 +8,6 @@ var Module = function() {
 
 Module.prototype = {
     addFav : function(_item) {
-        console.log(_item);
         var link = Ti.Database.open(DB);
         link.execute('insert into fav (pubdate,station,json) values (?,?,?)', _item.datetime, _item.station, JSON.stringify(_item));
         link.close();
@@ -16,7 +15,6 @@ Module.prototype = {
     killFav : function(_item) {
         var link = Ti.Database.open(DB);
         var sql = 'delete from fav where station="' + _item.station + '" and pubdate="' + _item.datetime + '"';
-        console.log(sql);
         link.execute(sql);
         link.close();
     },
@@ -42,7 +40,6 @@ Module.prototype = {
         return items;
     },
     isFav : function(_item) {
-        console.log(_item);
         var link = Ti.Database.open(DB);
         var rows = link.execute('select * from fav where station=? and pubdate=?', //
         _item.station, _item.datetime);

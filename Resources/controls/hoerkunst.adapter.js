@@ -35,6 +35,7 @@ exports.getAll = function(_args) {
     xhr.open('GET', Model[_args.station].hoerkunst);
     xhr.send();
 };
+
 exports.setAlarm = function(_item) {
     var requestCode = parseInt(Ti.Utils.md5HexDigest(JSON.stringify(_item)).replace(/[\D]/g, '').substr(0, 8));
     var pubdate = Moment(_item.pubdate.split(' | ')[1].replace(' Uhr', ''), 'DD.MM.YYYY HH:mm');

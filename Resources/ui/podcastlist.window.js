@@ -1,12 +1,14 @@
 var Model = require('model/stations'),
-    Moment = require('vendor/moment');
-    
+    Feed = new (require('controls/feed.adapter'))(),
+    Moment = require('vendor/moment'),
+    АктйонБар = require('com.alcoapps.actionbarextras');
+
 module.exports = function(_args) {
-    var self = require('ui/generic.window')({
-        title : 'Deutschlandradio',
-        subtitle : _args.title,
-        station : _args.station
+    var self = Ti.UI.createWindow({
+        fullscreen : true,
+        orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
+
     var Player = new (require('ui/audioplayer.widget'))();
     self.AudioPlayerView = Player.createView({
         color : _args.color
@@ -21,7 +23,7 @@ module.exports = function(_args) {
         sections : [Ti.UI.createListSection({})]
     });
     var items = [];
-    require('controls/feed.adapter')({
+    Feed.getFeed({
         url : _args.url,
         done : function(_feeditems) {
             _feeditems.items.forEach(function(item) {
@@ -50,7 +52,6 @@ module.exports = function(_args) {
                         itemId : JSON.stringify(item)
                     }
                 });
-
             });
             self.list.sections[0].setItems(items);
         }
@@ -63,13 +64,44 @@ module.exports = function(_args) {
         var sec = parseInt(item['itunes:duration'].split(':')[0]) * 60 + parseInt(item['itunes:duration'].split(':')[1]);
         Player.startPlayer({
             url : item.enclosure.url,
-            title: item.title,
+            title : item.title,
             sec : sec,
             duration : item['itunes:duration']
         });
     });
-    self.addEventListener('close',function(){
+    self.addEventListener('close', function() {
         Player.stopPlayer();
     });
-    self.open();
+    self.addEventListener('open', function(_event) {
+        АктйонБар.title = 'DeutschlandRadio';
+        АктйонБар.subtitle = _args.title;
+        АктйонБар.titleFont = "ScalaSansBold";
+        АктйонБар.subtitleColor = "#ccc";
+        var activity = _event.source.getActivity();
+        if (activity) {
+            console.log('activity');
+            activity.onCreateOptionsMenu = function(_menuevent) {
+                activity.actionBar.displayHomeAsUp = true;
+                if (_args.station)
+                    activity.actionBar.logo = '/images/' + _args.station + '.png';
+                // _menuevent.menu.clear();
+                _menuevent.menu.add({
+                    title : 'Kanal merken',
+                    itemId : '1',
+                    icon : Ti.App.Android.R.drawable.ic_action_favorite_add,
+                    showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+                }).addEventListener("click", function(_e) {
+                    var menuitem = _menuevent.menu.findItem('1');
+                    menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_faved); 
+                    Feed.toggleState(_args);
+                    console.log(_e);
+                });
+                activity.actionBar.onHomeIconItemSelected = function() {
+                    self.close();
+                };
+            };
+            activity.invalidateOptionsMenu();
+        }
+    });
+    return self;
 };

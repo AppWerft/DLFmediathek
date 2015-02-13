@@ -37,13 +37,16 @@
             </dict>
         </plist>
     </ios>
-    <version>1.0.24</version>
+    <version>1.0.25</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="24" android:versionName="1.0.24">
+        <manifest android:versionCode="25" android:versionName="1.0.25">
             <application android:theme="@style/Theme.Dlrmediathek"/>
             <uses-sdk android:maxSdkVersion="21"
                 android:minSdkVersion="10" android:targetSdkVersion="14"/>
         </manifest>
+         <services>
+        <service type="interval" url="feedtester.js"/>
+    </services>
     </android>
     <modules>
         <module platform="android">de.manumaticx.androidflip</module>

@@ -1,4 +1,5 @@
 var Model = require('model/stations'),
+    Feed = new (require('controls/feed.adapter'))(),
     Moment = require('vendor/moment');
 
 module.exports = function(station) {
@@ -84,7 +85,7 @@ module.exports = function(station) {
     });
     var items = [];
 
-    require('controls/feed.adapter')({
+    Feed.getFeed({
         url : model.rss,
         done : updateListFunc
     });

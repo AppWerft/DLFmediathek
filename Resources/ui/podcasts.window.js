@@ -41,7 +41,7 @@ module.exports = function(station) {
                     url : _e.source.itemId.url,
                     title : _e.source.itemId.title,
                     station : station
-                });
+                }).open();
         });
     }, 100);
     self.open();

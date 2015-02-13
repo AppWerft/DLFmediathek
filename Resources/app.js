@@ -11,7 +11,7 @@
     var Model = require('model/stations');
     var pages = [];
     for (var station in Model) {
-        pages.push(require('station.page')({
+        pages.push(require('ui/station.page')({
             name : station,
             color : Model[station].color,
             podcasts : Model[station].podcasts,
@@ -25,7 +25,7 @@
         orientation : FlipModule.ORIENTATION_HORIZONTAL,
         overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
         views : pages,
-        currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX',0),
+        currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
         height : Ti.UI.FILL
     });
     window.addEventListener('focus', function() {
@@ -33,5 +33,10 @@
     });
     window.add(window.FlipViewCollection);
     window.open();
-   
+
+    require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
+        service : 'de.appwerft.dlrmediathek.FeedtesterService',
+        minute : 20, //Set the number of minutes until the alarm should go off
+        interval : 'daily' // Create an interval service that runs each minute
+    });
 })();
