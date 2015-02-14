@@ -12,6 +12,7 @@
     <analytics>false</analytics>
     <guid>9274514d-9901-45d0-9362-56d690db93e6</guid>
     <property name="ti.ui.defaultunit" type="string">dp</property>
+    <property name="DATABASE" type="string">DB1</property>
     <ios>
         <plist>
             <dict>
@@ -37,9 +38,9 @@
             </dict>
         </plist>
     </ios>
-    <version>1.0.26</version>
+    <version>1.0.27</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="26" android:versionName="1.0.26">
+        <manifest android:versionCode="27" android:versionName="1.0.27">
         	<uses-permission android:name="android.permission.VIBRATE" />
             <application android:theme="@style/Theme.Dlrmediathek"/>
             <uses-sdk android:maxSdkVersion="21"

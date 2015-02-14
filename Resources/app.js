@@ -1,21 +1,6 @@
 (function() {
     //http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
-
-    var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
-    var sound = Ti.Media.createSound();
-    require('bencoding.alarmmanager').enableLogging();
-    var alarm = {
-        requestCode : Math.round(Math.random()*1000), // must be INT to identify the alarm
-        second : 0,
-        minute : 2,
-        contentTitle : 'DeutschlandRadio Mediathek',
-        contentText : 'Testmeldung',
-        playSound : false,
-        vibrate : true,
-        icon : Ti.App.Android.R.drawable.appicon,
-        sound : Ti.Filesystem.getResRawDirectory() + 'alarm', //Set a custom sound to play
-    };
-    alarmManager.addAlarmNotification(alarm);
+    Ti.Media.createSound();
     var window = Titanium.UI.createWindow({
         backgroundColor : '#fff',
         fullscreen : true,
@@ -32,7 +17,6 @@
             podcasts : Model[station].podcasts,
             live : Model[station].live,
             stream : Model[station].stream,
-
         }));
     };
     var FlipModule = require('de.manumaticx.androidflip');

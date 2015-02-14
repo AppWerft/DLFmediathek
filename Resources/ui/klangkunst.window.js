@@ -1,6 +1,6 @@
 var Model = require('model/stations'),
     Moment = require('vendor/moment'),
-    klangkunst =require('controls/klangkunst.adapter'),
+    Klangkunst = new (require('controls/klangkunst.adapter'))(),
     alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
 module.exports = function(station) {
@@ -20,7 +20,7 @@ module.exports = function(station) {
         sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
-    klangkunst.getAll({
+    Klangkunst.getAllEvents({
         station : station,
         done : function(_items) {
             var items = [];
@@ -28,15 +28,16 @@ module.exports = function(station) {
                 console.log(item);
                 items.push({
                     properties : {
-                        accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
-                        itemId : JSON.stringify(item)
+                        //accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
+                        itemId : JSON.stringify(item),
+                        requestCode : item.requestCode
                     },
                     image : {
                         image : item.image
                     },
                     alarm : {
-                        image : '/images/alarm.png',
-                        opacity : 0.4
+                        image : (item.isFaved) ? '/images/alarmfaved.png' : '/images/alarm.png',
+                        opacity : 0.5
                     },
                     title : {
                         text : item.title
@@ -60,11 +61,11 @@ module.exports = function(station) {
     self.list.addEventListener('itemclick', function(_e) {
         if (_e.bindId && _e.bindId == 'alarm') {
             var item = _e.section.getItemAt(_e.itemIndex);
-            console.log(item);
-            klangkunst.setAlarm(JSON.parse(item.properties.itemId));
+            var requestCode = item.properties.requestCode;
+            Klangkunst.toggleFav(JSON.parse(item.properties.itemId));
+            item.alarm.image = ( Klangkunst.isFav(requestCode)) ? '/images/alarmfaved.png' : '/images/alarm.png';
             _e.section.updateItemAt(_e.itemIndex, item);
         } else
-            
             var win = require('ui/klangkunstdetail.window')({
                 item : JSON.parse(_e.itemId),
                 station : station

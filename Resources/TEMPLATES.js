@@ -195,8 +195,8 @@ exports.klangkunst = {
         type : 'Ti.UI.ImageView',
         bindId : 'alarm',
         properties : {
-            left : 5,
-            top : 100,
+            left : 80,
+            top : 60,
             opacity : 0.9,
             width : 40,
             height : 40

@@ -1,4 +1,4 @@
-const DB = 'DB1';
+const DB = Ti.App.Properties.getString('DATABASE');
 
 var Module = function() {
     var link = Ti.Database.open(DB);
@@ -24,12 +24,11 @@ Module.prototype = {
         } else {
             this.addFav(_item);
         }  
-        
         return this.isFav(_item)  ;
     },
     getAllFavs : function() {
         var link = Ti.Database.open(DB);
-        var rows = link.execute('select * from fav');
+        var rows = link.execute('select * from fav order by pubdate desc');
         var items = [];
         while (rows.isValidRow()) {
             items.push(JSON.parse(rows.fieldByName('json')));
