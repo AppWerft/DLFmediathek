@@ -1,5 +1,5 @@
 var Model = require('model/stations'),
-    Favs = new (require('controls/favorites.adapter'))(),
+    Feeds = new (require('controls/feed.adapter'))(),
     Moment = require('vendor/moment');
 Moment.locale('de');
 
@@ -11,57 +11,57 @@ module.exports = function(station) {
     });
     self.list = Ti.UI.createListView({
         templates : {
-            'favorite' : require('TEMPLATES').favorite,
+            'mypodcasts' : require('TEMPLATES').mypodcasts,
         },
-        defaultItemTemplate : 'favorite',
+        defaultItemTemplate : 'mypodcasts',
         sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
     function updateList() {
         var dataItems = [];
-        Favs.getAllFavs().forEach(function(item) {
-            var autor = item.author;
-            if ( typeof autor == 'string') {
-                autor = autor.split(', ')[1] + ' ' + autor.split(', ')[0];
-            } else
-                autor = autor.text;
+        Feeds.getAllFavedFeeds().forEach(function(item) {
+            var PATTERN = {
+                "url" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation-komplette-sendung.416.de.podcast.xml",
+                "http_expires" : "Sat, 14 Feb 2015 21:20:08 GMT",
+                "http_lastmodified" : "Sat, 14 Feb 2015 21:19:08 GMT",
+                "http_etag" : "",
+                "http_contentlength" : 2578,
+                "title" : "Computer und Kommunikation (komplette Sendung) - Deutschlandfunk",
+                "description" : "Jeden Samstag das Neueste aus Computertechnik und Informationstechnologie. Beiträge, Reportagen und Interviews zu IT-Sicherheit, Informatik, Datenschutz, Smartphones, Cloud-Computing und IT-Politik. Die Trends der IT werden kompakt und informativ zusammengefasst.",
+                "category" : "Info",
+                "station" : "",
+                "pubDate" : "Sat, 14 Feb 2015 22:19:08 +0100",
+                "lastBuildDate" : "Sat, 14 Feb 2015 22:19:08 +0100",
+                "image" : "http://www.deutschlandfunk.de/media/files/d/d4a13a32cde15fff1f5bdbfc3688d14av1.jpg",
+                "faved" : 1
+            };
+            console.log(item);
             dataItems.push({
                 properties : {
                     accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
                     itemId : JSON.stringify(item),
                 },
-                pubdate : {
-                    text : Moment(item.datetime).format('LLLL')
+                lastbuilddate : {
+                    text : 'Letzter Beitrag:\n' + Moment(item.lastBuildDate).format('LLLL')
                 },
                 title : {
-                    text : item.sendung.text
+                    text : item.title
                 },
-                subtitle : {
-                    color : Model[item.station].color,
-                    text : item.title || '',
+                description : {
+                    text : item.description,
                 },
                 logo : {
-                    image : '/images/' + item.station + '.png',
+                    image : item.image
                 },
-                trash : {
-                    image : '/images/trash.png',
-                },
-                autor : {
-                    text : (autor != undefined) ? 'Autor: ' + autor : ''
-                }
+
             });
         });
         self.list.sections[0].setItems(dataItems);
     }
     updateList();
     self.list.addEventListener('itemclick', function(_e) {
-        if (_e.bindId && _e.bindId == 'trash') {
-            var item = _e.section.getItemAt(_e.itemIndex);
-            Favs.killFav(JSON.parse(item.properties.itemId));
-            updateList();
-        }
+        require('ui/podcastlist.window')(JSON.parse(_e.itemId)).open();
     });
     return self;
 };
-
 

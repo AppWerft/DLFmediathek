@@ -65,7 +65,6 @@ module.exports = function(_event) {
             }).addEventListener("click", function(_e) {
                 require('ui/klangkunst.window')(currentStationName);
             });
-
             _menuevent.menu.add({
                 title : 'Archiv und Podcasts',
                 itemId : '3',

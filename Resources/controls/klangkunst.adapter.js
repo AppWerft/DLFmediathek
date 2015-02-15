@@ -34,7 +34,6 @@ Module.prototype = {
                             description : article[1].p.text,
                             image : article[0].a.img.src,
                             pubdate : article[1].p.a.text.replace(/[\s]{3,}/, ' ')
-
                         };
                         item.requestCode = parseInt(Ti.Utils.md5HexDigest(JSON.stringify(item.pubdate)).replace(/[\D]/g, '').substr(0, 16));
                         item.isFaved = that.isFav(item.requestCode);
@@ -55,14 +54,10 @@ Module.prototype = {
         link.close();
         var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
         var pubdate = Moment(_item.pubdate.split(' | ')[1].replace(' Uhr', ''), 'DD.MM.YYYY HH:mm');
+        var seconds = pubdate.diff(Moment())/1000;
         var alarm = {
             requestCode : requestCode, // must be INT to identify the alarm
-            second : 0,
-            minute : pubdate.minute(),
-            hour : pubdate.hour(),
-            day : pubdate.date(),
-            month : pubdate.month(),
-            year : pubdate.year(),
+            second : Math.floor(seconds),
             contentTitle : 'Hörkunst im DeutschlandRadio',
             contentText : _item.title,
             playSound : true,
@@ -70,6 +65,7 @@ Module.prototype = {
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         };
         alarmManager.addAlarmNotification(alarm);
+        console.log(alarm);
         Ti.UI.createNotification({
             message : 'Erinnerung an „' + _item.title + '“ gesetzt.'
         }).show();

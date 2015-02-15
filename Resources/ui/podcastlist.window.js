@@ -43,10 +43,10 @@ module.exports = function(_args) {
                         color : _args.color
                     },
                     duration : {
-                        text : 'Dauer: ' + item['itunes:duration'],
+                        text : 'Dauer: ' + item.duration,
                     },
                     author : {
-                        text : 'Autor: ' + item['itunes:author'],
+                        text : 'Autor: ' + item.author,
                     },
                     properties : {
                         itemId : JSON.stringify(item)
@@ -61,12 +61,12 @@ module.exports = function(_args) {
     self.list.addEventListener('itemclick', function(_e) {
         var item = JSON.parse(_e.itemId);
         console.log(item);
-        var sec = parseInt(item['itunes:duration'].split(':')[0]) * 60 + parseInt(item['itunes:duration'].split(':')[1]);
+        var sec = parseInt(item.duration.split(':')[0]) * 60 + parseInt(item.duration.split(':')[1]);
         Player.startPlayer({
-            url : item.enclosure.url,
+            url : item.enclosure_url,
             title : item.title,
             sec : sec,
-            duration : item['itunes:duration']
+            duration : item.duration
         });
     });
     self.addEventListener('close', function() {
