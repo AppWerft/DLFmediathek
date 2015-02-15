@@ -196,7 +196,7 @@ exports.klangkunst = {
         bindId : 'alarm',
         properties : {
             left : 80,
-            top : 60,
+            top : 90,
             opacity : 0.9,
             width : 40,
             height : 40

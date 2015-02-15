@@ -88,13 +88,12 @@ module.exports = function(_args) {
                 _menuevent.menu.add({
                     title : 'Kanal merken',
                     itemId : '1',
-                    icon : Ti.App.Android.R.drawable.ic_action_favorite_add,
+                    icon : (Feed.isFaved(_args.url)) ? Ti.App.Android.R.drawable.ic_action_faved : Ti.App.Android.R.drawable.ic_action_favorite_add,
                     showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
                 }).addEventListener("click", function(_e) {
                     var menuitem = _menuevent.menu.findItem('1');
-                    menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_faved); 
-                    Feed.toggleState(_args);
-                    console.log(_e);
+                    Feed.toggleFaved(_args.url);
+                    menuitem.setIcon(Feed.isFaved(_args.url) ? Ti.App.Android.R.drawable.ic_action_faved : Ti.App.Android.R.drawable.ic_action_favorite_add);
                 });
                 activity.actionBar.onHomeIconItemSelected = function() {
                     self.close();

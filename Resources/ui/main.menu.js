@@ -67,7 +67,7 @@ module.exports = function(_event) {
             });
 
             _menuevent.menu.add({
-                title : 'Podcasts',
+                title : 'Archiv und Podcasts',
                 itemId : '3',
                 icon : Ti.App.Android.R.drawable.ic_action_feed,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
@@ -78,9 +78,17 @@ module.exports = function(_event) {
                 title : 'Meine Vormerkliste',
                 itemId : '5',
                 icon : Ti.App.Android.R.drawable.ic_action_fav,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
             }).addEventListener("click", function(_e) {
                 require('ui/favs.window')().open();
+            });
+            _menuevent.menu.add({
+                title : 'Meine Podcasts',
+                itemId : '6',
+                icon : Ti.App.Android.R.drawable.ic_action_fav,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+            }).addEventListener("click", function(_e) {
+               require('ui/mypodcasts.window')().open();
             });
             // end of click handling
 
