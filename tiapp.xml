@@ -38,9 +38,9 @@
             </dict>
         </plist>
     </ios>
-    <version>1.0.31</version>
+    <version>1.0.32</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="31" android:versionName="1.0.31">
+        <manifest android:versionCode="32" android:versionName="1.0.32">
         	<uses-permission android:name="android.permission.VIBRATE" />
             <application android:theme="@style/Theme.Dlrmediathek"/>
             <uses-sdk android:maxSdkVersion="21"

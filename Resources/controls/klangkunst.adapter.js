@@ -65,9 +65,7 @@ Module.prototype = {
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         };
         alarmManager.addAlarmNotification(alarm);
-        console.log(alarm);
-
-        alarmManager.addAlarmNotification({
+           alarmManager.addAlarmNotification({
             requestCode : 1, // must be INT to identify the alarm
             second : 30,
             contentTitle : 'Hörkunst im DeutschlandRadio',

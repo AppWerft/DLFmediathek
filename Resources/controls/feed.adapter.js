@@ -24,10 +24,11 @@ var Module = function() {
             interval : 'daily'
         });
     }
-    this.mirrorAllFeeds({
-        done : function() {
+    /*this.mirrorAllFeeds({
+        done : function(_args) {
+            
         }
-    });
+    });*/
     // from Service
     return this;
 };
@@ -35,31 +36,35 @@ var Module = function() {
 Module.prototype = {
     mirrorAllFeeds : function(_args) {
         var that = this;
+        var total = 0;
         var stations = ['dlf', 'drk', 'drw'];
         var ndx = 0;
         function loadfeeds() {
             var feeds = require('model/' + stations[ndx]);
-            console.log(feeds);
-            console.log('station='+stations[ndx]);
             function loadfeed() {
                 var feed = feeds.shift();
                 if (feed) {
+                    total++;
                     that.loadFeed({
                         url : feed.href,
                         done : loadfeed
                     });
                 } else {
-                    console.log(ndx + ' ' +stations.length);
+                    console.log(ndx + ' ' + stations.length);
+                    ndx++;
                     if (ndx < stations.length) {
-                        ndx++;
                         loadfeeds();
                     } else {
-                        _args.done && _args.done();
+                        _args.done && _args.done({
+                            total : total
+                        });
                     }
                 }
             }
+
             loadfeed();
         }
+
         loadfeeds();
     },
     getAllFavedFeeds : function() {
@@ -197,9 +202,7 @@ Module.prototype = {
             }
         });
         xhr.open('GET', _args.url);
-        console.log(_args.url);
         xhr.send();
-
     }
 };
 
