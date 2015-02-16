@@ -300,6 +300,7 @@ exports.podcast = {
         }
     }, {
         type : 'Ti.UI.View',
+        bindId :'playtrigger',
         properties : {
             width : Ti.UI.FILL,
             layout : 'vertical',

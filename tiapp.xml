@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
     <id>de.appwerft.dlrmediathek</id>
-    <name>DRadioüberall</name>
+    <name>DLR Mediathek</name>
     <publisher>fuerst</publisher>
     <url>http://</url>
     <description>undefined</description>
@@ -38,9 +38,9 @@
             </dict>
         </plist>
     </ios>
-    <version>1.0.30</version>
+    <version>1.0.31</version>
     <android xmlns:android="http://schemas.android.com/apk/res/android">
-        <manifest android:versionCode="30" android:versionName="1.0.30">
+        <manifest android:versionCode="31" android:versionName="1.0.31">
         	<uses-permission android:name="android.permission.VIBRATE" />
             <application android:theme="@style/Theme.Dlrmediathek"/>
             <uses-sdk android:maxSdkVersion="21"

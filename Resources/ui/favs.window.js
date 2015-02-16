@@ -17,6 +17,7 @@ module.exports = function(station) {
         sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
+    
     function updateList() {
         var dataItems = [];
         Favs.getAllFavs().forEach(function(item) {
@@ -53,7 +54,7 @@ module.exports = function(station) {
         });
         self.list.sections[0].setItems(dataItems);
     }
-    updateList();
+    setTimeout(updateList,500);
     self.list.addEventListener('itemclick', function(_e) {
         if (_e.bindId && _e.bindId == 'trash') {
             var item = _e.section.getItemAt(_e.itemIndex);

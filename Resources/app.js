@@ -37,31 +37,16 @@
         window.FlipViewCollection.peakNext(true);
     });
     window.add(window.FlipViewCollection);
-    Ti.Android.currentActivity.onPause = function() {
-        console.log('Info: activity goes in background');
+    window.addEventListener('focus', function() {
+        Ti.App.fireEvent('app:state', {
+            state : true
+        });
+    });
+    window.addEventListener('blur', function() {
         Ti.App.fireEvent('app:state', {
             state : false
         });
-    };
-    Ti.Android.currentActivity.onStart = function() {
-        console.log('Info: activity goes in foreground by onStart');
-        Ti.App.fireEvent('app:state', {
-            state : true
-        });
-    };
-    Ti.Android.currentActivity.onRestart = function() {
-        console.log('Info: activity goes in foreground by onRestart');
-        Ti.App.fireEvent('app:state', {
-            state : true
-        });
-    };
-    Ti.Android.currentActivity.onResume = function() {
-        console.log('Info: activity goes in foreground by on Resume');
-        Ti.App.fireEvent('app:state', {
-            state : true
-        });
-    };
-
+    });
     window.open();
     require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
         service : 'de.appwerft.dlrmediathek.FeedtesterService',

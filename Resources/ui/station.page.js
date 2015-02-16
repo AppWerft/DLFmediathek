@@ -113,7 +113,6 @@ module.exports = function(_args) {
         self.list.setTop(7);
         self.containerforcurrenttext.setTop(-HEIGHT_OF_CURRENTBOX);
     };
-
     self.updatePodcasts = function() {
         if (activityworking == false) {
             console.log('Warning: activity is sleeping');
@@ -138,6 +137,9 @@ module.exports = function(_args) {
                         },
                         start : {
                             text : item.datetime.split(' ')[1].substr(0, 5)
+                        },
+                        playtrigger : {
+                            bubbleParent : false
                         },
                         title : {
                             color : _args.color,
@@ -182,24 +184,23 @@ module.exports = function(_args) {
     };
     self.updatePodcasts();
     if (self.date.isSame(Moment().startOf('day')))
-        self.cron = setInterval(self.updatePodcasts, 6000);
+        self.cron = setInterval(self.updatePodcasts, 30000);
     else
         clearInterval(self.cron);
-
     self.list.addEventListener('itemclick', function(_e) {
         if (_e.bindId && _e.bindId == 'fav') {
             var item = _e.section.getItemAt(_e.itemIndex);
             var isfav = Favs.toggleFav(JSON.parse(item.properties.itemId));
             item.fav.image = isfav ? '/images/fav.png' : '/images/favadd.png';
             item.fav.opacity = isfav ? 0.8 : 0.5;
-
             _e.section.updateItemAt(_e.itemIndex, item);
-        } else {
+        } else if (_e.bindId && _e.bindId == 'playtrigger') {
             Ti.App.fireEvent('app:play', {
                 item : JSON.parse(_e.itemId)
             });
         }
     });
+   
     Ti.App.addEventListener('app:state', function(_payload) {
         activityworking = _payload.state;
     });
