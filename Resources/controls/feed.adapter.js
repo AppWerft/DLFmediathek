@@ -17,8 +17,8 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-    if (!Ti.App.Properties.hasProperty('SERVICE_STARTED2')) {
-        Ti.App.Properties.setString('SERVICE_STARTED2', '1');
+    if (!Ti.App.Properties.hasProperty('SERVICE_SUBSCRIBED')) {
+        Ti.App.Properties.setString('SERVICE_SUBSCRIBED', '1');
         alarmManager.addAlarmNotification({
             requestCode : 2, // must be INT to identify the alarm
             second : 1,
@@ -110,7 +110,7 @@ Module.prototype = {
     // get feed
     getFeed : function(_args) {
         var link = Ti.Database.open(DB);
-        var rows = link.execute('SELECT * FROM items WHERE channelurl=?', _args.url);
+        var rows = link.execute('SELECT * FROM items WHERE channelurl=? ORDER BY pubDate DESC', _args.url);
         var items = [];
         if (rows.getRowCount() > 0) {
             while (rows.isValidRow()) {

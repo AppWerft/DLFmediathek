@@ -4,15 +4,6 @@ var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
 var mirrorPodcasts = function() {
     var Podcast = new (require('controls/feed.adapter'))();
-    alarmManager.addAlarmNotification({
-        requestCode : 1, 
-        second : 1,
-        contentTitle : 'DLR Mediathek',
-        contentText : 'Podcasts-Synchronisierung',
-        playSound : true,
-        icon : Ti.App.Android.R.drawable.appicon,
-        sound : Ti.Filesystem.getResRawDirectory() + 'kkj', 
-    });
     Podcast.mirrorAllFeeds({
         done : function(_args) {
             alarmManager.addAlarmNotification({
