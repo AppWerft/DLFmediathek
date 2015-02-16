@@ -33,6 +33,10 @@ module.exports = function(station) {
     });
     self.add(self.list);
     var dataItems = [];
+    
+    function startPlayer(){
+        var url = JSON.parse(dataItems[0].properties.itemId);
+    }
     function updateList() {
 
         Favs.getAllFavs().forEach(function(item) {

@@ -34,16 +34,11 @@ var Module = function() {
             interval : 1000 * 3600 * 3
         });
     }
-    /*this.mirrorAllFeeds({
-    done : function(_args) {
-
-    }
-    });*/
-    // from Service
     return this;
 };
 
 Module.prototype = {
+    /* will called from service */
     mirrorAllFeeds : function(_args) {
         var that = this;
         var total = 0;
