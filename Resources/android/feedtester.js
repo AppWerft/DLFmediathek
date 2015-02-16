@@ -6,5 +6,6 @@ Ti.Android.stopService(serviceIntent);
 
 
 function mirrorPodcasts() {
-    
+    var Podcast = new (require('controls/feed.adapter'))();
+    Podcast.mirrorAllFeeds();
 }

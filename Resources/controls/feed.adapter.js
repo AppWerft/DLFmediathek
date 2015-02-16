@@ -16,13 +16,21 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-   //this.loadAllFeeds();
+    if (!Ti.App.Properties.hasProperty('SERVICE_STARTED')) {
+        Ti.App.Properties.setINT('SERVICE_STARTED', 1);
+        require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
+            service : 'de.appwerft.dlrmediathek.FeedtesterService',
+            minute : 20, //Set the number of minutes until the alarm should go off
+            interval : 'daily'
+        });
+    }
+   //this.mirrorAllFeeds();  // from Service
     return this;
 };
 
 Module.prototype = {
 
-    loadAllFeeds : function() {
+    mirrorAllFeeds : function() {
         var that = this;
         var stationfeeds = {
            dlf : require('model/dlf'),
