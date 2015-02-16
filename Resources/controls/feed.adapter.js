@@ -24,17 +24,18 @@ var Module = function() {
             interval : 'daily'
         });
     }
-   this.mirrorAllFeeds();  // from Service
+    this.mirrorAllFeeds();
+    // from Service
     return this;
 };
 
 Module.prototype = {
-
     mirrorAllFeeds : function(_args) {
         var that = this;
-        var stations = ['dlf','drk','drw'];
-        stations.forEach(function(station) {
-            var feeds =  require('model/'+ station);
+        var stations = ['dlf', 'drk', 'drw'];
+        var ndx = 0;
+        function loadfeeds() {
+            var feeds = require('model/' + _station);
             function loadfeed() {
                 var feed = feeds.pop();
                 if (feed) {
@@ -43,11 +44,17 @@ Module.prototype = {
                         done : loadfeed
                     });
                 } else {
-                    // here jump to next station;
-                }    
+                    if (ndx < stations.lenght) {
+                        ndx++;
+                        loadfeeds();
+                    } else {
+                        _args.done && _args.done();
+                    }
+                }
+                loadfeed();
             }
-            loadfeed();
-        });
+        }
+        loadfeeds();
     },
     getAllFavedFeeds : function() {
         var link = Ti.Database.open(DB);
