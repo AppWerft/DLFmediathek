@@ -30,12 +30,12 @@ var Module = function() {
 
 Module.prototype = {
 
-    mirrorAllFeeds : function() {
+    mirrorAllFeeds : function(_args) {
         var that = this;
         var stationfeeds = {
            dlf : require('model/dlf'),
-         // drk : require('model/drk'),
-         // drw : require('model/drw')
+           drk : require('model/drk'),
+           drw : require('model/drw')
         };
         for (var station in stationfeeds) {
             var feeds = stationfeeds[station];

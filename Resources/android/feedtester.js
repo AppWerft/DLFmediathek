@@ -2,10 +2,12 @@
 
 var serviceIntent = Ti.Android.currentService.getIntent(); 
 mirrorPodcasts();
-Ti.Android.stopService(serviceIntent);
+
 
 
 function mirrorPodcasts() {
     var Podcast = new (require('controls/feed.adapter'))();
-    Podcast.mirrorAllFeeds();
+    Podcast.mirrorAllFeeds({done:function(){
+        Ti.Android.stopService(serviceIntent);
+    }});
 }
