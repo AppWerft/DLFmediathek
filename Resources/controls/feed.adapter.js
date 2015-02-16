@@ -17,7 +17,7 @@ var Module = function() {
         link.close();
     }
     if (!Ti.App.Properties.hasProperty('SERVICE_STARTED')) {
-        Ti.App.Properties.setINT('SERVICE_STARTED', 1);
+        Ti.App.Properties.setString('SERVICE_STARTED', '1');
         require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
             service : 'de.appwerft.dlrmediathek.FeedtesterService',
             minute : 20, //Set the number of minutes until the alarm should go off
@@ -41,11 +41,14 @@ Module.prototype = {
             var feeds = stationfeeds[station];
             function loadfeed() {
                 var feed = feeds.pop();
-                if (feed)
+                if (feed) {
                     that.loadFeed({
                         url : feed.href,
                         done : loadfeed
                     });
+                } else {
+                    console.log('Info: no feed');
+                }    
             }
             loadfeed();
         }

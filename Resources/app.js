@@ -48,13 +48,6 @@
         });
     });
     window.open();
-    if (!Ti.App.Properties.hasProperty('SERVICE_STARTED')) {
-        Ti.App.Properties.setINT('SERVICE_STARTED',1);
-        require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
-            service : 'de.appwerft.dlrmediathek.FeedtesterService',
-            minute : 20, //Set the number of minutes until the alarm should go off
-            interval : 'daily' // Create an interval service that runs each minute
-        });
-    }
+    
 
 })();
