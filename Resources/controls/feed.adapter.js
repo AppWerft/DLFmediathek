@@ -24,7 +24,7 @@ var Module = function() {
             interval : 'daily'
         });
     }
-   //this.mirrorAllFeeds();  // from Service
+   this.mirrorAllFeeds();  // from Service
     return this;
 };
 
@@ -32,13 +32,9 @@ Module.prototype = {
 
     mirrorAllFeeds : function(_args) {
         var that = this;
-        var stationfeeds = {
-           dlf : require('model/dlf'),
-           drk : require('model/drk'),
-           drw : require('model/drw')
-        };
-        for (var station in stationfeeds) {
-            var feeds = stationfeeds[station];
+        var stations = ['dlf','drk','drw'];
+        stations.forEach(function(station) {
+            var feeds =  require('model/'+ station);
             function loadfeed() {
                 var feed = feeds.pop();
                 if (feed) {
@@ -51,7 +47,7 @@ Module.prototype = {
                 }    
             }
             loadfeed();
-        }
+        });
     },
     getAllFavedFeeds : function() {
         var link = Ti.Database.open(DB);
