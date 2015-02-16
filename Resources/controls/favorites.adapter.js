@@ -1,3 +1,7 @@
+/*
+ This model is for persisting of items in timeline (mediathek)  
+ * */
+
 const DB = Ti.App.Properties.getString('DATABASE');
 
 var Module = function() {

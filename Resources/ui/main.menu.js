@@ -18,6 +18,12 @@ module.exports = function(_event) {
     //});
     var activity = _event.source.getActivity();
     if (activity) {
+       // console.log(activity);
+        if (Ti.Android) {
+            console.log('Setting of activity handler');
+            
+        }
+
         var FlipViewCollection = _event.source.FlipViewCollection;
         activity.onCreateOptionsMenu = function(_menuevent) {
 
@@ -87,7 +93,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_fav,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
             }).addEventListener("click", function(_e) {
-               require('ui/mypodcasts.window')().open();
+                require('ui/mypodcasts.window')().open();
             });
             // end of click handling
 

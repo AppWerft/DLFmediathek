@@ -1,6 +1,14 @@
 (function() {
     //http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
     Ti.Media.createSound();
+
+    var notification = Ti.Android.createNotification({
+        contentIntent : Ti.Android.createPendingIntent(Ti.Android.currentActivity.getIntent()),
+        contentTitle : "Test",
+        contentText : "Test",
+        tickerText : "Test"
+    });
+
     var window = Titanium.UI.createWindow({
         backgroundColor : '#fff',
         fullscreen : true,
@@ -31,6 +39,31 @@
         window.FlipViewCollection.peakNext(true);
     });
     window.add(window.FlipViewCollection);
+    Ti.Android.currentActivity.onPause = function() {
+        console.log('Info: activity goes in background');
+        Ti.App.fireEvent('app:state', {
+            state : false
+        });
+    };
+    Ti.Android.currentActivity.onStart = function() {
+        console.log('Info: activity goes in foreground by onStart');
+        Ti.App.fireEvent('app:state', {
+            state : true
+        });
+    };
+    Ti.Android.currentActivity.onRestart = function() {
+        console.log('Info: activity goes in foreground by onRestart');
+        Ti.App.fireEvent('app:state', {
+            state : true
+        });
+    };
+    Ti.Android.currentActivity.onResume = function() {
+        console.log('Info: activity goes in foreground by on Resume');
+        Ti.App.fireEvent('app:state', {
+            state : true
+        });
+    };
+
     window.open();
 
     require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
@@ -38,4 +71,5 @@
         minute : 20, //Set the number of minutes until the alarm should go off
         interval : 'daily' // Create an interval service that runs each minute
     });
+
 })();

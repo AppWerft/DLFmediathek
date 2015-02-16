@@ -21,7 +21,7 @@ Module.prototype = {
                     pattern = new RegExp('<article class="drk\-articlesmall">(.*?)</article>', 'gmi'),
                     match = null,
                     items = [];
-              
+
                 while (( match = pattern.exec(page)) != null) {
                     // dirty trick : pseudo xml for using the xml lib
                     var xml = '<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><article>' + match[1] + '</article></rss>';
@@ -54,21 +54,28 @@ Module.prototype = {
         link.close();
         var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
         var pubdate = Moment(_item.pubdate.split(' | ')[1].replace(' Uhr', ''), 'DD.MM.YYYY HH:mm');
-        var seconds = pubdate.diff(Moment())/1000;
+        var seconds = pubdate.diff(Moment()) / 1000-600;
         var alarm = {
             requestCode : requestCode, // must be INT to identify the alarm
             second : Math.floor(seconds),
-            contentTitle : 'Hörkunst im DeutschlandRadio',
-            contentText : _item.title,
+            contentTitle : _item.title,
+            contentText : 'beginnt in 10 Minuten',
             playSound : true,
             icon : Ti.App.Android.R.drawable.appicon,
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         };
         alarmManager.addAlarmNotification(alarm);
         console.log(alarm);
-        Ti.UI.createNotification({
-            message : 'Erinnerung an „' + _item.title + '“ gesetzt.'
-        }).show();
+
+        alarmManager.addAlarmNotification({
+            requestCode : 1, // must be INT to identify the alarm
+            second : 30,
+            contentTitle : 'Hörkunst im DeutschlandRadio',
+            contentText : _item.title + ' vorgemerkt',
+            playSound : true,
+            icon : Ti.App.Android.R.drawable.appicon,
+            sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
+        });
     },
     killFav : function(_item) {
         var link = Ti.Database.open(DB);

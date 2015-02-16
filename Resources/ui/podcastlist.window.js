@@ -43,10 +43,14 @@ module.exports = function(_args) {
                         color : _args.color
                     },
                     duration : {
-                        text : 'Dauer: ' + item.duration,
+                        text : (item.duration) ? 'Dauer: ' + item.duration : '',
+                        height : (item.duration) ? Ti.UI.SIZE : 0,
+
                     },
                     author : {
-                        text : 'Autor: ' + item.author,
+                        text : (item.author) ? 'Autor: ' + item.author : 0,
+                        height : (item.author) ? Ti.UI.SIZE : 0,
+
                     },
                     properties : {
                         itemId : JSON.stringify(item)

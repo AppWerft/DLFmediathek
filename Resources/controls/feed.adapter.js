@@ -16,7 +16,7 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-    //this.loadAllFeeds();
+   //this.loadAllFeeds();
     return this;
 };
 
@@ -25,12 +25,11 @@ Module.prototype = {
     loadAllFeeds : function() {
         var that = this;
         var stationfeeds = {
-            dlf : require('model/dlf'),
-      //      drk : require('model/drk'),
-     //       drw : require('model/drw')
+           dlf : require('model/dlf'),
+         // drk : require('model/drk'),
+         // drw : require('model/drw')
         };
         for (var station in stationfeeds) {
-            //  if (stationfeeds[station].hasOwnProperty()) {
             var feeds = stationfeeds[station];
             function loadfeed() {
                 var feed = feeds.pop();
@@ -40,10 +39,7 @@ Module.prototype = {
                         done : loadfeed
                     });
             }
-
             loadfeed();
-
-            //    }
         }
     },
     getAllFavedFeeds : function() {

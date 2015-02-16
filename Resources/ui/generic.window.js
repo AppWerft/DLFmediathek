@@ -15,11 +15,17 @@ module.exports = function(_args) {
         АктйонБар.subtitleColor = "#ccc";
         var activity = _event.source.getActivity();
         if (activity) {
-            activity.onCreateOptionsMenu = function() {
+            activity.onCreateOptionsMenu = function(_menuevent) {
                 activity.actionBar.displayHomeAsUp = true;
                 if (_args.station)
-                activity.actionBar.logo = '/images/' + _args.station + '.png';
+                    activity.actionBar.logo = '/images/' + _args.station + '.png';
             };
+            if (_args.menuitems) {
+                _menuevent.menu.clear();
+                _args.menuitems.forEach(function(menuitem) {
+                    _menuevent.menu.add(menuitem);
+                });
+            }
             activity.actionBar.onHomeIconItemSelected = function() {
                 self.close();
             };

@@ -5,6 +5,7 @@ Moment.locale('de');
 const HEIGHT_OF_CURRENTBOX = 150;
 
 module.exports = function(_args) {
+    var activityworking = true;
     var self = Ti.UI.createView({
         backgroundColor : '#fff',
         date : Moment().startOf('day'),
@@ -114,6 +115,10 @@ module.exports = function(_args) {
     };
 
     self.updatePodcasts = function() {
+        if (activityworking == false) {
+            console.log('Warning: activity is sleeping');
+            return;
+        }
         require('controls/rpc.adapter')({
             url : _args.podcasts,
             nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
@@ -177,7 +182,7 @@ module.exports = function(_args) {
     };
     self.updatePodcasts();
     if (self.date.isSame(Moment().startOf('day')))
-        self.cron = setInterval(self.updatePodcasts, 60000);
+        self.cron = setInterval(self.updatePodcasts, 6000);
     else
         clearInterval(self.cron);
 
@@ -195,5 +200,10 @@ module.exports = function(_args) {
             });
         }
     });
+    Ti.App.addEventListener('app:state', function(_payload) {
+        console.log(_payload);
+        activityworking = _payload.state;
+    });
+
     return self;
 };
