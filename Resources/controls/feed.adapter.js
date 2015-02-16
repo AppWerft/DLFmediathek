@@ -24,7 +24,10 @@ var Module = function() {
             interval : 'daily'
         });
     }
-    this.mirrorAllFeeds();
+    this.mirrorAllFeeds({
+        done : function() {
+        }
+    });
     // from Service
     return this;
 };
@@ -35,24 +38,27 @@ Module.prototype = {
         var stations = ['dlf', 'drk', 'drw'];
         var ndx = 0;
         function loadfeeds() {
-            var feeds = require('model/' + _station);
+            var feeds = require('model/' + stations[ndx]);
+            console.log(feeds);
+            console.log('station='+stations[ndx]);
             function loadfeed() {
-                var feed = feeds.pop();
+                var feed = feeds.shift();
                 if (feed) {
                     that.loadFeed({
                         url : feed.href,
                         done : loadfeed
                     });
                 } else {
-                    if (ndx < stations.lenght) {
+                    console.log(ndx + ' ' +stations.length);
+                    if (ndx < stations.length) {
                         ndx++;
                         loadfeeds();
                     } else {
                         _args.done && _args.done();
                     }
                 }
-                loadfeed();
             }
+            loadfeed();
         }
         loadfeeds();
     },
