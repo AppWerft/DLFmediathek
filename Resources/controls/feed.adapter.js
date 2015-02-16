@@ -43,7 +43,7 @@ Module.prototype = {
                         done : loadfeed
                     });
                 } else {
-                    console.log('Info: no feed');
+                    // here jump to next station;
                 }    
             }
             loadfeed();
