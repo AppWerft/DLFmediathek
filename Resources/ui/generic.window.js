@@ -22,8 +22,8 @@ module.exports = function(_args) {
             };
             if (_args.menuitems) {
                 _menuevent.menu.clear();
-                _args.menuitems.forEach(function(menuitem) {
-                    _menuevent.menu.add(menuitem);
+                _args.menu.forEach(function(menu) {
+                    _menuevent.menu.add(menu.item).addEventListener('click',menu.onclick);
                 });
             }
             activity.actionBar.onHomeIconItemSelected = function() {

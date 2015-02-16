@@ -1,3 +1,5 @@
+"use scrict";
+
 var Model = require('model/stations'),
     Favs = new (require('controls/favorites.adapter'))(),
     Moment = require('vendor/moment');
@@ -7,7 +9,20 @@ module.exports = function(station) {
     var self = require('ui/generic.window')({
         title : 'DeutschlandRadio',
         subtitle : 'Meine Vormerkliste',
-        station : null
+        station : null,
+        menu : [{
+            item : {
+                title : 'RadioStart',
+                itemId : '1',
+                icon : Ti.App.Android.R.drawable.ic_action_play,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+            },
+            onclick : function() {
+            }
+        }]
+    });
+    self.Player = Ti.Media.createAudioPlayer({
+        allowBackground : true
     });
     self.list = Ti.UI.createListView({
         templates : {
@@ -17,9 +32,9 @@ module.exports = function(station) {
         sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
-    
+    var dataItems = [];
     function updateList() {
-        var dataItems = [];
+
         Favs.getAllFavs().forEach(function(item) {
             var autor = item.author;
             if ( typeof autor == 'string') {
@@ -54,13 +69,23 @@ module.exports = function(station) {
         });
         self.list.sections[0].setItems(dataItems);
     }
-    setTimeout(updateList,500);
+
+    setTimeout(updateList, 50);
     self.list.addEventListener('itemclick', function(_e) {
         if (_e.bindId && _e.bindId == 'trash') {
             var item = _e.section.getItemAt(_e.itemIndex);
             Favs.killFav(JSON.parse(item.properties.itemId));
             updateList();
         }
+    });
+    self.Player.addEventListener('complete', function() {
+
+        /* killFav */
+        Favs.killFav(JSON.parse(dataItems.shift().properties.itemId));
+        /* refreshList */
+        updateList();
+        /* restart with toppest mp3 */
+        startPlayer();
     });
     return self;
 };

@@ -1,5 +1,6 @@
-var Moment = require('vendor/moment');
-var XMLTools = require('vendor/XMLTools');
+var Moment = require('vendor/moment'),
+    XMLTools = require('vendor/XMLTools'),
+    alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
 const DB = Ti.App.Properties.getString('DATABASE');
 
@@ -16,18 +17,27 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-    if (!Ti.App.Properties.hasProperty('SERVICE_STARTED')) {
-        Ti.App.Properties.setString('SERVICE_STARTED', '1');
+    if (!Ti.App.Properties.hasProperty('SERVICE_STARTED2')) {
+        Ti.App.Properties.setString('SERVICE_STARTED2', '1');
+        alarmManager.addAlarmNotification({
+            requestCode : 2, // must be INT to identify the alarm
+            second : 1,
+            contentTitle : 'DLR Mediathek',
+            contentText : ' Podcastssynchronisierung gestartet',
+            playSound : true,
+            icon : Ti.App.Android.R.drawable.appicon,
+            sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
+        });
         require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
             service : 'de.appwerft.dlrmediathek.FeedtesterService',
             minute : 20, //Set the number of minutes until the alarm should go off
-            interval : 'daily'
+            interval : 1000 * 3600 * 3
         });
     }
     /*this.mirrorAllFeeds({
-        done : function(_args) {
-            
-        }
+    done : function(_args) {
+
+    }
     });*/
     // from Service
     return this;

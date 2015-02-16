@@ -1,5 +1,6 @@
 var Model = require('model/stations'),
-    Moment = require('vendor/moment');
+    Moment = require('vendor/moment'),
+    Podcast = new (require('controls/feed.adapter'))();
     
 module.exports = function(station) {
     var self = require('ui/generic.window')({
