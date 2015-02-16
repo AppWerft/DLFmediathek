@@ -201,7 +201,6 @@ module.exports = function(_args) {
         }
     });
     Ti.App.addEventListener('app:state', function(_payload) {
-        console.log(_payload);
         activityworking = _payload.state;
     });
 
