@@ -2,7 +2,7 @@
 
 var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
-var setNotification = functions(alarm) {
+var setNotification = function(alarm) {
     var activity = Ti.Android.currentActivity;
     var intent = Ti.Android.createIntent({
         action : Ti.Android.ACTION_MAIN,
@@ -10,16 +10,16 @@ var setNotification = functions(alarm) {
         flags : Ti.Android.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Ti.Android.FLAG_ACTIVITY_SINGLE_TOP
     });
     intent.addCategory(Titanium.Android.CATEGORY_LAUNCHER);
-    var pending = Ti.Android.createPendingIntent({
+   
+
+    var message = "Time is up!";
+    var notificationOptions = {
+        contentIntent : Ti.Android.createPendingIntent({
         activity : activity,
         intent : intent,
         type : Ti.Android.PENDING_INTENT_FOR_ACTIVITY,
         flags : Ti.Android.FLAG_ACTIVITY_NO_HISTORY
-    });
-
-    var message = "Time is up!";
-    var notificationOptions = {
-        contentIntent : pending,
+    }),
         contentTitle : 'Notification Test',
         contentText : message,
         tickerText : message,
