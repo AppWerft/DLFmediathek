@@ -44,7 +44,7 @@ var mirrorPodcasts = function() {
                 icon : Ti.App.Android.R.drawable.appicon,
                 sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
             });
-            //Ti.Android.stopService(Ti.Android.currentService.getIntent());
+            Ti.Android.stopService(Ti.Android.currentService.getIntent());
         }
     });
 };

@@ -25,10 +25,9 @@ module.exports = function(station) {
     }));
     var equalizer = Ti.UI.createWebView({
         borderRadius : 1,
-        right : 60,
+        right : 55,
         height : 25,
         width : 100,
-        bottom : 5,
         visible : false,
         url : '/images/equalizer.gif'
     });
@@ -36,8 +35,9 @@ module.exports = function(station) {
     self.add(self.head);
     var playtrigger = Ti.UI.createImageView({
         image : '/images/playicon.png',
-        width : 40,
-        height : 40,
+        width : 32,
+        height : 32,
+        opacity : 0.7,
         bubbleParent : false,
         right : 10
     });
@@ -62,7 +62,6 @@ module.exports = function(station) {
             self.Player.stop();
             self.Player.release();
         }
-        playtrigger.hide();
         if (dataItems.length) {
             var url = JSON.parse(dataItems[0].properties.itemId).url + '?_=' + Math.random();
             // url = '/kkj.mp3';
@@ -159,24 +158,38 @@ module.exports = function(station) {
     });
     self.Player.addEventListener('change', function(_e) {
         Ti.API.error(_e.state + '    ' + _e.description);
-        if (_e.description == 'playing') {
+        switch (_e.description) {
+        case 'playing':
             equalizer.show();
+            playtrigger.setImage('/images/pauseicon.png');
             var section = self.list.getSections()[0];
             return;
             console.log(section);
             var item = section.getItemAt(0);
             console.log(item);
-
             item.trash.height = 0;
             item.autor.height = 0;
             item.duration.top = 72;
             item.title.height = 0;
-
             console.log('Info: item is modified => rerender');
             section.updateItemAt(0, item);
+            break;
+        case 'paused':
+            playtrigger.setImage('/images/playicon.png');
+             equalizer.hide();
+        break;    
+        default:
+            equalizer.hide();
         }
     });
-    playtrigger.addEventListener('click', startPlayer);
+    playtrigger.addEventListener('click', function() {
+        if (self.Player.isPlaying())
+            self.Player.pause();
+        else if (self.Player.isPaused())
+            self.Player.play();
+        else
+            startPlayer()
+    });
     self.head.addEventListener('click', function() {
         self.close();
     });
