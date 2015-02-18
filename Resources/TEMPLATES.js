@@ -300,7 +300,7 @@ exports.podcast = {
         }
     }, {
         type : 'Ti.UI.View',
-        bindId :'playtrigger',
+        bindId : 'playtrigger',
         properties : {
             width : Ti.UI.FILL,
             layout : 'vertical',
@@ -353,7 +353,7 @@ exports.podcast = {
     }]
 };
 
-exports.favorite = {
+exports.merkliste = {
     properties : {
         height : Ti.UI.SIZE,
         backgroundColor : 'white',
@@ -377,19 +377,45 @@ exports.favorite = {
         properties : {
             opacity : 0.4,
             left : 0,
-            top : 70,
+            top : 65,
             bubbleParent : true,
             image : '',
             width : 50,
             height : 50
         }
     }, {
+        type : 'Ti.UI.Label',
+        bindId : 'duration',
+        properties : {
+            color : '#555',
+            top : 115,
+            bottom : 5,
+            font : {
+                fontSize : 16,
+                fontFamily : 'ScalaSansBold'
+            },
+            left : 5,
+            textAlign : 'left',
+            width : Ti.UI.FILL,
+        }
+
+    }, {
+        type : 'Ti.UI.View',
+        bindId : 'trashcontainer',
+        properties : {
+            top : 0,
+            left : 0,
+            width : 70,
+        }
+
+    }, {
         type : 'Ti.UI.View',
         properties : {
             width : Ti.UI.FILL,
             layout : 'vertical',
             left : 70,
-            right : 25
+            right : 5,
+            top : 0
         },
         childTemplates : [{
             type : 'Ti.UI.Label',
@@ -425,7 +451,6 @@ exports.favorite = {
             properties : {
                 left : 0,
                 top : 0,
-                bottom : 10,
                 height : Ti.UI.SIZE,
                 touchEnabled : false,
                 font : {
@@ -450,7 +475,6 @@ exports.favorite = {
         }]
     }]
 };
-
 
 exports.mypodcasts = {
     properties : {
@@ -512,7 +536,7 @@ exports.mypodcasts = {
                 left : 0,
                 touchEnabled : false,
                 top : 5,
-                bottom:10,
+                bottom : 10,
                 color : '#777',
                 font : {
                     fontSize : 14,

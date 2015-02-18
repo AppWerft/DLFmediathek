@@ -6,32 +6,28 @@ var setNotification = function(alarm) {
     var activity = Ti.Android.currentActivity;
     var intent = Ti.Android.createIntent({
         action : Ti.Android.ACTION_MAIN,
-        className : 'de.appwerft.dlrmediathek.TestActivity',
+        className : 'de.appwerft.dlrmediathek.DlrMediathekActivity',
         flags : Ti.Android.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Ti.Android.FLAG_ACTIVITY_SINGLE_TOP
     });
     intent.addCategory(Titanium.Android.CATEGORY_LAUNCHER);
-   
 
     var message = "Time is up!";
-    var notificationOptions = {
+
+    Ti.Android.NotificationManager.notify(1, Ti.Android.createNotification({
         contentIntent : Ti.Android.createPendingIntent({
-        activity : activity,
-        intent : intent,
-        type : Ti.Android.PENDING_INTENT_FOR_ACTIVITY,
-        flags : Ti.Android.FLAG_ACTIVITY_NO_HISTORY
-    }),
+            activity : activity,
+            intent : intent,
+            type : Ti.Android.PENDING_INTENT_FOR_ACTIVITY,
+            flags : Ti.Android.FLAG_ACTIVITY_NO_HISTORY
+        }),
         contentTitle : 'Notification Test',
         contentText : message,
         tickerText : message,
         when : new Date().getTime(),
         icon : Ti.App.Android.R.drawable.appicon,
         flags : Titanium.Android.FLAG_AUTO_CANCEL | Titanium.Android.FLAG_SHOW_LIGHTS | Titanium.Android.FLAG_INSISTENT,
-        sound : Ti.Filesystem.getResRawDirectory() + 'sound'
-    };
-
-    var notification = Ti.Android.createNotification(notificationOptions);
-    Ti.Android.NotificationManager.notify(1, notification);
-
+        sound : Ti.Filesystem.getResRawDirectory() + 'dlrj'
+    }));
     Ti.Media.vibrate([0, 100, 100, 200, 100, 100, 200, 100, 100, 200]);
 };
 
@@ -48,10 +44,10 @@ var mirrorPodcasts = function() {
                 icon : Ti.App.Android.R.drawable.appicon,
                 sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
             });
-            Ti.Android.stopService(serviceIntent);
+            //Ti.Android.stopService(Ti.Android.currentService.getIntent());
         }
     });
 };
 
-var serviceIntent = Ti.Android.currentService.getIntent();
+
 mirrorPodcasts();

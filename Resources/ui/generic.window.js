@@ -17,15 +17,16 @@ module.exports = function(_args) {
         if (activity) {
             activity.onCreateOptionsMenu = function(_menuevent) {
                 activity.actionBar.displayHomeAsUp = true;
+                if (_args.menu) {
+                    _menuevent.menu.clear();
+                    _args.menu.forEach(function(menu) {
+                        _menuevent.menu.add(menu.item).addEventListener('click', menu.onclick);
+                    });
+                }
                 if (_args.station)
                     activity.actionBar.logo = '/images/' + _args.station + '.png';
             };
-            if (_args.menuitems) {
-                _menuevent.menu.clear();
-                _args.menu.forEach(function(menu) {
-                    _menuevent.menu.add(menu.item).addEventListener('click',menu.onclick);
-                });
-            }
+
             activity.actionBar.onHomeIconItemSelected = function() {
                 self.close();
             };

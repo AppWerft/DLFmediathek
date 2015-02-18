@@ -17,11 +17,11 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-    if (!Ti.App.Properties.hasProperty('SERVICE_SUBSCRIBED')) {
-        Ti.App.Properties.setString('SERVICE_SUBSCRIBED', '1');
+    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBED')) {
+        Ti.App.Properties.setString('SERVICESUBSCRIBED', '1');
         alarmManager.addAlarmNotification({
             requestCode : 2, // must be INT to identify the alarm
-            second : 1,
+            second : 10,
             contentTitle : 'DLR Mediathek',
             contentText : ' Podcastssynchronisierung gestartet',
             playSound : true,

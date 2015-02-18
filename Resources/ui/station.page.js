@@ -115,7 +115,6 @@ module.exports = function(_args) {
     };
     self.updatePodcasts = function() {
         if (activityworking == false) {
-            console.log('Warning: activity is sleeping');
             return;
         }
         require('controls/rpc.adapter')({

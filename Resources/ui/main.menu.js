@@ -85,7 +85,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_fav,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
             }).addEventListener("click", function(_e) {
-                require('ui/favs.window')().open();
+                require('ui/merkliste.window')().open();
             });
             _menuevent.menu.add({
                 title : 'Meine Podcasts',

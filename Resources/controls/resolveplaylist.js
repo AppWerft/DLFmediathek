@@ -1,8 +1,12 @@
 module.exports = function(args) {
-    console.log(args);
     if (args.stream) {
         args.onload(args.stream);
     } else {
+        if (Ti.App.Properties.hasProperty(args.playlist)) {
+            console.log('Info: cached radiostream');
+            args.onload(Ti.App.Properties.getString(args.playlist));
+            return;
+        }
         var uri_pattern = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;
         var xhr = Ti.Network.createHTTPClient({
             timeout : 6000,
@@ -19,6 +23,10 @@ module.exports = function(args) {
                                 bar.push(uri);
                         }
                         args.onload(bar[0][0]);
+                        Ti.UI.createNotification({
+                            message : 'RadioAdresse gemerkt.\nNächste Radiostarts sind beschleunigt.'
+                        }).show();
+                        Ti.App.Properties.setString(args.playlist, bar[0][0]);
                     } else {
                         xhr.abort();
                         console.log('no header');
@@ -34,7 +42,7 @@ module.exports = function(args) {
         });
         xhr.open('GET', args.playlist);
         xhr.send();
-        console.log(args.playlist);
+
     }
 };
 
