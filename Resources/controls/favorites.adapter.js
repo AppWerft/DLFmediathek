@@ -16,6 +16,12 @@ Module.prototype = {
         link.execute('insert into fav (pubdate,station,json) values (?,?,?)', _item.datetime, _item.station, JSON.stringify(_item));
         link.close();
     },
+    savePlaytime : function(_item) {
+        var link = Ti.Database.open(DB);
+        var sql = 'update fav set count='+_item.count+' where station="' + _item.station + '" and pubdate="' + _item.datetime + '"';
+        link.execute(sql);
+        link.close();
+    },
     killFav : function(_item) {
         var link = Ti.Database.open(DB);
         var sql = 'delete from fav where station="' + _item.station + '" and pubdate="' + _item.datetime + '"';
@@ -35,7 +41,9 @@ Module.prototype = {
         var rows = link.execute('select * from fav order by pubdate desc');
         var items = [];
         while (rows.isValidRow()) {
-            items.push(JSON.parse(rows.fieldByName('json')));
+            var item = JSON.parse(rows.fieldByName('json'));
+            item.count = rows.fieldByName('count') || 0;
+            items.push(item);
             rows.next();
         }
         rows.close();

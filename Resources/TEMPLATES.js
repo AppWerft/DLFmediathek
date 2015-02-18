@@ -476,6 +476,118 @@ exports.merkliste = {
     }]
 };
 
+
+exports.merklisteactive = {
+    properties : {
+        height : Ti.UI.SIZE,
+        backgroundColor : '#444',
+        itemId : ''
+    },
+    childTemplates : [{
+        type : 'Ti.UI.ImageView',
+        bindId : 'logo',
+        properties : {
+            opacity : 1,
+            left : 0,
+            top : 0,
+            bubbleParent : true,
+            image : '',
+            width : 60,
+            height : 60
+        }
+    }, {
+        type : 'Ti.UI.ImageView',
+        bindId : 'trash',
+        properties : {
+            opacity : 0.4,
+            left : 0,
+            top : 0,
+            bubbleParent : true,
+            image : '',
+            width : 0,
+            height : 0
+        }
+    }, {
+        type : 'Ti.UI.Label',
+        bindId : 'duration',
+        properties : {
+            color : '#aaa',
+            top : 65,
+            bottom : 5,
+            font : {
+                fontSize : 18,
+                fontFamily : 'ScalaSansBold'
+            },
+            left : 5,
+            textAlign : 'left',
+            width : Ti.UI.FILL,
+        }
+
+    }, {
+        type : 'Ti.UI.View',
+        bindId : 'trashcontainer',
+        properties : {
+            top : 0,
+            left : 0,
+            width : 70,
+        }
+
+    }, {
+        type : 'Ti.UI.View',
+        properties : {
+            width : Ti.UI.FILL,
+            layout : 'vertical',
+            left : 70,
+            right : 5,
+            top : 0
+        },
+        childTemplates : [{
+            type : 'Ti.UI.Label',
+            bindId : 'subtitle',
+            properties : {
+                color : '#060',
+                top : 5,
+                font : {
+                    fontSize : 22,
+                    fontFamily : 'ScalaSansBold'
+                },
+                left : 0,
+                width : Ti.UI.FILL,
+            }
+
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'title',
+            properties : {
+                left : 0,
+                top : 0,
+                height : 0,
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'autor',
+            properties : {
+                left : 0,
+                top : 0,
+                height : 0,
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'pubdate',
+            properties : {
+                left : 0,
+                touchEnabled : false,
+                top : 0,
+                color : '#eee',
+                font : {
+                    fontSize : 14,
+                    fontFamily : 'ScalaSans'
+                },
+            }
+        }]
+    }]
+};
+
 exports.mypodcasts = {
     properties : {
         height : Ti.UI.SIZE,

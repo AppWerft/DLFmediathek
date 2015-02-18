@@ -8,7 +8,8 @@ module.exports = function(station) {
     var self = Ti.UI.createWindow({
         theme : 'Theme.NoActionBar',
         fullscreen : true,
-        backgroundColor : 'white'
+        backgroundColor : 'white',
+        orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
     self.head = Ti.UI.createView({
         left : 0,
@@ -23,15 +24,31 @@ module.exports = function(station) {
         width : 280,
         left : 0
     }));
+    var equalizercontainer = Ti.UI.createView({
+        right : 55,
+        height : 30,
+        width : 100
+    });
     var equalizer = Ti.UI.createWebView({
         borderRadius : 1,
-        right : 55,
-        height : 25,
-        width : 100,
+        width : Ti.UI.FILL,
+        height : Ti.UI.FILL,
         visible : false,
+        bottom : 0,
         url : '/images/equalizer.gif'
     });
-    self.head.add(equalizer);
+    var progressview = Ti.UI.createView({
+        bottom : 0,
+        left : 0,
+        width : 0,
+        opacity : 0.15,
+        backgroundColor : 'black',
+        height : Ti.UI.FILL
+    });
+    equalizercontainer.add(equalizer);
+    equalizercontainer.add(progressview);
+
+    self.head.add(equalizercontainer);
     self.add(self.head);
     var playtrigger = Ti.UI.createImageView({
         image : '/images/playicon.png',
@@ -41,12 +58,12 @@ module.exports = function(station) {
         bubbleParent : false,
         right : 10
     });
-
     self.head.add(playtrigger);
     self.list = Ti.UI.createListView({
         top : 50,
         templates : {
             'merkliste' : require('TEMPLATES').merkliste,
+            'merklisteactive' : require('TEMPLATES').merklisteactive,
         },
         defaultItemTemplate : 'merkliste',
         sections : [Ti.UI.createListSection({})]
@@ -54,8 +71,8 @@ module.exports = function(station) {
     self.add(self.list);
     self.Player = Ti.Media.createAudioPlayer({
         allowBackground : true,
+        preload : true
     });
-
     var dataItems = [];
     function startPlayer() {
         if (self.Player.isPlaying()) {
@@ -63,7 +80,8 @@ module.exports = function(station) {
             self.Player.release();
         }
         if (dataItems.length) {
-            var url = JSON.parse(dataItems[0].properties.itemId).url + '?_=' + Math.random();
+            var item = JSON.parse(dataItems[0].properties.itemId);
+            var url = item.url + '?_=' + Math.random();
             // url = '/kkj.mp3';
             console.log('Info: player started with: ' + url);
             /*self.Player = Ti.Media.createAudioPlayer({
@@ -71,6 +89,8 @@ module.exports = function(station) {
              url : url
              });*/
             self.Player.setUrl(url);
+            self.Player.setTime(item.count);
+            progressview.setWidth(0);
             //  self.Player.setUrl(url);
             self.Player.start();
         } else
@@ -78,9 +98,8 @@ module.exports = function(station) {
     }
 
     function updateList() {
-        console.log('Info: start updating Vormerkliste');
         dataItems = [];
-        Favs.getAllFavs().forEach(function(item) {
+        Favs.getAllFavs().forEach(function(item, ndx) {
             var autor = item.author;
             if ( typeof autor == 'string') {
                 autor = autor.split(', ')[1] + ' ' + autor.split(', ')[0];
@@ -91,9 +110,11 @@ module.exports = function(station) {
                 seconds = '0' + seconds;
             var duration = Math.floor(item.duration / 60) + ':' + seconds;
             dataItems.push({
+                template : (ndx == 0) ? 'merklisteactive' : 'merkliste',
                 properties : {
                     accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
-                    itemId : JSON.stringify(item),
+                    itemId : JSON.stringify(item)
+
                 },
                 pubdate : {
                     text : Moment(item.datetime).format('LLLL')
@@ -104,7 +125,6 @@ module.exports = function(station) {
                 duration : {
                     text : duration
                 },
-
                 subtitle : {
                     color : Model[item.station].color,
                     text : item.title || '',
@@ -126,7 +146,6 @@ module.exports = function(station) {
         Ti.UI.createNotification({
             message : dataItems.length + ' Stücke in der Vormerkliste'
         }).show();
-        console.log('Info: ' + dataItems.length + ' items in vormerkliste');
         self.list.sections[0].setItems(dataItems);
     }
 
@@ -140,11 +159,14 @@ module.exports = function(station) {
         }
     });
     self.Player.addEventListener('complete', function(_e) {
-        console.log(_e);
+        console.log('Info: completing succeded ' + _e.success);
         self.Player.release();
         equalizer.hide();
         Favs.killFav(JSON.parse(dataItems[0].properties.itemId));
-        self.list.sections[0].deleteItemsAt(0, 1);
+        console.log('last played audio deleted from model');
+        // self.list.sections[0].deleteItemsAt(0, 1);
+        console.log('last played audio deleted from view');
+        updateList();
         startPlayer();
     });
 
@@ -161,25 +183,26 @@ module.exports = function(station) {
         switch (_e.description) {
         case 'playing':
             equalizer.show();
+            equalizer.setUrl('/images/equalizer.gif');
             playtrigger.setImage('/images/pauseicon.png');
-            var section = self.list.getSections()[0];
-            return;
-            console.log(section);
-            var item = section.getItemAt(0);
-            console.log(item);
-            item.trash.height = 0;
-            item.autor.height = 0;
-            item.duration.top = 72;
-            item.title.height = 0;
-            console.log('Info: item is modified => rerender');
-            section.updateItemAt(0, item);
             break;
         case 'paused':
             playtrigger.setImage('/images/playicon.png');
-             equalizer.hide();
-        break;    
+            equalizer.setUrl('/images/equalizer-13.png');
+            break;
         default:
             equalizer.hide();
+        }
+    });
+    self.Player.addEventListener('progress', function(_e) {
+        if (dataItems.length) {
+            var item = JSON.parse(dataItems[0].properties.itemId);
+            item.count = _e.progress;
+            console.log(_e.progress);
+            Favs.savePlaytime(item);
+            var duration = item.duration;
+            var progress = _e.progress / 1000 / duration;
+            progressview.setWidth(progress * 100);
         }
     });
     playtrigger.addEventListener('click', function() {
@@ -188,7 +211,7 @@ module.exports = function(station) {
         else if (self.Player.isPaused())
             self.Player.play();
         else
-            startPlayer()
+            startPlayer();
     });
     self.head.addEventListener('click', function() {
         self.close();

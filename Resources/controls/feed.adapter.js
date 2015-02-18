@@ -17,8 +17,8 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBED')) {
-        Ti.App.Properties.setString('SERVICESUBSCRIBED', '1');
+    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBER')) {
+        Ti.App.Properties.setString('SERVICESUBSCRIBER', '1');
         alarmManager.addAlarmNotification({
             requestCode : 2, // must be INT to identify the alarm
             second : 10,
@@ -28,10 +28,11 @@ var Module = function() {
             icon : Ti.App.Android.R.drawable.appicon,
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         });
+        var startdate = Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600));
         require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
             service : 'de.appwerft.dlrmediathek.FeedtesterService',
-            minute : 20, //Set the number of minutes until the alarm should go off
-            interval : 1000 * 3600 * 3
+            second : startdate.diff(Moment(),'seconds'),
+            repeat : 'daily'
         });
     }
     return this;
