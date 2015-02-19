@@ -61,7 +61,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_rss,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
-                require('ui/dayplan.window')(currentStationName);
+                require('ui/dayplan.window')(currentStationName).open();
             });
             _menuevent.menu.add({
                 title : 'Klangkunst',

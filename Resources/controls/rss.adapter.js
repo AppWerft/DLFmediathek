@@ -11,6 +11,14 @@ var Module = function() {
 
 Module.prototype = {
     getRSS : function(_args) {
+        var url = _args.url + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+        if (Ti.App.Properties.hasProperty(url) && _args.done) {
+            _args.done({
+                ok : true,
+                items : JSON.parse(Ti.App.Properties.getString(url))
+            });
+            return;
+        }
         var xhr = Ti.Network.createHTTPClient({
             onload : function() {
                 var channel = new XMLTools(this.responseXML).toObject().channel;
@@ -21,10 +29,11 @@ Module.prototype = {
                     ok : true,
                     items : channel.item
                 };
-                _args.done(result);
+                _args.done && _args.done(result);
+                Ti.App.Properties.setString(url, JSON.stringify(channel.item));
             }
         });
-        xhr.open('GET', _args.url);
+        xhr.open('GET', url);
         xhr.send();
     }
 };

@@ -28,10 +28,10 @@ var Module = function() {
             icon : Ti.App.Android.R.drawable.appicon,
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         });
-        var startdate = Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600));
+
         require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
             service : 'de.appwerft.dlrmediathek.FeedtesterService',
-            second : startdate.diff(Moment(),'seconds'),
+            second : Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600)).diff(Moment(), 'seconds'),
             repeat : 'daily'
         });
     }
@@ -108,7 +108,7 @@ Module.prototype = {
         link.close();
         return faved;
     },
-    // get feed
+    // get feed with all items
     getFeed : function(_args) {
         var link = Ti.Database.open(DB);
         var rows = link.execute('SELECT * FROM items WHERE channelurl=? ORDER BY pubDate DESC', _args.url);
@@ -131,6 +131,8 @@ Module.prototype = {
             });
             return;
         }
+        /* fallback if first time and not yet feed in database */
+        //this.loadFeed(_args);
         var faved = 0;
         var that = this;
         var xhr = Ti.Network.createHTTPClient({
@@ -153,7 +155,6 @@ Module.prototype = {
                 channel.lastBuildDate, //
                 channel.image.url, //
                 faved);
-
                 channel.item.forEach(function(item) {
                     link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
                     _args.url, item.title, item.link, item.description, item.guid, //

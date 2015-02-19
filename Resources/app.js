@@ -1,3 +1,5 @@
+ var FlipModule = require('de.manumaticx.androidflip');
+
 (function() {
     //http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
     Ti.Media.createSound();
@@ -25,7 +27,7 @@
             stream : Model[station].stream,
         }));
     };
-    var FlipModule = require('de.manumaticx.androidflip');
+   
     window.FlipViewCollection = FlipModule.createFlipView({
         orientation : FlipModule.ORIENTATION_HORIZONTAL,
         overFlipMode : FlipModule.OVERFLIPMODE_GLOW,

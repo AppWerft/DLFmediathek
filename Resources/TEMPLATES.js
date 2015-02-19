@@ -37,6 +37,7 @@ exports.schema = {
             layout : 'vertical',
             left : 70,
             top : 5,
+            height:Ti.UI.SIZE,
             right : 25
         },
         childTemplates : [{
@@ -52,18 +53,6 @@ exports.schema = {
                 width : Ti.UI.FILL,
             }
 
-        }, {
-            type : 'Ti.UI.WebView',
-            bindId : 'equalizer',
-            properties : {
-                left : 0,
-                top : 0,
-                touchEnabled : false,
-                borderRadius : 1,
-                enableZoomControls : false,
-                height : 0,
-                width : 200
-            }
         }, {
             type : 'Ti.UI.Label',
             bindId : 'description',
