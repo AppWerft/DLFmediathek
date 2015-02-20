@@ -86,12 +86,12 @@ module.exports = function(station) {
 
     var cron = setInterval(function() {
         RSS.getRSS({
-            url : Model[station].rss,
+            station :station,
             done : updateListFunc
         });
     }, 30000);
     RSS.getRSS({
-        url : Model[station].rss,
+        station :station,
         done : updateListFunc
     });
     self.addEventListener('itemclick', function(_e) {

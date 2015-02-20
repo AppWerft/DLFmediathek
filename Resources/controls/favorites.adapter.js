@@ -13,6 +13,10 @@ var Module = function() {
 Module.prototype = {
     addFav : function(_item) {
         var link = Ti.Database.open(DB);
+        console.log(_item.datetime);
+        console.log(_item.station);
+        console.log(JSON.stringify(_item));
+        
         link.execute('insert into fav (pubdate,station,json) values (?,?,?)', _item.datetime, _item.station, JSON.stringify(_item));
         link.close();
     },
@@ -30,8 +34,10 @@ Module.prototype = {
     },
     toggleFav : function(_item) {
         if (this.isFav(_item)) {
+            console.log('is fav');
            this.killFav(_item);
         } else {
+              console.log('isstill not fav');
             this.addFav(_item);
         }  
         return this.isFav(_item)  ;

@@ -132,9 +132,9 @@ module.exports = function(_event) {
             });
             Ti.App.addEventListener('app:play', function(_event) {
                 var self = Ti.UI.createAlertDialog({
-                    message : _event.item.title,
+                    message : _event.item.subtitle,
                     ok : 'Beitrag anhören',
-                    title : _event.item.sendung.text
+                    title : _event.item.title
                 });
                 self.show();
                 self.addEventListener('click', function(_e) {

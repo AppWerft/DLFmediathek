@@ -44,29 +44,31 @@ module.exports = function(_args) {
         height : Ti.UI.FILL,
         backgroundColor : _args.color,
         templates : {
-            'podcast' : require('TEMPLATES').podcast,
+            'mediathek' : require('TEMPLATES').mediathek,
         },
-        defaultItemTemplate : 'podcast',
+        defaultItemTemplate : 'mediathek',
         sections : [Ti.UI.createListSection({})]
     });
     self.add(self.list);
     var dataItems = [];
-    var currentHash = '';
+    var currentLiveHash = '';
+    var currentMediathekHash = '';
     self.showCurrent = function() {
-        self.list.animate({
-            top : HEIGHT_OF_CURRENTBOX,
-            duration : 700
-        });
+
         self.containerforcurrenttext.setTop(0);
         require('controls/rpc.adapter')({
             url : _args.live,
             nocache : true,
             onload : function(_res) {
-                if (currentHash == _res.hash)
+                self.list.animate({
+                    top : HEIGHT_OF_CURRENTBOX,
+                    duration : 700
+                });
+                if (currentLiveHash == _res.hash)
                     return;
-                currentHash = _res.hash;
-                var live = _res.payload;
-
+                currentLiveHash = _res.hash;
+                var live = _res.live;
+                //       console.log(live);
                 self.containerforcurrenttext.top = 0;
                 self.containerforcurrenttext.removeAllChildren();
                 self.containerforcurrenttext.add(Ti.UI.createLabel({
@@ -119,50 +121,58 @@ module.exports = function(_args) {
         }
         require('controls/rpc.adapter')({
             url : _args.podcasts,
+            type : 'mediathek',
             nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
             date : self.date.format('DD.MM.YYYY'),
             onload : function(_res) {
-                dataItems = [];
-                _res.payload.item.forEach(function(item) {
-                    var autor = item.author;
-                    if ( typeof autor == 'string') {
-                        autor = autor.split(', ')[1] + ' ' + autor.split(', ')[0];
-                    } else
-                        autor = autor.text;
-                    dataItems.push({
-                        properties : {
-                            accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
-                            itemId : JSON.stringify(item),
-                        },
-                        start : {
-                            text : item.datetime.split(' ')[1].substr(0, 5)
-                        },
-                        playtrigger : {
-                            bubbleParent : false
-                        },
-                        title : {
-                            color : _args.color,
-                            text : item.sendung.text
-                        },
-                        subtitle : {
-                            text : item.title || '',
-                        },
-                        fav : {
-                            image : Favs.isFav(item) ? '/images/fav.png' : '/images/favadd.png',
-                            opacity : Favs.isFav(item) ? 0.8 : 0.5
-                        },
-                        autor : {
-                            text : (autor != undefined) ? 'Autor: ' + autor : ''
-                        }
+                if (currentMediathekHash == _res.hash)
+                    return;
+                currentMediathekHash = _res.hash;
+                self.list.sections = [];
+
+                _res.mediathek.forEach(function(sendung) {
+
+                    var dataitems = [];
+                    sendung.subs.forEach(function(item) {
+                        dataitems.push({
+                            properties : {
+                                accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
+                                itemId : JSON.stringify(item),
+                            },
+                            start : {
+                                text : item.start
+                            },
+                            playtrigger : {
+                                bubbleParent : false
+                            },
+                            title : {
+                                color : _args.color,
+                                text : '',
+                                height : 0
+                            },
+                            subtitle : {
+                                text : item.subtitle,
+                            },
+                            fav : {
+                                image : item.isfav ? '/images/fav.png' : '/images/favadd.png',
+                                opacity : item.isfav ? 0.8 : 0.5
+                            },
+                            autor : {
+                                text : (item.author) ? 'Autor: ' + item.author : '',
+                                height : (item.author) ? Ti.UI.SIZE : 0
+                            }
+                        });
                     });
+                    self.list.appendSection(Ti.UI.createListSection({
+                        headerTitle : sendung.name,
+                        items : dataitems
+                    }));
                 });
-                self.list.sections[0].setItems(dataItems);
-                self.list.setSections([self.list.sections[0]]);
                 if (self.date.isSame(Moment().startOf('day')))
                     self.showCurrent();
                 self.list.setMarker({
                     sectionIndex : 0,
-                    itemIndex : 8
+                    itemIndex : 15
                 });
                 self.list.addEventListener('marker', function(e) {
                     self.containerforcurrenttext.animate({
@@ -186,6 +196,7 @@ module.exports = function(_args) {
         self.cron = setInterval(self.updatePodcasts, 30000);
     else
         clearInterval(self.cron);
+
     self.list.addEventListener('itemclick', function(_e) {
         if (_e.bindId && _e.bindId == 'fav') {
             var item = _e.section.getItemAt(_e.itemIndex);
@@ -199,7 +210,7 @@ module.exports = function(_args) {
             });
         }
     });
-   
+
     Ti.App.addEventListener('app:state', function(_payload) {
         activityworking = _payload.state;
     });

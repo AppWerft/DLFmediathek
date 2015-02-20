@@ -9,6 +9,7 @@ var toType = function(obj) {
 };
 
 var Module = function() {
+    this.eventhandlers = {};
     var link = Ti.Database.open(DB);
     if (link) {
         link.execute('CREATE TABLE IF NOT EXISTS "feeds" ("url" TEXT UNIQUE, "http_expires" DATETIME, "http_lastmodified" DATETIME, "http_etag" TEXT, "http_contentlength" INTEGER, "title" TEXT, "description" TEXT, "category" TEXT,"station" TEXT, "pubDate" DATETIME, "lastBuildDate" DATETIME, "image" TEXT,"faved" INTEGER);');
@@ -210,6 +211,26 @@ Module.prototype = {
         });
         xhr.open('GET', _args.url);
         xhr.send();
+    },  // standard methods for event/observer pattern
+    fireEvent : function(_event, _payload) {
+        if (this.eventhandlers[_event]) {
+            for (var i = 0; i < this.eventhandlers[_event].length; i++) {
+                this.eventhandlers[_event][i].call(this, _payload);
+            }
+        }
+    },
+    addEventListener : function(_event, _callback) {
+        if (!this.eventhandlers[_event])
+            this.eventhandlers[_event] = [];
+        this.eventhandlers[_event].push(_callback);
+    },
+    removeEventListener : function(_event, _callback) {
+        if (!this.eventhandlers[_event])
+            return;
+        var newArray = this.eventhandlers[_event].filter(function(element) {
+            return element != _callback;
+        });
+        this.eventhandlers[_event] = newArray;
     }
 };
 

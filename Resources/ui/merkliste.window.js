@@ -100,11 +100,8 @@ module.exports = function(station) {
     function updateList() {
         dataItems = [];
         Favs.getAllFavs().forEach(function(item, ndx) {
-            var autor = item.author;
-            if ( typeof autor == 'string') {
-                autor = autor.split(', ')[1] + ' ' + autor.split(', ')[0];
-            } else
-                autor = autor.text;
+            var autor = (item.author)?item.author:'';
+           
             var seconds = item.duration % 60;
             if (seconds < 10)
                 seconds = '0' + seconds;
@@ -114,13 +111,12 @@ module.exports = function(station) {
                 properties : {
                     accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
                     itemId : JSON.stringify(item)
-
                 },
                 pubdate : {
                     text : Moment(item.datetime).format('LLLL')
                 },
                 title : {
-                    text : item.sendung.text
+                    text : (item.sendung)?item.sendung.text:''
                 },
                 duration : {
                     text : duration

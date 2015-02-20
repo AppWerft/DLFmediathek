@@ -256,7 +256,7 @@ exports.klangkunst = {
 };
 
 /************/
-exports.podcast = {
+exports.mediathek = {
     properties : {
         height : Ti.UI.SIZE,
         backgroundColor : 'white',
@@ -318,7 +318,7 @@ exports.podcast = {
                 top : 0,
                 touchEnabled : false,
                 font : {
-                    fontSize : 16,
+                    fontSize : 18,
                     fontFamily : 'ScalaSans'
                 },
                 color : '#333'
