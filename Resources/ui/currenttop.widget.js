@@ -11,7 +11,7 @@ var Module = function() {
     this._view.pubdate = Ti.UI.createLabel({
         right : 50,
         top : 7,
-        text : 'Sendungsbeginn',
+        text : '',
         color : '#eee',
         font : {
             fontSize : 16,
@@ -22,7 +22,7 @@ var Module = function() {
         left : 10,
         top : -5,
        
-        text : 'Titel der Sendung',
+        text : '',
         font : {
             fontSize : 20,
             fontFamily : 'ScalaSansBold'
@@ -34,7 +34,7 @@ var Module = function() {
         left : 10,
         right : 50,
         top : -10,
-        html : 'Vollbeschreibung',
+        html : '',
         bottom : 100,
         color : '#eee'
     });

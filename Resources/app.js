@@ -1,4 +1,4 @@
- var FlipModule = require('de.manumaticx.androidflip');
+var FlipModule = require('de.manumaticx.androidflip');
 
 (function() {
     //http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
@@ -27,7 +27,7 @@
             stream : Model[station].stream,
         }));
     };
-   
+
     window.FlipViewCollection = FlipModule.createFlipView({
         orientation : FlipModule.ORIENTATION_HORIZONTAL,
         overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
@@ -35,10 +35,18 @@
         currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
         height : Ti.UI.FILL
     });
-    
-     window.FlipViewCollection.addEventListener('flipped', function(_e) {
-          window.FlipViewCollection.getViews()[_e.index].updateCurrentinTopBox(true);
-     });  
+
+    window.FlipViewCollection.addEventListener('flipped', function(_e) {
+        var pages = window.FlipViewCollection.getViews();
+        pages.forEach(function(page, ndx) {
+            if (ndx == _e.index)
+                setTimeout(function() {
+                    page.updateCurrentinTopBox(true);
+                }, 200);
+            else
+                page.hideCurrent();
+        });
+    });
     window.addEventListener('focus', function() {
         window.FlipViewCollection.peakNext(true);
     });
@@ -54,4 +62,5 @@
         });
     });
     window.open();
- })();
+    require('controls/record')();
+})();
