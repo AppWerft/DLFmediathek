@@ -35,6 +35,10 @@
         currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
         height : Ti.UI.FILL
     });
+    
+     window.FlipViewCollection.addEventListener('flipped', function(_e) {
+          window.FlipViewCollection.getViews()[_e.index].updateCurrentinTopBox(true);
+     });  
     window.addEventListener('focus', function() {
         window.FlipViewCollection.peakNext(true);
     });

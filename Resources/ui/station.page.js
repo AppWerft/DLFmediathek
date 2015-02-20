@@ -1,8 +1,9 @@
-var Favs = new (require('controls/favorites.adapter'))();
+var Favs = new (require('controls/favorites.adapter'))(),
+    RSS = new (require('controls/rss.adapter'))();
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
-const HEIGHT_OF_CURRENTBOX = 150;
+const HEIGHT_OF_TOPBOX = 150;
 
 module.exports = function(_args) {
     var activityworking = true;
@@ -22,24 +23,21 @@ module.exports = function(_args) {
             color : _args.color
         });
         self.add(self.calendarView);
-    }, 5000);
-    self.containerforcurrenttext = Ti.UI.createScrollView({
-        top : -HEIGHT_OF_CURRENTBOX,
-        scrollType : 'vertical',
-        contentHeight : Ti.UI.SIZE,
-        backgroundColor : '#444',
-        layout : 'vertical',
-        height : HEIGHT_OF_CURRENTBOX
+    }, 3000);
+    var TopBoxWidget = new (require('ui/currenttop.widget'))();
+    self.topBox = TopBoxWidget.createView({
+        height : HEIGHT_OF_TOPBOX,
+        color : _args.color
     });
 
-    self.add(self.containerforcurrenttext);
+    self.add(self.topBox);
     self.add(Ti.UI.createView({
         top : 0,
         height : 7,
         backgroundColor : _args.color
     }));
 
-    self.list = Ti.UI.createListView({
+    self.bottomList = Ti.UI.createListView({
         top : 7,
         height : Ti.UI.FILL,
         backgroundColor : _args.color,
@@ -49,71 +47,33 @@ module.exports = function(_args) {
         defaultItemTemplate : 'mediathek',
         sections : [Ti.UI.createListSection({})]
     });
-    self.add(self.list);
+    self.add(self.bottomList);
     var dataItems = [];
-    var currentLiveHash = '';
-    var currentMediathekHash = '';
-    self.showCurrent = function() {
+    var lastPubDate = null;
+    var currentMediathekHash = null;
 
-        self.containerforcurrenttext.setTop(0);
-        require('controls/rpc.adapter')({
-            url : _args.live,
-            nocache : true,
-            onload : function(_res) {
-                self.list.animate({
-                    top : HEIGHT_OF_CURRENTBOX,
-                    duration : 700
-                });
-                if (currentLiveHash == _res.hash)
-                    return;
-                currentLiveHash = _res.hash;
-                var live = _res.live;
-                //       console.log(live);
-                self.containerforcurrenttext.top = 0;
-                self.containerforcurrenttext.removeAllChildren();
-                self.containerforcurrenttext.add(Ti.UI.createLabel({
-                    right : 50,
-                    top : 8,
-                    color : '#eee',
-                    font : {
-                        fontSize : 16,
-                        fontFamily : 'ScalaSans'
-                    },
-                    text : 'seit: ' + live['time_start']
-                }));
-                self.containerforcurrenttext.add(Ti.UI.createLabel({
-                    left : 10,
-                    top : -5,
-                    text : live.name,
-                    color : _args.color,
-                    font : {
-                        fontSize : 20,
-                        fontFamily : 'ScalaSansBold'
-                    },
-                    right : 50
-
-                }));
-                if ( typeof live.text == 'string') {
-                    self.containerforcurrenttext.add(Ti.UI.createLabel({
-                        left : 10,
-                        right : 50,
-                        top : 0,
-                        bottom : 100,
-                        text : live.text.substr(live.name.length).trim(),
-                        font : {
-                            fontSize : 14,
-                            fontFamily : 'ScalaSans'
-                        },
-                        color : '#eee'
-                    }));
-                }
-            }
+    self.updateCurrentinTopBox = function(_forced) {
+        var currentItem = RSS.getCurrentOnAir({
+            station : _args.name
         });
+        if (currentItem) {
+            lastPubDate = currentItem.pubDate;
+            self.topBox.setTop(8);
+            self.bottomList.setTop(HEIGHT_OF_TOPBOX);
+            
+            TopBoxWidget.setPubDate(currentItem.pubDate);
+            TopBoxWidget.setTitle(currentItem.title);
+            TopBoxWidget.setDescription(currentItem.description);
+            self.bottomList.animate({
+                top : HEIGHT_OF_TOPBOX,
+                duration : 700
+            });
+        }
     };
     /* hiding of todays display */
     self.hideCurrent = function() {
-        self.list.setTop(7);
-        self.containerforcurrenttext.setTop(-HEIGHT_OF_CURRENTBOX);
+        self.bottomList.setTop(7);
+        self.topBox.setTop(-HEIGHT_OF_TOPBOX);
     };
     self.updatePodcasts = function() {
         if (activityworking == false) {
@@ -121,14 +81,13 @@ module.exports = function(_args) {
         }
         require('controls/rpc.adapter')({
             url : _args.podcasts,
-            type : 'mediathek',
             nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
             date : self.date.format('DD.MM.YYYY'),
             onload : function(_res) {
                 if (currentMediathekHash == _res.hash)
                     return;
                 currentMediathekHash = _res.hash;
-                self.list.sections = [];
+                self.bottomList.sections = [];
 
                 _res.mediathek.forEach(function(sendung) {
 
@@ -163,27 +122,28 @@ module.exports = function(_args) {
                             }
                         });
                     });
-                    self.list.appendSection(Ti.UI.createListSection({
+                    self.bottomList.appendSection(Ti.UI.createListSection({
                         headerTitle : sendung.name,
                         items : dataitems
                     }));
                 });
                 if (self.date.isSame(Moment().startOf('day')))
-                    self.showCurrent();
-                self.list.setMarker({
-                    sectionIndex : 0,
-                    itemIndex : 15
+                    self.updateCurrentinTopBox();
+                self.bottomList.setMarker({
+                    sectionIndex : 5,
+                    itemIndex : 0
                 });
-                self.list.addEventListener('marker', function(e) {
-                    self.containerforcurrenttext.animate({
-                        top : -HEIGHT_OF_CURRENTBOX,
+                self.bottomList.addEventListener('marker', function(e) {
+
+                    self.topBox.animate({
+                        top : -HEIGHT_OF_TOPBOX,
                     });
-                    self.list.animate({
-                        top : 0,
+                    self.bottomList.animate({
+                        top : 8,
                         duration : 600
                     });
                     return;
-                    self.list.setMarker({
+                    self.bottomList.setMarker({
                         sectionIndex : 0,
                         itemIndex : 0
                     });
@@ -197,7 +157,7 @@ module.exports = function(_args) {
     else
         clearInterval(self.cron);
 
-    self.list.addEventListener('itemclick', function(_e) {
+    self.bottomList.addEventListener('itemclick', function(_e) {
         if (_e.bindId && _e.bindId == 'fav') {
             var item = _e.section.getItemAt(_e.itemIndex);
             var isfav = Favs.toggleFav(JSON.parse(item.properties.itemId));

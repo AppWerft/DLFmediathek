@@ -2,6 +2,7 @@
 
 var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
+
 var setNotification = function(alarm) {
     var activity = Ti.Android.currentActivity;
     var intent = Ti.Android.createIntent({
@@ -47,7 +48,14 @@ var mirrorPodcasts = function() {
             Ti.Android.stopService(Ti.Android.currentService.getIntent());
         }
     });
-};
+    var RSS = new (require('controls/rss.adapter'))();
+    RSS.getRRS({
+        station : 'dlf'
+    });
+    RSS.getRRS({
+        station : 'drk'
+    });
 
+};
 
 mirrorPodcasts();
