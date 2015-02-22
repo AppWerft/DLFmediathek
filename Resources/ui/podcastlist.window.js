@@ -65,13 +65,18 @@ module.exports = function(_args) {
     self.list.addEventListener('itemclick', function(_e) {
         var item = JSON.parse(_e.itemId);
         console.log(item);
-        var sec = parseInt(item.duration.split(':')[0]) * 60 + parseInt(item.duration.split(':')[1]);
-        Player.startPlayer({
-            url : item.enclosure_url,
-            title : item.title,
-            sec : sec,
-            duration : item.duration
-        });
+        if (!item.duration) item.duration = item['itunes:duration'];
+        if (!item.enclosure_url) item.enclosure_url = itemenclosure.url;
+        
+        if (item.duration) {
+            var sec = parseInt(item.duration.split(':')[0]) * 60 + parseInt(item.duration.split(':')[1]);
+            Player.startPlayer({
+                url : item.enclosure_url,
+                title : item.title,
+                sec : sec,
+                duration : item.duration
+            });
+        }
     });
     self.addEventListener('close', function() {
         Player.stopPlayer();

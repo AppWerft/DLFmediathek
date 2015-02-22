@@ -1,5 +1,5 @@
 /*
- This model is for persisting of items in timeline (mediathek)  
+ This model is for persisting of items in timeline (mediathek)
  * */
 
 const DB = Ti.App.Properties.getString('DATABASE');
@@ -13,20 +13,17 @@ var Module = function() {
 Module.prototype = {
     addFav : function(_item) {
         var link = Ti.Database.open(DB);
-        console.log(_item.datetime);
-        console.log(_item.station);
-        console.log(JSON.stringify(_item));
-        
         link.execute('insert into fav (pubdate,station,json) values (?,?,?)', _item.datetime, _item.station, JSON.stringify(_item));
         link.close();
     },
     savePlaytime : function(_item) {
         var link = Ti.Database.open(DB);
-        var sql = 'update fav set count='+_item.count+' where station="' + _item.station + '" and pubdate="' + _item.datetime + '"';
+        var sql = 'update fav set count=' + _item.count + ' where station="' + _item.station + '" and pubdate="' + _item.datetime + '"';
         link.execute(sql);
         link.close();
     },
     killFav : function(_item) {
+        console.log(_item);
         var link = Ti.Database.open(DB);
         var sql = 'delete from fav where station="' + _item.station + '" and pubdate="' + _item.datetime + '"';
         link.execute(sql);
@@ -35,21 +32,26 @@ Module.prototype = {
     toggleFav : function(_item) {
         if (this.isFav(_item)) {
             console.log('is fav');
-           this.killFav(_item);
+            this.killFav(_item);
         } else {
-              console.log('isstill not fav');
+            console.log('isstill not fav');
             this.addFav(_item);
-        }  
-        return this.isFav(_item)  ;
+        }
+        return this.isFav(_item);
     },
     getAllFavs : function() {
         var link = Ti.Database.open(DB);
-        var rows = link.execute('select * from fav order by pubdate desc');
+        var rows = link.execute('select DISTINCT json,count,station,pubdate from fav order by pubdate desc');
         var items = [];
         while (rows.isValidRow()) {
             var item = JSON.parse(rows.fieldByName('json'));
-            item.count = rows.fieldByName('count') || 0;
-            items.push(item);
+            item.pubdate = rows.fieldByName('pubdate');
+            item.station = rows.fieldByName('station');
+            item.count = rows.fieldByName('count');
+            console.log(item.station + '   '+ item.pubdate + '   ' + item.duration);
+            if (item.duration && item.pubdate && item.station) {
+                items.push(item);
+            }   
             rows.next();
         }
         rows.close();

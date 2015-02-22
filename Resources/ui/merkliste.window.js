@@ -116,7 +116,7 @@ module.exports = function(station) {
                     text : Moment(item.datetime).format('LLLL')
                 },
                 title : {
-                    text : (item.sendung)?item.sendung.text:''
+                    text : item.subtitle || ''
                 },
                 duration : {
                     text : duration
@@ -149,8 +149,7 @@ module.exports = function(station) {
     self.list.addEventListener('itemclick', function(_e) {
         if (_e.bindId && _e.bindId == 'trash') {
             var item = _e.section.getItemAt(_e.itemIndex);
-            var fav = JSON.parse(item.properties.itemId);
-            Favs.killFav(fav);
+            Favs.killFav(JSON.parse(item.properties.itemId));
             updateList();
         }
     });

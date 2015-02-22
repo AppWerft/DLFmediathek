@@ -49,6 +49,7 @@ module.exports = function(_args) {
                             station : item.station,
                             url : item.url,
                             datetime: item.datetime,
+                            pubdate : item.datetime,
                             duration : item.duration,
                             id : item.sendung.id,
                             title : item.sendung.text,

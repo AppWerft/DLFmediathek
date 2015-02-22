@@ -1,4 +1,6 @@
 var FlipModule = require('de.manumaticx.androidflip');
+var stations = ['dlf', 'drk', 'drw'];
+var Geo = new (require('controls/geotracking'))();
 
 (function() {
     //http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
@@ -35,7 +37,7 @@ var FlipModule = require('de.manumaticx.androidflip');
         currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
         height : Ti.UI.FILL
     });
-
+    Geo.savePosition('dlf');
     window.FlipViewCollection.addEventListener('flipped', function(_e) {
         var pages = window.FlipViewCollection.getViews();
         pages.forEach(function(page, ndx) {
@@ -44,8 +46,11 @@ var FlipModule = require('de.manumaticx.androidflip');
                     page.updateCurrentinTopBox(true);
                 }, 200);
             else
-                page.hideCurrent();
+                page.hideCurrent([_e.index]);
         });
+
+        Geo.savePosition(stations[_e.index]);
+
     });
     window.addEventListener('focus', function() {
         window.FlipViewCollection.peakNext(true);
@@ -62,5 +67,6 @@ var FlipModule = require('de.manumaticx.androidflip');
         });
     });
     window.open();
-    require('controls/record')();
+
+    // require('controls/record')();
 })();

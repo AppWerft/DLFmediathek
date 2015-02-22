@@ -49,10 +49,10 @@ var mirrorPodcasts = function() {
         }
     });
     var RSS = new (require('controls/rss.adapter'))();
-    RSS.getRRS({
+    RSS.getRSS({
         station : 'dlf'
     });
-    RSS.getRRS({
+    RSS.getRSS({
         station : 'drk'
     });
 

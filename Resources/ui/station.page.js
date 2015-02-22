@@ -60,7 +60,7 @@ module.exports = function(_args) {
             lastPubDate = currentItem.pubDate;
             self.topBox.setTop(8);
             self.bottomList.setTop(HEIGHT_OF_TOPBOX);
-            
+
             TopBoxWidget.setPubDate(currentItem.pubDate);
             TopBoxWidget.setTitle(currentItem.title);
             TopBoxWidget.setDescription(currentItem.description);
@@ -88,9 +88,7 @@ module.exports = function(_args) {
                     return;
                 currentMediathekHash = _res.hash;
                 self.bottomList.sections = [];
-
                 _res.mediathek.forEach(function(sendung) {
-
                     var dataitems = [];
                     sendung.subs.forEach(function(item) {
                         dataitems.push({
@@ -164,6 +162,12 @@ module.exports = function(_args) {
             item.fav.image = isfav ? '/images/fav.png' : '/images/favadd.png';
             item.fav.opacity = isfav ? 0.8 : 0.5;
             _e.section.updateItemAt(_e.itemIndex, item);
+        } else if (_e.bindId && _e.bindId == 'sharetrigger') {
+            require('com.alcoapps.socialshare').share({
+                status : 'This is the status to share',
+                image : fileToShare.nativePath,
+                androidDialogTitle : 'Sharing is caring!!!'
+            });
         } else if (_e.bindId && _e.bindId == 'playtrigger') {
             Ti.App.fireEvent('app:play', {
                 item : JSON.parse(_e.itemId)

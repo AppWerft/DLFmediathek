@@ -95,6 +95,14 @@ module.exports = function(_event) {
             }).addEventListener("click", function(_e) {
                 require('ui/mypodcasts.window')().open();
             });
+            _menuevent.menu.add({
+                title : 'Hörerkarte',
+                itemId : '6',
+                icon : Ti.App.Android.R.drawable.ic_action_fav,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+            }).addEventListener("click", function(_e) {
+                require('ui/map.window')().open();
+            });
             // end of click handling
 
             /* Handling of PlayIcon*/
@@ -142,8 +150,8 @@ module.exports = function(_event) {
                         return;
                     if (Player.isPlaying()) {
                         Player.stop();
-                        Player.release();
                     }
+                    Player.release();
                     Player.setUrl(_event.item.url);
                     Player.start();
                 });
