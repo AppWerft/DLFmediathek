@@ -1,5 +1,6 @@
 build
 tiapp.xml
+*.xml
 .settings
 .git
 .projecttiapp.xml
