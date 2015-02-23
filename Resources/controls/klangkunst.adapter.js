@@ -54,7 +54,7 @@ Module.prototype = {
         link.close();
         var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
         var pubdate = Moment(_item.pubdate.split(' | ')[1].replace(' Uhr', ''), 'DD.MM.YYYY HH:mm');
-        var seconds = pubdate.diff(Moment()) / 1000-600;
+        var seconds = pubdate.diff(Moment()) / 1000 - 600;
         var alarm = {
             requestCode : requestCode, // must be INT to identify the alarm
             second : Math.floor(seconds),
@@ -65,7 +65,7 @@ Module.prototype = {
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         };
         alarmManager.addAlarmNotification(alarm);
-           alarmManager.addAlarmNotification({
+        alarmManager.addAlarmNotification({
             requestCode : 1, // must be INT to identify the alarm
             second : 30,
             contentTitle : 'Hörkunst im DeutschlandRadio',
@@ -74,6 +74,9 @@ Module.prototype = {
             icon : Ti.App.Android.R.drawable.appicon,
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         });
+        Ti.UI.createNotification({
+            message : 'Bei Beginn der Sendung bekommst Du eine Benachrichtigung.'
+        }).show();
     },
     killFav : function(_item) {
         var link = Ti.Database.open(DB);

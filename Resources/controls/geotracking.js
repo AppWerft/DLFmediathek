@@ -32,8 +32,8 @@ Module.prototype = {
     },
     savePosition : function(_station) {
         if (Ti.Geolocation.locationServicesEnabled) {
-            Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_NEAREST_TEN_METERS;
-            Ti.Geolocation.purpose = 'Track your performance in this bike race';
+            Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_THREE_KILOMETERS;
+            Ti.Geolocation.purpose = 'Hörerposition festhalten';
             Ti.Geolocation.distanceFilter = 500;
             Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
             Ti.Geolocation.getCurrentPosition(function(_e) {
@@ -43,6 +43,7 @@ Module.prototype = {
 
             });
         } else {
+            console.log('START GEO LOOKING');
             var xhr = Ti.Network.createHTTPClient({
                 onload : function() {
                     var coords = JSON.parse(this.responseText);

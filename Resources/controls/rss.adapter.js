@@ -80,13 +80,16 @@ Module.prototype = {
                 };
                 // back to caller
                 _args.done && _args.done(result);
-                // persist 
+                // persist
                 Ti.App.Properties.setString(url, JSON.stringify(channel.item));
-                if (that.rss && that.rss.isIndexOf(url) == -1) {
-                    that.rss.push({
-                        url : url,
-                        current : null
-                    });
+                try {
+                    if (that.rss && that.rss.isIndexOf(url) == -1) {
+                        that.rss.push({
+                            url : url,
+                            current : null
+                        });
+                    }
+                } catch(E) {
                 }
             }
         });

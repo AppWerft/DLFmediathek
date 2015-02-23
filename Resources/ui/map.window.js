@@ -10,8 +10,8 @@ var Geo = new (require('controls/geotracking'))(),
 module.exports = function(args) {
     var self = require('ui/generic.window')({
         title : 'Deutschlandradio',
-        subtitle : 'Hörerkarte'
-
+        subtitle : 'Hörerkarte',
+        orientationModes : []
     });
     Ti.App.Properties.setObject('REGION', region);
     self.container = Ti.UI.createView();

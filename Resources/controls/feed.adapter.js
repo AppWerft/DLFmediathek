@@ -41,6 +41,12 @@ var Module = function() {
 
 Module.prototype = {
     /* will called from service */
+    downloadPodcast : function(_args) {
+       require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
+            service : 'de.appwerft.dlrmediathek.DownloaderService',
+            second : 10,
+        });  
+    },
     mirrorAllFeeds : function(_args) {
         var that = this;
         var total = 0;

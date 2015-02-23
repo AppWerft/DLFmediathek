@@ -6,7 +6,7 @@ module.exports = function(_args) {
         title : _args.title,
         subtitle : _args.subtitle,
         itemId : _args.station,
-        orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
+        orientationModes : (_args.orientationModes) ? _args.orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
     self.addEventListener('open', function(_event) {
         АктйонБар.title = self.title;

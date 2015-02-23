@@ -8,7 +8,7 @@ module.exports = function(station) {
     var color = Model[station].color;
     var self = require('ui/generic.window')({
         title : 'Klangkunst',
-        subtitle : 'Hörspiel und Feature',
+        subtitle : 'Vorschau und Erinnerer',
         station : station
     });
     self.list = Ti.UI.createListView({
