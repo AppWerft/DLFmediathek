@@ -36,3 +36,44 @@ function share(_args) {
 
 module.exports = share;
 
+/* Testing of app:
+ * try {
+            Ti.API.info('Trying to Launch via Intent');
+            var intent = Ti.Android.createIntent({
+                action: Ti.Android.ACTION_VIEW,
+                data: url
+ 
+            });
+            Ti.Android.currentActivity.startActivity(intent);
+        } catch (e){
+            Ti.API.info('Caught Error launching intent: '+e);
+            exports.Install();
+        }
+ * 
+ */
+
+/*
+ * FROM: http://stackoverflow.com/questions/28090842/titanium-android-intent-share-on-social-media
+ * AND http://stackoverflow.com/questions/28090842/titanium-android-intent-share-on-social-media
+ * 
+ * var intFB = Ti.Android.createIntent({
+    action : Ti.Android.ACTION_SEND,
+    packageName : "com.facebook.katana",                        
+    type : "text/plain"
+});                    
+
+intFB.putExtra(Ti.Android.EXTRA_TEXT, yourLink);
+//facebook only supports LINKS(!!!)
+Ti.Android.currentActivity.startActivity(intFB);
+
+var intTwitter = Ti.Android.createIntent({
+    action: Ti.Android.ACTION_SEND,
+    packageName: "com.twitter.android",     
+    flags: Ti.Android.FLAG_ACTIVITY_NEW_TASK,
+    type: "text/plain"
+});
+
+intTwitter.putExtra( Ti.Android.EXTRA_TEXT, yourMessage); 
+//twitter supports any kind of string content (link, text, etc)
+Ti.Android.currentActivity.startActivity( intTwitter );
+ */

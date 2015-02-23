@@ -166,12 +166,17 @@ module.exports = function(_args) {
             item.fav.opacity = isfav ? 0.8 : 0.5;
             _e.section.updateItemAt(_e.itemIndex, item);
         } else if (_e.bindId && _e.bindId == 'share') {
-            require('vendor/com.alcoapps.socialshare')({
-                message : 'Höre gerade „' + JSON.parse(_e.itemId).subtitle + '“ auf ' +_args.name,
-                url : JSON.parse(_e.itemId).url,
-                // image : fileToShare.nativePath,
-                androidDialogTitle : 'Teilen macht Spaß!'
+            Ti.Media.vibrate();
+            require('ui/sharing.chooser')(function(_type) {
+                require('vendor/socialshare')({
+                    type : _type,
+                    message : 'Höre gerade „' + JSON.parse(_e.itemId).subtitle + '“ auf ' + _args.name,
+                    url : JSON.parse(_e.itemId).url,
+                    // image : fileToShare.nativePath,
+                         });
             });
+            /**/
+
         } else if (_e.bindId && _e.bindId == 'playtrigger') {
             Ti.App.fireEvent('app:play', {
                 item : JSON.parse(_e.itemId)
