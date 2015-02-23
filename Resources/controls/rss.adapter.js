@@ -44,7 +44,8 @@ Module.prototype = {
                     ndx++;
             }
             return items;
-        } else return [];
+        } else
+            return [];
     },
     getCurrentOnAir : function(_args) {
         var currentonair = null;
@@ -57,6 +58,7 @@ Module.prototype = {
     },
     getRSS : function(_args) {
         var that = this;
+        // still present?
         var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
         if (Ti.App.Properties.hasProperty(url) && _args.done) {
             _args.done({
@@ -65,6 +67,7 @@ Module.prototype = {
             });
             return;
         }
+        // no => retreiving
         var xhr = Ti.Network.createHTTPClient({
             onload : function() {
                 var channel = new XMLTools(this.responseXML).toObject().channel;
@@ -75,13 +78,16 @@ Module.prototype = {
                     ok : true,
                     items : channel.item
                 };
+                // back to caller
                 _args.done && _args.done(result);
+                // persist 
                 Ti.App.Properties.setString(url, JSON.stringify(channel.item));
-                if (that.rss.isIndexOf(url) == -1)
+                if (that.rss && that.rss.isIndexOf(url) == -1) {
                     that.rss.push({
                         url : url,
                         current : null
                     });
+                }
             }
         });
         xhr.open('GET', url);

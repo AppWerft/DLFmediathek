@@ -114,6 +114,9 @@ module.exports = function(_args) {
                                 image : item.isfav ? '/images/fav.png' : '/images/favadd.png',
                                 opacity : item.isfav ? 0.8 : 0.5
                             },
+                            share : {
+                                opacity : 0.7
+                            },
                             autor : {
                                 text : (item.author) ? 'Autor: ' + item.author : '',
                                 height : (item.author) ? Ti.UI.SIZE : 0
@@ -162,11 +165,12 @@ module.exports = function(_args) {
             item.fav.image = isfav ? '/images/fav.png' : '/images/favadd.png';
             item.fav.opacity = isfav ? 0.8 : 0.5;
             _e.section.updateItemAt(_e.itemIndex, item);
-        } else if (_e.bindId && _e.bindId == 'sharetrigger') {
-            require('com.alcoapps.socialshare').share({
-                status : 'This is the status to share',
-                image : fileToShare.nativePath,
-                androidDialogTitle : 'Sharing is caring!!!'
+        } else if (_e.bindId && _e.bindId == 'share') {
+            require('vendor/com.alcoapps.socialshare')({
+                message : 'Höre gerade „' + JSON.parse(_e.itemId).subtitle + '“ auf ' +_args.name,
+                url : JSON.parse(_e.itemId).url,
+                // image : fileToShare.nativePath,
+                androidDialogTitle : 'Teilen macht Spaß!'
             });
         } else if (_e.bindId && _e.bindId == 'playtrigger') {
             Ti.App.fireEvent('app:play', {

@@ -37,7 +37,7 @@ exports.schema = {
             layout : 'vertical',
             left : 70,
             top : 5,
-            height:Ti.UI.SIZE,
+            height : Ti.UI.SIZE,
             right : 25
         },
         childTemplates : [{
@@ -280,12 +280,26 @@ exports.mediathek = {
         bindId : 'fav',
         properties : {
             opacity : 0.5,
-            left : 10,
+            left : 5,
             top : 32,
+             bottom : 5,
             bubbleParent : true,
             image : '/images/favadd.png',
-            width : 32,
-            height : 32
+            width : 30,
+            height : 30
+        }
+    }, {
+        type : 'Ti.UI.ImageView',
+        bindId : 'share',
+        properties : {
+            opacity : 0.5,
+            left : 35,
+            top : 35,
+            bottom : 5,
+            bubbleParent : true,
+            image : '/images/share.png',
+            width : 27,
+            height : 27
         }
     }, {
         type : 'Ti.UI.View',
@@ -293,7 +307,7 @@ exports.mediathek = {
         properties : {
             width : Ti.UI.FILL,
             layout : 'vertical',
-            left : 70,
+            left : 75,
             right : 25
         },
         childTemplates : [{
@@ -464,7 +478,6 @@ exports.merkliste = {
         }]
     }]
 };
-
 
 exports.merklisteactive = {
     properties : {
