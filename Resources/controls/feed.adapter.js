@@ -42,10 +42,13 @@ var Module = function() {
 Module.prototype = {
     /* will called from service */
     downloadPodcast : function(_args) {
-       require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
+        require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
             service : 'de.appwerft.dlrmediathek.DownloaderService',
             second : 10,
-        });  
+            parameter : {
+                url : _args.url
+            }
+        });
     },
     mirrorAllFeeds : function(_args) {
         var that = this;
@@ -217,7 +220,7 @@ Module.prototype = {
         });
         xhr.open('GET', _args.url);
         xhr.send();
-    },  // standard methods for event/observer pattern
+    }, // standard methods for event/observer pattern
     fireEvent : function(_event, _payload) {
         if (this.eventhandlers[_event]) {
             for (var i = 0; i < this.eventhandlers[_event].length; i++) {
