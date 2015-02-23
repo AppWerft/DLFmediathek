@@ -40,7 +40,7 @@ var Module = function() {
 };
 
 Module.prototype = {
-    /* will called from service */
+    /* will called from UI and calls background service */
     downloadPodcast : function(_args) {
         require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
             service : 'de.appwerft.dlrmediathek.DownloaderService',
