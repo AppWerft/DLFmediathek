@@ -22,7 +22,7 @@ module.exports = function(_args) {
             case 'XING':
                 intent = Ti.Android.createIntent({
                     action : Ti.Android.ACTION_SEND,
-                    packageName : "com.xing",
+                    packageName : "com.xing.android",
                     flags : Ti.Android.FLAG_ACTIVITY_NEW_TASK,
                     type : "text/plain"
                 });

@@ -9,6 +9,9 @@ module.exports = function(_cb) {
         label : 'Google+',
         icon : '/images/google.png',
     },{
+        label : 'XING',
+        icon : '/images/xing.png',
+    },{
         label : 'Download',
         icon : '/images/download.png',
     }];
