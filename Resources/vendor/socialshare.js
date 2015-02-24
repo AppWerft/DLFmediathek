@@ -1,21 +1,4 @@
-/*
- SocialShare : Titanium Module for cross-platform sharing of text and images over social networks
- it is modified  version of original version of Ricardo
-
- Android:
- For Android it uses the Native Sharing Intent, which brings up a list of installed apps to choose from.
-
- Arguments:
-
- image               : Given as nativePath
- message              : The text status to share
- url                 : long version of URL, will shorten
- androidDialogTitle  : The title of the Andorid share window
- 
- 
- 
- */
-var urlshortener =function(_args) {
+var urlshortener = function(_args) {
     var self = Ti.Network.createHTTPClient({
         onload : function() {
             _args.done(JSON.parse(this.responseText).id);
@@ -30,13 +13,21 @@ var urlshortener =function(_args) {
     self.send(JSON.stringify(payload));
 };
 
-
-module.exports = function (_args) {
+module.exports = function(_args) {
     urlshortener({
         url : _args.url,
         done : function(_url) {
             var intent;
             switch (_args.type) {
+            case 'XING':
+                intent = Ti.Android.createIntent({
+                    action : Ti.Android.ACTION_SEND,
+                    packageName : "com.xing",
+                    flags : Ti.Android.FLAG_ACTIVITY_NEW_TASK,
+                    type : "text/plain"
+                });
+                intent.putExtra(Ti.Android.EXTRA_TEXT, _args.message + ' ' + _url);
+                break;
             case 'Facebook':
                 intent = Ti.Android.createIntent({
                     action : Ti.Android.ACTION_SEND,
@@ -82,7 +73,6 @@ module.exports = function (_args) {
         }
     });
 };
-
 
 /* Testing of app:
  * try {
