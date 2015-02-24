@@ -22,10 +22,7 @@ function share(_args) {
                 intent = Ti.Android.createIntent({
                     action : Ti.Android.ACTION_SEND,
                     packageName : "com.facebook.katana",
-
-                    // className :'com.facebook.katana.activity.composer.ImplicitShareIntentHandler',
                     type : "text/plain",
-                  //  className : "ShareLinkActivity",
                     flags : 0x30000000,
                 });
                 //intent.addCategory( Ti.Android.CATEGORY_LAUNCHER );
