@@ -11,9 +11,28 @@
  message              : The text status to share
  url                 : long version of URL, will shorten
  androidDialogTitle  : The title of the Andorid share window
+ 
+ 
+ 
  */
-function share(_args) {
-    require('vendor/url.shortener')({
+var urlshortener =function(_args) {
+    var self = Ti.Network.createHTTPClient({
+        onload : function() {
+            _args.done(JSON.parse(this.responseText).id);
+        }
+    });
+    self.open('POST', 'https://www.googleapis.com/urlshortener/v1/url');
+    self.setRequestHeader('Content-Type', 'application/json');
+    var payload = {
+        longUrl : _args.url,
+        key : Ti.App.Properties.getString('shorter')
+    };
+    self.send(JSON.stringify(payload));
+};
+
+
+module.exports = function (_args) {
+    urlshortener({
         url : _args.url,
         done : function(_url) {
             var intent;
@@ -62,10 +81,8 @@ function share(_args) {
             Ti.Android.currentActivity.startActivity(intent);
         }
     });
+};
 
-}
-
-module.exports = share;
 
 /* Testing of app:
  * try {
