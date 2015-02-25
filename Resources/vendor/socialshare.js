@@ -12,7 +12,7 @@ var urlshortener = function(_args) {
     };
     self.send(JSON.stringify(payload));
 };
-
+// http://stackoverflow.com/questions/2789462/find-package-name-for-android-apps-to-use-intent-to-launch-market-app-from-web
 module.exports = function(_args) {
     urlshortener({
         url : _args.url,
@@ -49,7 +49,16 @@ module.exports = function(_args) {
                 });
                 intent.putExtra(Ti.Android.EXTRA_TEXT, _args.message + ' ' + _url);
                 break;
-            case 'Google+':
+             case 'Meetup':
+                intent = Ti.Android.createIntent({
+                    action : Ti.Android.ACTION_SEND,
+                    packageName : "com.meetup",
+                    flags : Ti.Android.FLAG_ACTIVITY_NEW_TASK,
+                    type : "text/plain"
+                });
+                intent.putExtra(Ti.Android.EXTRA_TEXT, _args.message + ' ' + _url);
+                break;   
+            case 'Google':
                 intent = Ti.Android.createIntent({
                     action : Ti.Android.ACTION_SEND,
                     packageName : "com.google.android.apps.plus",

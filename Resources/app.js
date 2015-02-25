@@ -2,7 +2,6 @@ var FlipModule = require('de.manumaticx.androidflip');
 var stations = ['dlf', 'drk', 'drw'];
 var Geo = new (require('controls/geotracking'))();
 
-
 (function() {
     //http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
     Ti.Media.createSound();
@@ -75,7 +74,32 @@ var Geo = new (require('controls/geotracking'))();
     RSS.getRSS({
         station : 'drk'
     });
-    
-    
+
+    var intent = Titanium.Android.createServiceIntent({
+        url : 'downloader.js'
+    });
+    // Service should run its code every 2 seconds.
+    intent.putExtra('interval', 2000);
+    // A message that the service should 'echo'
+    intent.putExtra('url', 'Titanium rocks!');
+
+
+
+
+
+
+
+    var service = Ti.Android.createService(intent);
+    service.addEventListener('resume', function(e) {
+        Titanium.API.info('Service code resumes, iteration ' + e.iteration);
+    });
+    service.addEventListener('pause', function(e) {
+        Titanium.API.info('Service code pauses, iteration ' + e.iteration);
+        if (e.iteration === 3) {
+            Titanium.API.info('Service code has run 3 times, will now stop it.');
+            service.stop();
+        }
+    });
+    service.start();
 
 })();

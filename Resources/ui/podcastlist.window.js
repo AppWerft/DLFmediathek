@@ -8,7 +8,7 @@ module.exports = function(_args) {
         fullscreen : true,
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
-
+    console.log(_args.station);
     var Player = new (require('ui/audioplayer.widget'))();
     self.AudioPlayerView = Player.createView({
         color : _args.color
@@ -29,6 +29,7 @@ module.exports = function(_args) {
             _feeditems.items.forEach(function(item) {
                 var res = /<img src="(.*?)" /gmi.exec(item.description);
                 var image = (res) ? res[1] : null;
+                console.log(item);
                 items.push({
                     pubdate : {
                         text : Moment(item.pubDate).format('LLL')
@@ -66,7 +67,7 @@ module.exports = function(_args) {
         var item = JSON.parse(_e.itemId);
         console.log(item);
         if (!item.duration) item.duration = item['itunes:duration'];
-        if (!item.enclosure_url) item.enclosure_url = itemenclosure.url;
+        if (!item.enclosure_url) item.enclosure_url = item.enclosure.url;
         
         if (item.duration) {
             var sec = parseInt(item.duration.split(':')[0]) * 60 + parseInt(item.duration.split(':')[1]);

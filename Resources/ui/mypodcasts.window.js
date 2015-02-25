@@ -20,7 +20,7 @@ module.exports = function(station) {
     function updateList() {
         var dataItems = [];
         Feeds.getAllFavedFeeds().forEach(function(item) {
-            var PATTERN = {
+           /* var PATTERN = {
                 "url" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation-komplette-sendung.416.de.podcast.xml",
                 "http_expires" : "Sat, 14 Feb 2015 21:20:08 GMT",
                 "http_lastmodified" : "Sat, 14 Feb 2015 21:19:08 GMT",
@@ -34,8 +34,9 @@ module.exports = function(station) {
                 "lastBuildDate" : "Sat, 14 Feb 2015 22:19:08 +0100",
                 "image" : "http://www.deutschlandfunk.de/media/files/d/d4a13a32cde15fff1f5bdbfc3688d14av1.jpg",
                 "faved" : 1
-            };
-            console.log(item);
+            };*/
+            console.log(item.image);
+             console.log(station);
             dataItems.push({
                 properties : {
                     accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
@@ -51,7 +52,8 @@ module.exports = function(station) {
                     text : item.description,
                 },
                 logo : {
-                    image : item.image
+                    image : item.image,
+                    defaultImage : '/images/' + station + '.png'
                 },
 
             });

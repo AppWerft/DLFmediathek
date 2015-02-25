@@ -1,8 +1,6 @@
 //https://gist.github.com/manumaticx/6239830
 
 var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
-
-
 var setNotification = function(alarm) {
     var activity = Ti.Android.currentActivity;
     var intent = Ti.Android.createIntent({

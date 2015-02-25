@@ -101,7 +101,7 @@ module.exports = Module;
 function createUser(_args) {
     Cloud.Users.create({
         username : Ti.Platform.id,
-        first_name : Titanium.Platform.model,
+        first_name : Ti.Platform.model,
         last_name : Ti.App.version,
         email : '',
         password : "pass",
@@ -149,25 +149,23 @@ function loginUser(_args) {
 
 function savePosition(_coords) {
     if (!Ti.App.Properties.hasProperty('RADIOLISTENERproduction')) {
-        console.log('INSERT');
         Cloud.Objects.create({
             classname : 'radiolistener',
             acl_id : ACL_ID,
             fields : {
                 station : _coords.station,
                 latitude : _coords.latitude,
-                longitude : _coords.longitude
+                longitude : _coords.longitude,
+                coordinates : [_coords.longitude,_coords.latitude]
             }
         }, function(_e) {
             if (_e.success) {
                 Ti.App.Properties.setString('RADIOLISTENERproduction', _e.radiolistener[0].id);
             } else {
-                console.log(ACL_ID);
                 console.log(_e);
             }
         });
     } else {
-        console.log('UPDATE');
         Cloud.Objects.update({
             classname : 'radiolistener',
             id : Ti.App.Properties.getString('RADIOLISTENERproduction'),

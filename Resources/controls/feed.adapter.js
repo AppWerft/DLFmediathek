@@ -61,6 +61,7 @@ Module.prototype = {
                 var feed = feeds.shift();
                 if (feed) {
                     total++;
+                    console.log(feed.href);
                     that.loadFeed({
                         url : feed.href,
                         done : loadfeed
