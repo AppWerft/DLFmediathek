@@ -6,7 +6,7 @@ module.exports = {
         rss : 'http://www.deutschlandfunk.de/programmvorschau.281.de.rss',
         /* für LiveRadio, eigentlicher Stream wird ermittelt und gespeichert*/
         livestream : 'http://www.dradio.de/streaming/dlf.m3u',
-        /* wird jede Minutre aufgerufen, wenn View aktiv ist */
+        /* wird jede Minute aufgerufen, wenn View dieser Station aktiv ist */
         livemediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=4&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'
     },
     drk : {
