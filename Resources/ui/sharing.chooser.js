@@ -30,10 +30,7 @@ module.exports = function(_cb) {
     }, {
         label : 'Dropbox',
         icon : '/images/dropbox.png',
-    }*/, {
-        label : 'Download',
-        icon : '/images/download.png',
-    }];
+    }*/];
 
     var rows = [];
     items.forEach(function(item) {

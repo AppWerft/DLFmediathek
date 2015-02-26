@@ -63,8 +63,9 @@ Module.prototype = {
             limit : 1000,
             where : {
                 station : {
-                    "$ne" : ''
-                }/*,
+                    "$ne" : '',
+
+                },/*,
                  updated_at : {
                  "$gt" : Moment().add(-120, 'sec')
                  }*/
@@ -80,12 +81,12 @@ Module.prototype = {
                 };
                 for (var i = 0; i < e.radiolistener.length; i++) {
                     var item = e.radiolistener[i];
-                    console.log(Moment(item['updated_at']));
                     //if (Moment(item['updated_at']).add(300, 'sec').isAfter(Moment()))
-                    listener[e.radiolistener[i].station].push({
-                        lat : item.latitude,
-                        lng : item.longitude
-                    });
+                    if (item.latitude != '' && item.longitude != '')
+                        listener[e.radiolistener[i].station].push({
+                            lat : item.latitude,
+                            lng : item.longitude
+                        });
                     //  console.log(e.radiolistener[i]);
                 }
                 _args.done(listener);
@@ -116,7 +117,7 @@ function createUser(_args) {
                     userid : _e.users[0].id,
                     latitude : '',
                     longitude : '',
-                    station : ''
+                    station : 'dlf'
                 }
             }, function(_e) {
                 if (_e.success) {
@@ -146,7 +147,6 @@ function loginUser(_args) {
     });
 }
 
-
 function savePosition(_coords) {
     if (!Ti.App.Properties.hasProperty('RADIOLISTENERproduction')) {
         Cloud.Objects.create({
@@ -156,7 +156,7 @@ function savePosition(_coords) {
                 station : _coords.station,
                 latitude : _coords.latitude,
                 longitude : _coords.longitude,
-                coordinates : [_coords.longitude,_coords.latitude]
+                coordinates : [_coords.longitude, _coords.latitude]
             }
         }, function(_e) {
             if (_e.success) {

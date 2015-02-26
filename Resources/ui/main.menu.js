@@ -160,5 +160,4 @@ module.exports = function(_event) {
         activity.invalidateOptionsMenu();
         require('vendor/versionsreminder')();
     }
-    // require('vendor/versionsreminder')();
 };

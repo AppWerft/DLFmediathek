@@ -6,7 +6,7 @@ var Geo = new (require('controls/geotracking'))(),
     latitudeDelta : 20,
     longitudeDelta : 20
 });
-
+console.log(region);
 module.exports = function(args) {
     var self = require('ui/generic.window')({
         title : 'Deutschlandradio',
@@ -17,6 +17,7 @@ module.exports = function(args) {
     self.container = Ti.UI.createView();
     self.add(self.container);
     function updatePins() {
+       
         Geo.getAll({
             done : function(_list) {
                 var pins = [];
@@ -59,15 +60,15 @@ module.exports = function(args) {
         regionFit : true,
         userLocation : false,
         enableZoomControls : false,
-
     });
     self.container.add(mapview);
     updatePins();
     setInterval(updatePins, 30000);
+    
     mapview.addEventListener('regionchanged', function(_e) {
         delete _e.source;
         delete _e.type;
-        if (_e.latitudeDelta < 0.5 || _e.longitudeDelta < 0.5) {
+        if (_e.latitudeDelta < 2 || _e.longitudeDelta < 2) {
             mapview.setRegion(Ti.App.Properties.getObject('REGION'));
         } else
             Ti.App.Properties.setObject('REGION', _e);
