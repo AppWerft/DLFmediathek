@@ -47,11 +47,26 @@ module.exports = function(_args) {
         defaultItemTemplate : 'mediathek',
         sections : [Ti.UI.createListSection({})]
     });
-    self.add(self.bottomList);
+    self.bottomView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
+        view : self.bottomList,
+        height : Ti.UI.FILL,
+        width : Ti.UI.FILL,
+        backgroundColor : '#444'
+    });
+    self.bottomView.addEventListener('refreshing', function() {
+        if (Math.random() > 0.9)
+            Ti.UI.createNotification({
+                message : 'Sehr gut, Medienkompetenz=1!\nAber bitte nicht allzuoft hier ziehen. Empfehlung: so alle fünf Minuten – sonst leierst aus …'
+            }).show();
+        setTimeout(function() {
+            self.bottomView.setRefreshing(false);
+        }, 5000);
+        self.updatePodcasts();
+    });
+    self.add(self.bottomView);
     var dataItems = [];
     var lastPubDate = null;
     var currentMediathekHash = null;
-
     self.updateCurrentinTopBox = function(_forced) {
         var currentItem = RSS.getCurrentOnAir({
             station : _args.name
@@ -59,12 +74,12 @@ module.exports = function(_args) {
         if (currentItem) {
             lastPubDate = currentItem.pubDate;
             self.topBox.setTop(8);
-            self.bottomList.setTop(HEIGHT_OF_TOPBOX);
+            self.bottomView.setTop(HEIGHT_OF_TOPBOX);
 
             TopBoxWidget.setPubDate(currentItem.pubDate);
             TopBoxWidget.setTitle(currentItem.title);
             TopBoxWidget.setDescription(currentItem.description);
-            self.bottomList.animate({
+            self.bottomView.animate({
                 top : HEIGHT_OF_TOPBOX,
                 duration : 700
             });
@@ -72,10 +87,14 @@ module.exports = function(_args) {
     };
     /* hiding of todays display */
     self.hideCurrent = function() {
-        self.bottomList.setTop(7);
+        self.bottomView.setTop(7);
         self.topBox.setTop(-HEIGHT_OF_TOPBOX);
     };
     self.updatePodcasts = function() {
+        self.bottomView.setRefreshing(true);
+        setTimeout(function() {
+            self.bottomView.setRefreshing(false);
+        }, 10000);
         if (activityworking == false) {
             return;
         }
@@ -84,6 +103,7 @@ module.exports = function(_args) {
             nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
             date : self.date.format('DD.MM.YYYY'),
             onload : function(_res) {
+                self.bottomView.setRefreshing(false);
                 if (currentMediathekHash == _res.hash)
                     return;
                 currentMediathekHash = _res.hash;
@@ -139,7 +159,7 @@ module.exports = function(_args) {
                     self.topBox.animate({
                         top : -HEIGHT_OF_TOPBOX,
                     });
-                    self.bottomList.animate({
+                    self.bottomView.animate({
                         top : 8,
                         duration : 600
                     });
@@ -154,7 +174,7 @@ module.exports = function(_args) {
     };
     self.updatePodcasts();
     if (self.date.isSame(Moment().startOf('day')))
-        self.cron = setInterval(self.updatePodcasts, 30000);
+        self.cron = setInterval(self.updatePodcasts, 300000);
     else
         clearInterval(self.cron);
 
@@ -173,7 +193,7 @@ module.exports = function(_args) {
                     message : 'Höre gerade „' + JSON.parse(_e.itemId).subtitle + '“ auf ' + _args.name,
                     url : JSON.parse(_e.itemId).url,
                     // image : fileToShare.nativePath,
-                         });
+                });
             });
             /**/
 

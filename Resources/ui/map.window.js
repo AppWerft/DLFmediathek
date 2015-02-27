@@ -6,11 +6,23 @@ var Geo = new (require('controls/geotracking'))(),
     latitudeDelta : 20,
     longitudeDelta : 20
 });
-console.log(region);
+
+
+Ti.API.info('Ti.Platform.displayCaps.density: ' + Ti.Platform.displayCaps.density);
+Ti.API.info('Ti.Platform.displayCaps.dpi: ' + Ti.Platform.displayCaps.dpi);
+Ti.API.info('Ti.Platform.displayCaps.platformHeight: ' + Ti.Platform.displayCaps.platformHeight);
+Ti.API.info('Ti.Platform.displayCaps.platformWidth: ' + Ti.Platform.displayCaps.platformWidth);
+if((Ti.Platform.osname === 'iphone')||(Ti.Platform.osname === 'ipad')||(Ti.Platform.osname === 'android')){
+  Ti.API.info('Ti.Platform.displayCaps.logicalDensityFactor: ' + Ti.Platform.displayCaps.logicalDensityFactor);
+}
+if(Ti.Platform.osname === 'android'){
+  Ti.API.info('Ti.Platform.displayCaps.xdpi: ' + Ti.Platform.displayCaps.xdpi);
+  Ti.API.info('Ti.Platform.displayCaps.ydpi: ' + Ti.Platform.displayCaps.ydpi);
+}
 module.exports = function(args) {
     var self = require('ui/generic.window')({
         title : 'Deutschlandradio',
-        subtitle : 'Hörerkarte',
+        subtitle : 'anonymisierte Hörerkarte',
         orientationModes : []
     });
     Ti.App.Properties.setObject('REGION', region);
@@ -25,7 +37,7 @@ module.exports = function(args) {
                     pins.push(Map.createAnnotation({
                         latitude : _pos.lat,
                         longitude : _pos.lng,
-                        title : 'DLF',
+                        image : '/images/dlf'+Ti.Platform.displayCaps.density+'.png',
                         pincolor : Map.ANNOTATION_BLUE,
                     }));
                 });
@@ -33,7 +45,8 @@ module.exports = function(args) {
                     pins.push(Map.createAnnotation({
                         latitude : _pos.lat,
                         longitude : _pos.lng,
-                        title : 'DKultur',
+                       
+                        image : '/images/drk'+Ti.Platform.displayCaps.density+'.png',
                         pincolor : Map.ANNOTATION_ORANGE,
                     }));
                 });
@@ -41,7 +54,8 @@ module.exports = function(args) {
                     pins.push(Map.createAnnotation({
                         latitude : _pos.lat,
                         longitude : _pos.lng,
-                        title : 'DRWissen',
+                      
+                         image : '/images/drw'+Ti.Platform.displayCaps.density+'.png',
                         pincolor : Map.ANNOTATION_GREEN,
                     }));
                 });
