@@ -4,7 +4,8 @@ var Model = require('model/stations'),
     alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
 module.exports = function(station) {
-    station = 'drk';
+    if (!station)
+        station = 'drk';
     var color = Model[station].color;
     var self = require('ui/generic.window')({
         title : 'Klangkunst',
@@ -71,7 +72,7 @@ module.exports = function(station) {
                 station : station
             });
     });
-    self.open();
+   return self;
 };
 
 function addEvent() {

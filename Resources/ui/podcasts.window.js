@@ -3,6 +3,8 @@ var Model = require('model/stations'),
     Podcast = new (require('controls/feed.adapter'))();
     
 module.exports = function(station) {
+     if (!station)
+        station = 'dlf';
     var self = require('ui/generic.window')({
         title : 'Deutschlandradio',
         subtitle : 'Sendungen zum Nachhören',
@@ -45,5 +47,5 @@ module.exports = function(station) {
                 }).open();
         });
     }, 100);
-    self.open();
+   return self;
 };

@@ -193,21 +193,9 @@ module.exports = [{
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-religionen.1279.de.podcast.xml",
-
     "img" : {
         "alt" : "Religionen",
         "src" : "http://www.deutschlandradiokultur.de/media/thumbs/4/41adfdb80e7aa87b3bae6903cf347f72v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Religionen"
-    }
-}, {
-    "href" : "http://www.deutschlandradiokultur.de/podcast-reportage.948.de.podcast.xml",
-
-    "img" : {
-        "alt" : "Reportage",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/9/90c4d6a78d4d8f8db0479c7a4f978c41v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Reportage"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-schlaglichter.1921.de.podcast.xml",
@@ -215,35 +203,24 @@ module.exports = [{
     "img" : {
         "alt" : "Schlaglichter",
         "src" : "http://www.deutschlandradiokultur.de/media/thumbs/c/c96af375cb259d5132425c8b7b7cec91v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Schlaglichter"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-sein-und-streit.2163.de.podcast.xml",
-
     "img" : {
         "alt" : "Sein und Streit",
         "src" : "http://www.deutschlandradiokultur.de/media/thumbs/e/e52a28c721188921a6cc0354b06b605dv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Sein und Streit"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-studio-9.2166.de.podcast.xml",
-
     "img" : {
         "alt" : "Studio 9",
         "src" : "http://www.deutschlandradiokultur.de/media/thumbs/a/a1c5f31c30b9337766cced5708bf7a36v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Studio 9"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-tacheles.991.de.podcast.xml",
-
     "img" : {
         "alt" : "Tacheles",
         "src" : "http://www.deutschlandradiokultur.de/media/thumbs/5/5e8a3919807fd6d8f6d31fade703c1a3v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
-        "title" : "Tacheles"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-vollbild.2169.de.podcast.xml",

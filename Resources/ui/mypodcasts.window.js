@@ -3,7 +3,8 @@ var Model = require('model/stations'),
     Moment = require('vendor/moment');
 Moment.locale('de');
 
-module.exports = function(station) {
+module.exports = function() {
+    var station='dlf';
     var self = require('ui/generic.window')({
         title : 'DeutschlandRadio',
         subtitle : 'Meine Podcasts',

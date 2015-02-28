@@ -5,7 +5,7 @@ var Model = require('model/stations'),
 
 module.exports = function(station) {
     if (!station)
-        return;
+        station = 'dlf';
 
     var model = require('model/stations')[station];
 
@@ -28,15 +28,15 @@ module.exports = function(station) {
         left : 10,
         image : '/images/' + station + '.png'
     });
-   
+
     self.head.add(Ti.UI.createImageView({
         image : '/images/kopf.png',
         height : 50,
         width : 280,
         left : 0
     }));
-     self.head.add(self.headstation);
-    self.add(self.head);
+    self.head.add(self.headstation);
+  //  self.add(self.head);
     var pages = [];
     ['dlf', 'drk'].forEach(function(station) {
         pages.push(require('ui/dayplan.page')(station));
@@ -45,7 +45,7 @@ module.exports = function(station) {
         orientation : FlipModule.ORIENTATION_HORIZONTAL,
         overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
         views : pages,
-        top : 50,
+        top : 0,
         currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
         height : Ti.UI.FILL
     });

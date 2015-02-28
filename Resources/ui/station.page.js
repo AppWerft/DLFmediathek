@@ -3,12 +3,12 @@ var Favs = new (require('controls/favorites.adapter'))(),
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
-const HEIGHT_OF_TOPBOX = 150;
+const HEIGHT_OF_TOPBOX = 160;
 
 module.exports = function(_args) {
     var activityworking = true;
     var self = Ti.UI.createView({
-        backgroundColor : '#fff',
+        backgroundColor : '#444',
         date : Moment().startOf('day'),
         itemId : {
             name : _args.name,

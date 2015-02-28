@@ -23,10 +23,8 @@ module.exports = function(_event) {
             console.log('Setting of activity handler');
             
         }
-
         var FlipViewCollection = _event.source.FlipViewCollection;
         activity.onCreateOptionsMenu = function(_menuevent) {
-
             var currentPage = FlipViewCollection.views[Ti.App.Properties.getInt('LAST_STATION_NDX', 0)];
             activity.actionBar.logo = '/images/' + Ti.App.Properties.getString('LAST_STATION', 'dlf') + '.png';
             _menuevent.menu.clear();
@@ -56,30 +54,6 @@ module.exports = function(_event) {
                 });
             });
             _menuevent.menu.add({
-                title : 'Tagesplan',
-                itemId : '2',
-                icon : Ti.App.Android.R.drawable.ic_action_rss,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-            }).addEventListener("click", function(_e) {
-                require('ui/dayplan.window')(currentStationName).open();
-            });
-            _menuevent.menu.add({
-                title : 'Klangkunst',
-                itemId : '4',
-                icon : Ti.App.Android.R.drawable.ic_action_ohr,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-            }).addEventListener("click", function(_e) {
-                require('ui/klangkunst.window')(currentStationName);
-            });
-            _menuevent.menu.add({
-                title : 'Archiv und Podcasts',
-                itemId : '3',
-                icon : Ti.App.Android.R.drawable.ic_action_feed,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-            }).addEventListener("click", function(_e) {
-                require('ui/podcasts.window')(currentStationName);
-            });
-            _menuevent.menu.add({
                 title : 'Meine Vormerkliste',
                 itemId : '5',
                 icon : Ti.App.Android.R.drawable.ic_action_fav,
@@ -95,14 +69,7 @@ module.exports = function(_event) {
             }).addEventListener("click", function(_e) {
                 require('ui/mypodcasts.window')().open();
             });
-            _menuevent.menu.add({
-                title : 'Hörerkarte',
-                itemId : '6',
-                icon : Ti.App.Android.R.drawable.ic_action_fav,
-                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-            }).addEventListener("click", function(_e) {
-                require('ui/map.window')().open();
-            });
+            
             // end of click handling
 
             /* Handling of PlayIcon*/
@@ -121,7 +88,7 @@ module.exports = function(_event) {
                 };
             });
             activity.actionBar.displayHomeAsUp = false;
-            FlipViewCollection.addEventListener('flipped', function(_e) {
+            /*FlipViewCollection.addEventListener('flipped', function(_e) {
                 currentStationName = FlipViewCollection.getViews()[_e.index].itemId.name;
                 Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
                 Ti.App.Properties.setString('LAST_STATION', currentStationName);
@@ -131,7 +98,7 @@ module.exports = function(_event) {
                     menuitem.setVisible(false);
                 else
                     menuitem.setVisible(true);
-            });
+            });*/
             Ti.App.addEventListener('app:stop', function(_event) {
                 if (Player.isPlaying()) {
                     Player.stop();
@@ -157,7 +124,7 @@ module.exports = function(_event) {
                 });
             });
         };
-        activity.invalidateOptionsMenu();
+        activity && activity.invalidateOptionsMenu();
         require('vendor/versionsreminder')();
     }
 };
