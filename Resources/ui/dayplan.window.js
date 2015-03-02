@@ -64,7 +64,7 @@ module.exports = function(station) {
 
     self.addEventListener('focus', function() {
         Ti.App.fireEvent('app:station', {
-            station: pages[_e.index].station
+            station: Ti.App.Properties.getString('LAST_STATION')
         });
 
         self.FlipViewCollection.peakNext(true);
