@@ -72,7 +72,14 @@ module.exports = function(station) {
                 station : station
             });
     });
-   return self;
+    self.addEventListener('focus', function() {
+        Ti.App.fireEvent('app:tab', {
+            subtitle : 'Klangkunst',
+            title : 'DeutschlandRadio Kultur',
+            icon : 'drk'
+        });
+    });
+    return self;
 };
 
 function addEvent() {

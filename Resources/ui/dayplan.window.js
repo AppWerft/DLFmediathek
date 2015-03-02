@@ -46,7 +46,7 @@ module.exports = function(station) {
         overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
         views : pages,
         top : 0,
-        currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
+        currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0)%2,
         height : Ti.UI.FILL
     });
     self.add(self.FlipViewCollection);
@@ -54,13 +54,19 @@ module.exports = function(station) {
         self.close();
     });
     self.FlipViewCollection.addEventListener('flipped', function(_e) {
+        Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
+        Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
         Ti.App.fireEvent('app:station', {
             station : pages[_e.index].station
         });
-    //    self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
+        //    self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
     });
 
     self.addEventListener('focus', function() {
+        Ti.App.fireEvent('app:station', {
+            station: pages[_e.index].station
+        });
+
         self.FlipViewCollection.peakNext(true);
     });
     return self;

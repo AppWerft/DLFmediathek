@@ -112,5 +112,7 @@ module.exports = function(_args) {
             activity.invalidateOptionsMenu();
         }
     });
+    
+    
     return self;
 };

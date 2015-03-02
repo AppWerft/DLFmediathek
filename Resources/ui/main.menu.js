@@ -2,8 +2,12 @@ var Player = Ti.Media.createAudioPlayer({
     allowBackground : true,
     volume : 1
 });
+var stations = require('model/stations');
 
-var currentItem = null;
+var currentRadio = null;
+// listening
+var currentStation = null;
+// viewing
 
 module.exports = function(_event) {
     var АктйонБар = require('com.alcoapps.actionbarextras');
@@ -25,20 +29,19 @@ module.exports = function(_event) {
                 itemId : '1',
                 icon : Ti.App.Android.R.drawable.ic_action_play,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-            }).addEventListener("click", function(_e) {
-                return;
-                var nextItem = FlipViewCollection.getViews()[FlipViewCollection.getCurrentPage()].itemId.name;
+            }).addEventListener("click", function() {
+                var url = stations[currentRadio].stream;
                 if (Player.isPlaying()) {
                     Player.stop();
                     Player.release();
                     console.log('was playing');
-                    if (currentItem == nextItem) {
+                    if (currentRadio == currentStation) {
                         return;
                     }
                 }
-                currentItem = FlipViewCollection.getViews()[FlipViewCollection.getCurrentPage()].itemId.name;
+                currentRadio = currentStation;
                 require('controls/resolveplaylist')({
-                    playlist : FlipViewCollection.getViews()[FlipViewCollection.getCurrentPage()].itemId.stream,
+                    playlist : url,
                     onload : function(_url) {
                         Player.release();
                         Player.setUrl(_url);
@@ -82,7 +85,10 @@ module.exports = function(_event) {
             });
             activity.actionBar.displayHomeAsUp = false;
             Ti.App.addEventListener('app:station', function(_e) {
-                console.log('STATIONSWEXEL  '+ _e.station );
+                currentStation = _e.station;
+                if (!currentRadio)
+                    currentRadio = _e.station;
+                console.log('STATIONSWEXEL  ' + _e.station);
                 switch (_e.station) {
                 case 'dlf':
                     АктйонБар.setTitle('Deutschlandfunk');
@@ -101,6 +107,15 @@ module.exports = function(_event) {
                     Player.stop();
                     Player.release();
                 }
+            });
+
+            Ti.App.addEventListener('app:tab', function(_event) {
+                if (_event.title)
+                    АктйонБар.setTitle(_event.title);
+                if (_event.subtitle)
+                    АктйонБар.setSubtitle(_event.subtitle);
+                if (_event.icon)
+                   activity.actionBar.logo = '/images/' + _event.icon + '.png';
             });
             Ti.App.addEventListener('app:play', function(_event) {
                 var self = Ti.UI.createAlertDialog({

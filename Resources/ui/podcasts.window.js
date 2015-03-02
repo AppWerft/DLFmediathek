@@ -4,14 +4,6 @@ var Model = require('model/stations'),
     Podcast = new (require('controls/feed.adapter'))(),
     stations = ['dlf', 'drk', 'drw'];
 
-var screenheight = Ti.Platform.displayCaps.platformHeight,
-    screenwidth = Ti.Platform.displayCaps.platformWidth;
-
-if (Ti.Android) {
-    screenheight *= (160 / Ti.Platform.displayCaps.ydpi);
-    screenwidth *= (160 / Ti.Platform.displayCaps.xdpi);
-}
-
 module.exports = function() {
     var self = require('ui/generic.window')({
         title : 'Deutschlandradio',
@@ -25,6 +17,7 @@ module.exports = function() {
             scrollType : 'vertical',
             backgroundColor : 'white',
             layout : 'horizontal',
+            station: stations[ndx],
             name : stations[ndx],
             horizontalWrap : true,
             contentWidth : Ti.UI.FILL,
@@ -41,7 +34,6 @@ module.exports = function() {
                     station : stations[ndx]
                 }).open();
         });
-
         podcasts.forEach(function(item) {
             pages[ndx].add(Ti.UI.createImageView({
                 image : (item.a) ? item.a.img.src : item.img.src,
@@ -54,7 +46,6 @@ module.exports = function() {
                     url : (item.a) ? item.a.href : item.href,
                 }
             }));
-
         });
     }
     self.FlipViewCollection = FlipModule.createFlipView({
@@ -65,12 +56,24 @@ module.exports = function() {
         height : Ti.UI.FILL,
         width : Ti.UI.FILL
     });
+    if (Ti.App.Properties.getInt('LAST_STATION_NDX', 0) == 0) {
+        Ti.App.fireEvent('app:station', {
+            station : pages[0].name
+        });
+    }
     self.FlipViewCollection.addEventListener('flipped', function(_e) {
+        Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
+        Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
         Ti.App.fireEvent('app:station', {
             station : pages[_e.index].name
         });
         //Geo.savePosition(stations[_e.index]);
     });
     self.add(self.FlipViewCollection);
+    self.addEventListener('focus', function() {
+        Ti.App.fireEvent('app:tab', {
+            subtitle : 'Podcast-Archiv'
+        });
+    });
     return self;
 };

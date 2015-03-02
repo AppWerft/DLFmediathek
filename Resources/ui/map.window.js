@@ -7,17 +7,16 @@ var Geo = new (require('controls/geotracking'))(),
     longitudeDelta : 20
 });
 
-
 Ti.API.info('Ti.Platform.displayCaps.density: ' + Ti.Platform.displayCaps.density);
 Ti.API.info('Ti.Platform.displayCaps.dpi: ' + Ti.Platform.displayCaps.dpi);
 Ti.API.info('Ti.Platform.displayCaps.platformHeight: ' + Ti.Platform.displayCaps.platformHeight);
 Ti.API.info('Ti.Platform.displayCaps.platformWidth: ' + Ti.Platform.displayCaps.platformWidth);
-if((Ti.Platform.osname === 'iphone')||(Ti.Platform.osname === 'ipad')||(Ti.Platform.osname === 'android')){
-  Ti.API.info('Ti.Platform.displayCaps.logicalDensityFactor: ' + Ti.Platform.displayCaps.logicalDensityFactor);
+if ((Ti.Platform.osname === 'iphone') || (Ti.Platform.osname === 'ipad') || (Ti.Platform.osname === 'android')) {
+    Ti.API.info('Ti.Platform.displayCaps.logicalDensityFactor: ' + Ti.Platform.displayCaps.logicalDensityFactor);
 }
-if(Ti.Platform.osname === 'android'){
-  Ti.API.info('Ti.Platform.displayCaps.xdpi: ' + Ti.Platform.displayCaps.xdpi);
-  Ti.API.info('Ti.Platform.displayCaps.ydpi: ' + Ti.Platform.displayCaps.ydpi);
+if (Ti.Platform.osname === 'android') {
+    Ti.API.info('Ti.Platform.displayCaps.xdpi: ' + Ti.Platform.displayCaps.xdpi);
+    Ti.API.info('Ti.Platform.displayCaps.ydpi: ' + Ti.Platform.displayCaps.ydpi);
 }
 module.exports = function(args) {
     var self = require('ui/generic.window')({
@@ -29,7 +28,7 @@ module.exports = function(args) {
     self.container = Ti.UI.createView();
     self.add(self.container);
     function updatePins() {
-       
+
         Geo.getAll({
             done : function(_list) {
                 var pins = [];
@@ -37,7 +36,7 @@ module.exports = function(args) {
                     pins.push(Map.createAnnotation({
                         latitude : _pos.lat,
                         longitude : _pos.lng,
-                        image : '/images/dlf'+Ti.Platform.displayCaps.density+'.png',
+                        image : '/images/dlf' + Ti.Platform.displayCaps.density + '.png',
                         pincolor : Map.ANNOTATION_BLUE,
                     }));
                 });
@@ -45,8 +44,8 @@ module.exports = function(args) {
                     pins.push(Map.createAnnotation({
                         latitude : _pos.lat,
                         longitude : _pos.lng,
-                       
-                        image : '/images/drk'+Ti.Platform.displayCaps.density+'.png',
+
+                        image : '/images/drk' + Ti.Platform.displayCaps.density + '.png',
                         pincolor : Map.ANNOTATION_ORANGE,
                     }));
                 });
@@ -54,8 +53,8 @@ module.exports = function(args) {
                     pins.push(Map.createAnnotation({
                         latitude : _pos.lat,
                         longitude : _pos.lng,
-                      
-                         image : '/images/drw'+Ti.Platform.displayCaps.density+'.png',
+
+                        image : '/images/drw' + Ti.Platform.displayCaps.density + '.png',
                         pincolor : Map.ANNOTATION_GREEN,
                     }));
                 });
@@ -64,7 +63,7 @@ module.exports = function(args) {
             }
         });
     }
-   
+
     var mapview = Map.createView({
         mapType : Map.NORMAL_TYPE,
         region : region,
@@ -76,7 +75,7 @@ module.exports = function(args) {
     self.container.add(mapview);
     updatePins();
     setInterval(updatePins, 30000);
-    
+
     mapview.addEventListener('regionchanged', function(_e) {
         delete _e.source;
         delete _e.type;
@@ -86,5 +85,13 @@ module.exports = function(args) {
             Ti.App.Properties.setObject('REGION', _e);
 
     });
+    self.addEventListener('focus', function() {
+        Ti.App.fireEvent('app:tab', {
+            subtitle : 'Hörerkarte',
+            title : 'DeutschlandRadio',
+            icon : 'commonicon'
+        });
+    });
+
     return self;
 };
