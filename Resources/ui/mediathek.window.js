@@ -22,7 +22,7 @@ module.exports =function() {
     var pages = [];
     for (var station in Model) {
         pages.push(require('ui/station.page')({
-            name : station,
+            station : station,
             color : Model[station].color,
             podcasts : Model[station].podcasts,
             live : Model[station].live,
@@ -38,9 +38,9 @@ module.exports =function() {
     });
     window.FlipViewCollection.addEventListener('flipped', function(_e) {
         console.log(_e.index);
-        console.log(pages[0]);
+        console.log(pages[_e.index].station);
           Ti.App.fireEvent('app:station', {
-            station : pages[_e.index].name
+            station : pages[_e.index].station
         });
         pages.forEach(function(page, ndx) {
             if (ndx == _e.index)
@@ -75,12 +75,6 @@ module.exports =function() {
     intent.putExtra('interval', 2000);
     // A message that the service should 'echo'
     intent.putExtra('url', 'Titanium rocks!');
-
-
-
-
-
-
 
     var service = Ti.Android.createService(intent);
     service.addEventListener('resume', function(e) {

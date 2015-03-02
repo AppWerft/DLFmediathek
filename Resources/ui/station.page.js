@@ -9,9 +9,10 @@ module.exports = function(_args) {
     var activityworking = true;
     var self = Ti.UI.createView({
         backgroundColor : '#444',
+        station : _args.station,
         date : Moment().startOf('day'),
         itemId : {
-            name : _args.name,
+            name : _args.station,
             podcasts : _args.podcasts,
             live : _args.live,
             stream : _args.stream
@@ -69,7 +70,7 @@ module.exports = function(_args) {
     var currentMediathekHash = null;
     self.updateCurrentinTopBox = function(_forced) {
         var currentItem = RSS.getCurrentOnAir({
-            station : _args.name
+            station : _args.station
         });
         if (currentItem) {
             lastPubDate = currentItem.pubDate;

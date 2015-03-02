@@ -48,6 +48,7 @@ Module.prototype = {
             return [];
     },
     getCurrentOnAir : function(_args) {
+        console.log(_args);
         var currentonair = null;
         var items = this._updateTimestamps(_args);
         items.forEach(function(item) {
