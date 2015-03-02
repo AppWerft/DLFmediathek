@@ -1,5 +1,3 @@
-var АктйонБар = require('com.alcoapps.actionbarextras');
-
 var Player = Ti.Media.createAudioPlayer({
     allowBackground : true,
     volume : 1
@@ -8,10 +6,11 @@ var Player = Ti.Media.createAudioPlayer({
 var currentItem = null;
 
 module.exports = function(_event) {
+    var АктйонБар = require('com.alcoapps.actionbarextras');
     var currentStationName = 'dlf';
-    АктйонБар.title = 'DRadio';
-    АктйонБар.subtitle = 'Mediathek';
-    АктйонБар.titleFont = "ScalaSansBold";
+    АктйонБар.setTitle('DRadio');
+    АктйонБар.setSubtitle('Mediathek');
+    АктйонБар.setFont("ScalaSansBold");
     АктйонБар.subtitleColor = "#ccc";
     var activity = _event.source.getActivity();
     if (activity) {
@@ -19,10 +18,7 @@ module.exports = function(_event) {
             console.log('Setting of activity handler');
 
         }
-        // var FlipViewCollection = _event.source.FlipViewCollection;
         activity.onCreateOptionsMenu = function(_menuevent) {
-            //   var currentPage = FlipViewCollection.views[Ti.App.Properties.getInt('LAST_STATION_NDX', 0)];
-            //  activity.actionBar.logo = '/images/' + Ti.App.Properties.getString('LAST_STATION', 'dlf') + '.png';
             _menuevent.menu.clear();
             _menuevent.menu.add({
                 title : 'RadioStart',
@@ -85,20 +81,20 @@ module.exports = function(_event) {
                 };
             });
             activity.actionBar.displayHomeAsUp = false;
-            /*FlipViewCollection.addEventListener('flipped', function(_e) {
-             currentStationName = FlipViewCollection.getViews()[_e.index].itemId.name;
-             Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
-             Ti.App.Properties.setString('LAST_STATION', currentStationName);
-             activity.actionBar.logo = '/images/' + currentStationName + '.png';
-             var menuitem = _menuevent.menu.findItem('2');
-             if (currentStationName == 'drw')
-             menuitem.setVisible(false);
-             else
-             menuitem.setVisible(true);
-             });*/
-            Ti.App.addEventListener('app:station', function(_station) {
-                console.log('STATIONSWEXEL');
-                activity.actionBar.logo = '/images/' + _station + '.png';
+            Ti.App.addEventListener('app:station', function(_e) {
+                console.log('STATIONSWEXEL  '+ _e.station );
+                switch (_e.station) {
+                case 'dlf':
+                    АктйонБар.setTitle('Deutschlandfunk');
+                    break;
+                case 'drk':
+                    АктйонБар.setTitle('DRadio Kultur');
+                    break;
+                case 'drw':
+                    АктйонБар.setTitle('DRadio Wissen');
+                    break;
+                }
+                activity.actionBar.logo = '/images/' + _e.station + '.png';
             });
             Ti.App.addEventListener('app:stop', function(_event) {
                 if (Player.isPlaying()) {
