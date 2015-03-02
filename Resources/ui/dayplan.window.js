@@ -36,7 +36,7 @@ module.exports = function(station) {
         left : 0
     }));
     self.head.add(self.headstation);
-  //  self.add(self.head);
+    //  self.add(self.head);
     var pages = [];
     ['dlf', 'drk'].forEach(function(station) {
         pages.push(require('ui/dayplan.page')(station));
@@ -54,7 +54,10 @@ module.exports = function(station) {
         self.close();
     });
     self.FlipViewCollection.addEventListener('flipped', function(_e) {
-        self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
+        Ti.App.fireEvent('app:station', {
+            station : pages[_e.index].station
+        });
+    //    self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
     });
 
     self.addEventListener('focus', function() {

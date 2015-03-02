@@ -29,7 +29,6 @@ module.exports =function() {
             stream : Model[station].stream,
         }));
     };
-
     window.FlipViewCollection = FlipModule.createFlipView({
         orientation : FlipModule.ORIENTATION_HORIZONTAL,
         overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
@@ -38,7 +37,11 @@ module.exports =function() {
         height : Ti.UI.FILL
     });
     window.FlipViewCollection.addEventListener('flipped', function(_e) {
-        var pages = window.FlipViewCollection.getViews();
+        console.log(_e.index);
+        console.log(pages[0]);
+          Ti.App.fireEvent('app:station', {
+            station : pages[_e.index].name
+        });
         pages.forEach(function(page, ndx) {
             if (ndx == _e.index)
                 setTimeout(function() {
@@ -47,9 +50,7 @@ module.exports =function() {
             else
                 page.hideCurrent([_e.index]);
         });
-
         Geo.savePosition(stations[_e.index]);
-
     });
     window.addEventListener('focus', function() {
         window.FlipViewCollection.peakNext(true);

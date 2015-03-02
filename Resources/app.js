@@ -1,4 +1,4 @@
-(function() {
+! function() {
     var self = Ti.UI.createTabGroup({
         fullscreen : true,
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
@@ -19,8 +19,8 @@
             window : require('ui/map.window')()
         })]
     });
-    self.addEventListener('open',require('ui/main.menu'));
-    self.open();
+    self.addEventListener('open', require('ui/main.menu'));
+
     var RSS = new (require('controls/rss.adapter'))();
     RSS.getRSS({
         station : 'dlf'
@@ -28,5 +28,5 @@
     RSS.getRSS({
         station : 'drk'
     });
-
-})();
+    self.open();
+}();

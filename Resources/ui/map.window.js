@@ -64,9 +64,7 @@ module.exports = function(args) {
             }
         });
     }
-    Ti.UI.createNotification({
-        message : 'Das ist noch im Experimentalstadium …'
-    }).show();
+   
     var mapview = Map.createView({
         mapType : Map.NORMAL_TYPE,
         region : region,

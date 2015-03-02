@@ -13,20 +13,16 @@ module.exports = function(_event) {
     АктйонБар.subtitle = 'Mediathek';
     АктйонБар.titleFont = "ScalaSansBold";
     АктйонБар.subtitleColor = "#ccc";
-    //dropdown = АктйонБар.createDropdown({
-    //    titles : ["Spielplan des Tages", "Podcasts", "Third"]
-    //});
     var activity = _event.source.getActivity();
     if (activity) {
-       // console.log(activity);
         if (Ti.Android) {
             console.log('Setting of activity handler');
-            
+
         }
-        var FlipViewCollection = _event.source.FlipViewCollection;
+        // var FlipViewCollection = _event.source.FlipViewCollection;
         activity.onCreateOptionsMenu = function(_menuevent) {
-            var currentPage = FlipViewCollection.views[Ti.App.Properties.getInt('LAST_STATION_NDX', 0)];
-            activity.actionBar.logo = '/images/' + Ti.App.Properties.getString('LAST_STATION', 'dlf') + '.png';
+            //   var currentPage = FlipViewCollection.views[Ti.App.Properties.getInt('LAST_STATION_NDX', 0)];
+            //  activity.actionBar.logo = '/images/' + Ti.App.Properties.getString('LAST_STATION', 'dlf') + '.png';
             _menuevent.menu.clear();
             _menuevent.menu.add({
                 title : 'RadioStart',
@@ -34,6 +30,7 @@ module.exports = function(_event) {
                 icon : Ti.App.Android.R.drawable.ic_action_play,
                 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
             }).addEventListener("click", function(_e) {
+                return;
                 var nextItem = FlipViewCollection.getViews()[FlipViewCollection.getCurrentPage()].itemId.name;
                 if (Player.isPlaying()) {
                     Player.stop();
@@ -69,7 +66,7 @@ module.exports = function(_event) {
             }).addEventListener("click", function(_e) {
                 require('ui/mypodcasts.window')().open();
             });
-            
+
             // end of click handling
 
             /* Handling of PlayIcon*/
@@ -89,16 +86,20 @@ module.exports = function(_event) {
             });
             activity.actionBar.displayHomeAsUp = false;
             /*FlipViewCollection.addEventListener('flipped', function(_e) {
-                currentStationName = FlipViewCollection.getViews()[_e.index].itemId.name;
-                Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
-                Ti.App.Properties.setString('LAST_STATION', currentStationName);
-                activity.actionBar.logo = '/images/' + currentStationName + '.png';
-                var menuitem = _menuevent.menu.findItem('2');
-                if (currentStationName == 'drw')
-                    menuitem.setVisible(false);
-                else
-                    menuitem.setVisible(true);
-            });*/
+             currentStationName = FlipViewCollection.getViews()[_e.index].itemId.name;
+             Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
+             Ti.App.Properties.setString('LAST_STATION', currentStationName);
+             activity.actionBar.logo = '/images/' + currentStationName + '.png';
+             var menuitem = _menuevent.menu.findItem('2');
+             if (currentStationName == 'drw')
+             menuitem.setVisible(false);
+             else
+             menuitem.setVisible(true);
+             });*/
+            Ti.App.addEventListener('app:station', function(_station) {
+                console.log('STATIONSWEXEL');
+                activity.actionBar.logo = '/images/' + _station + '.png';
+            });
             Ti.App.addEventListener('app:stop', function(_event) {
                 if (Player.isPlaying()) {
                     Player.stop();

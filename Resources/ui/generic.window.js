@@ -6,9 +6,10 @@ module.exports = function(_args) {
         subtitle : _args.subtitle,
         itemId : _args.station,
         fullscreen : true,
+        backgroundColor : 'white',
         orientationModes : (_args.orientationModes) ? _args.orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
-    if (_args.newwindow == true)
+    if (_args.singlewindow == true)
         self.addEventListener('open', function(_event) {
             АктйонБар.title = self.title;
             АктйонБар.subtitle = self.subtitle;
