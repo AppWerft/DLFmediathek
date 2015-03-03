@@ -66,7 +66,12 @@ module.exports = function(station) {
         Ti.App.fireEvent('app:station', {
             station: Ti.App.Properties.getString('LAST_STATION')
         });
-
+        Ti.App.fireEvent('app:tab', {
+            subtitle : 'Tagesübersicht',
+            title:Ti.App.Properties.getString('LAST_STATION'),
+            icon : 'drk'
+        });
+ 
         self.FlipViewCollection.peakNext(true);
     });
     return self;

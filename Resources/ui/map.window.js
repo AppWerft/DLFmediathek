@@ -57,24 +57,23 @@ module.exports = function(args) {
         });
     }
 
-    // self.add(mapView);
     updatePins();
     setInterval(updatePins, 60000);
-
     mapView.addEventListener('regionchanged', function(_e) {
         if (_e.latitudeDelta < 1 || _e.longitudeDelta < 1) {
             mapView.setRegion(Ti.App.Properties.getObject('REGION'));
         } else
             Ti.App.Properties.setObject('REGION', _e);
     });
- //   self.add(drawer);
+    self.add(drawer);
     self.add(mapView);
     self.addEventListener('focus', function() {
         drawer.drawerIndicatorEnabled = true;
         Ti.App.fireEvent('app:tab', {
             subtitle : 'Hörerkarte',
             title : 'DeutschlandRadio',
-            icon : 'commonicon'
+            icon : 'commonicon',
+            leftmenu : true
         });
     });
     self.addEventListener('blur', function() {

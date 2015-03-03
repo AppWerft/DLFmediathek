@@ -60,17 +60,17 @@ module.exports = function() {
     });
    
     window.add(window.FlipViewCollection);
+    
     window.addEventListener('focus', function() {
-         window.FlipViewCollection.peakNext(true);
+        window.FlipViewCollection.peakNext(true);
         Ti.App.fireEvent('app:state', {
             state : true
         });
         Ti.App.fireEvent('app:tab', {
-            subtitle : 'Klangkunst',
-            title:'DeutschlandRadio Kultur',
+            subtitle : 'Mediathek',
+            title:Ti.App.Properties.getString('LAST_STATION'),
             icon : 'drk'
         });
-        
     });
     window.addEventListener('blur', function() {
         Ti.App.fireEvent('app:state', {

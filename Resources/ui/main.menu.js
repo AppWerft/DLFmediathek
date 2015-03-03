@@ -2,15 +2,15 @@ var Player = Ti.Media.createAudioPlayer({
     allowBackground : true,
     volume : 1
 });
-var stations = require('model/stations');
+var АктйонБар = require('com.alcoapps.actionbarextras');
 
+var stations = require('model/stations');
 var currentRadio = null;
 // listening
 var currentStation = null;
 // viewing
 
 module.exports = function(_event) {
-    var АктйонБар = require('com.alcoapps.actionbarextras');
     var currentStationName = 'dlf';
     АктйонБар.setTitle('DRadio');
     АктйонБар.setSubtitle('Mediathek');
@@ -18,10 +18,6 @@ module.exports = function(_event) {
     АктйонБар.subtitleColor = "#ccc";
     var activity = _event.source.getActivity();
     if (activity) {
-        if (Ti.Android) {
-            console.log('Setting of activity handler');
-
-        }
         activity.onCreateOptionsMenu = function(_menuevent) {
             _menuevent.menu.clear();
             _menuevent.menu.add({
@@ -115,7 +111,14 @@ module.exports = function(_event) {
                 if (_event.subtitle)
                     АктйонБар.setSubtitle(_event.subtitle);
                 if (_event.icon)
-                   activity.actionBar.logo = '/images/' + _event.icon + '.png';
+                    activity.actionBar.logo = '/images/' + _event.icon + '.png';
+                if (_event.leftmenu) {
+                    АктйонБар.setHomeAsUpIcon("/images/menu.png");
+                    activity.actionBar.displayHomeAsUp = true;
+                } else {
+                    activity.actionBar.displayHomeAsUp = false;
+                }
+
             });
             Ti.App.addEventListener('app:play', function(_event) {
                 var self = Ti.UI.createAlertDialog({
