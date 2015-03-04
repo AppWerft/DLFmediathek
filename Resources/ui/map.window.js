@@ -14,7 +14,7 @@ var myAccounts = require('org.bcbhh').getAccounts();
 var twitter = null;
 for (var i = 0; i < myAccounts.length; i++) {
     if (myAccounts[i].accountType == 'Twitter')
-        twitter = '@' + myAccounts[i].name;
+        twitter = myAccounts[i].name;
 }
 
 module.exports = function(args) {
@@ -86,8 +86,8 @@ module.exports = function(args) {
         });
         self.drawer.add(self.twitterSwitch);
     }
-    // self.container4mapview = Ti.UI.createView();
-    var mapView = Map.createView({
+    // self.container4self.mapView = Ti.UI.createView();
+    self.mapView = Map.createView({
         mapType : Map.TERRAIN_TYPE,
         region : region,
         animate : true,
@@ -107,7 +107,7 @@ module.exports = function(args) {
                         pins.push(Map.createAnnotation({
                             latitude : _pos.lat,
                             longitude : _pos.lng,
-                            title : (_pos.twitter) ? _pos.twitter : undefined,
+                            title : (_pos.twitter) ? '@'+_pos.twitter : undefined,
                             leftView : (_pos.photo) ? Ti.UI.createImageView({
                                 image : _pos.photo,
                                 width : 50,
@@ -118,21 +118,21 @@ module.exports = function(args) {
                     });
 
                 });
-                mapView.removeAllAnnotations();
-                mapView.addAnnotations(pins);
+                self.mapView.removeAllAnnotations();
+                self.mapView.addAnnotations(pins);
             }
         });
     }
 
     updatePins();
     setInterval(updatePins, 300000);
-    mapView.addEventListener('regionchanged', function(_e) {
+    self.mapView.addEventListener('regionchanged', function(_e) {
         if (_e.latitudeDelta < 0.6 || _e.longitudeDelta < 0.6) {
-            mapView.setRegion(Ti.App.Properties.getObject('REGION'));
+            self.mapView.setRegion(Ti.App.Properties.getObject('REGION'));
         } else
             Ti.App.Properties.setObject('REGION', _e);
     });
-    self.add(mapView);
+    self.add(self.mapView);
     self.add(self.drawer);
     self.addEventListener('focus', function() {
         Ti.App.fireEvent('app:tab', {
@@ -143,6 +143,33 @@ module.exports = function(args) {
         });
     });
     self.addEventListener('blur', function() {
+    });
+    self.mapView.addEventListener('click', function(_e) {
+        if (_e.annotation.title) {
+            var twitterhandle = _e.annotation.title.replace('@', '');
+            try {
+                var intent = Ti.Android.createIntent({
+                    action : Ti.Android.ACTION_VIEW,
+                    packageName : "com.twitter.android",
+                    flags : Ti.Android.FLAG_ACTIVITY_NEW_TASK,
+                    type : "text/plain"
+                });
+                intent.putExtraUri("twitter://user?user_id=" + twitterhandle);
+                Ti.Android.currentActivity.startActivity(intent);
+            } catch(E) {
+                console.log(E);
+                var win = require('ui/generic.window')({
+                    title : 'Hörerkarte',
+                    subtitle : 'Twitterprofil @' + twitterhandle,
+                    singlewindow : true
+                });
+                win.add(Ti.UI.createWebView({
+                    url : 'https://mobile.twitter.com/' + twitterhandle,
+                    borderRadius : 1
+                }));
+                win.open();
+            }
+        }
     });
     self.drawer.addEventListener('swipe', toggleDrawer);
     Ti.App.addEventListener('app:togglemapmenu', toggleDrawer);
