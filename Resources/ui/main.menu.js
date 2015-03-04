@@ -114,9 +114,13 @@ module.exports = function(_event) {
                     activity.actionBar.logo = '/images/' + _event.icon + '.png';
                 if (_event.leftmenu) {
                     АктйонБар.setHomeAsUpIcon("/images/menu.png");
-                    activity.actionBar.displayHomeAsUp = true;
+                    activity.actionBar.setDisplayHomeAsUp(true);
+                    activity.actionBar.onHomeIconItemSelected = function() {
+                       Ti.App.fireEvent('app:togglemapmenu');
+                    }
                 } else {
-                    activity.actionBar.displayHomeAsUp = false;
+                    activity.actionBar.setDisplayHomeAsUp(false);
+                    activity.actionBar.onHomeIconItemSelected = function() {}
                 }
 
             });

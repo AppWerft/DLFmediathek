@@ -56,6 +56,66 @@ Module.prototype = {
         }
 
     },
+    loadOwnPhoto : function(_done) {
+        Cloud.Objects.query({
+            classname : 'radiolistener',
+            where : {
+                id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
+            }
+        }, function(e) {
+            if (e.success && e.radiolistener[0]['photo_urls']) {
+                _done({
+                    image : e.radiolistener[0]['photo_urls'],
+                    twitter : e.radiolistener[0].twitter_enabled
+                });
+            } else {
+                console.log('NO PHOTO');
+            }
+        });
+
+    },
+    saveTwitter : function(_handle, _public) {
+        Cloud.Objects.update({
+            classname : 'radiolistener',
+            id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
+            fields : {
+                'twitter_handle' : _handle,
+                'twitter_enabled' : (_public) ? 1 : 0
+            }
+        }, function() {
+        });
+    },
+    savePhoto : function(_photo) {
+        Cloud.Photos.create({
+            photo : _photo,
+            acl_id : ACL_ID,
+            'photo_sync_sizes[]' : 'square_75',
+            'photo_sync_sizes[]' : 'small_240',
+            'photo_sync_sizes[]' : 'medium_500'
+        }, function(e) {
+            Cloud.onsendstream = Cloud.ondatastream = null;
+            if (e.success) {
+                var photo = e.photos[0];
+                console.log(photo.urls);
+                Cloud.Objects.update({
+                    classname : 'radiolistener',
+                    id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
+                    fields : {
+                        photo_id : photo.id,
+                        photo_urls : (photo.urls) ? photo.urls : undefined
+                    }
+                }, function(_e) {
+                    if (_e.success) {
+                        console.log(_e.radiolistener[0]);
+                    } else {
+                        console.log('Error:\n' + ((_e.error && _e.message) || JSON.stringify(_e)));
+                    }
+                });
+
+            }
+        });
+
+    },
     getAll : function(_args) {
         Cloud.Objects.query({
             classname : 'radiolistener',
@@ -65,9 +125,9 @@ Module.prototype = {
                 station : {
                     "$ne" : '',
 
-                },/*,
+                }/*,
                  updated_at : {
-                 "$gt" : Moment().add(-120, 'sec')
+                 "$gt" : Moment().add(-3600*24, 'sec').toDate()
                  }*/
             },
             order : '-updated_at'
@@ -82,11 +142,14 @@ Module.prototype = {
                 for (var i = 0; i < e.radiolistener.length; i++) {
                     var item = e.radiolistener[i];
                     //if (Moment(item['updated_at']).add(300, 'sec').isAfter(Moment()))
-                    if (item.latitude != '' && item.longitude != '')
+                    if (item.latitude != '' && item.longitude != '') {
                         listener[e.radiolistener[i].station].push({
                             lat : item.latitude,
-                            lng : item.longitude
+                            lng : item.longitude,
+                            twitter : (item.twitter_handle && item.twitter_handle != '' && item.twitter_enabled) ? item.twitter_handle : null,
+                            photo : (item['photo_urls']) ? item['photo_urls']['medium_500'] : null
                         });
+                    }
                     //  console.log(e.radiolistener[i]);
                 }
                 _args.done(listener);
@@ -183,14 +246,3 @@ function savePosition(_coords) {
     }
 }
 
-Cloud.ACLs.create({
-    name : 'public',
-    public_read : "true",
-    public_write : "false"
-}, function(e) {
-    if (e.success) {
-
-    } else {
-
-    }
-});

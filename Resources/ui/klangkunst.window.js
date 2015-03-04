@@ -26,10 +26,8 @@ module.exports = function(station) {
         done : function(_items) {
             var items = [];
             _items.forEach(function(item) {
-                console.log(item);
                 items.push({
                     properties : {
-                        //accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
                         itemId : JSON.stringify(item),
                         requestCode : item.requestCode
                     },
