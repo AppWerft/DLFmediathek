@@ -15,7 +15,7 @@ Module.prototype = {
         var that = this;
         loginUser({
             onsuccess : function(_e) {
-                // that.savePosition();
+                that.createRadioListener();
             },
             onerror : function(_e) {
                 createUser({
@@ -29,6 +29,23 @@ Module.prototype = {
                 });
             }
         });
+    },
+    createRadioListener : function() {
+        if (!Ti.App.Properties.hasProperty('RADIOLISTENERproduction')) {
+            Cloud.Objects.create({
+                classname : 'radiolistener',
+                acl_id : ACL_ID,
+                fields : {
+                }
+            }, function(_e) {
+                if (_e.success) {
+                    Ti.App.Properties.setString('RADIOLISTENERproduction', _e.radiolistener[0].id);
+                } else {
+                    console.log(_e);
+                }
+            });
+
+        }
     },
     savePosition : function(_station) {
         if (Ti.Geolocation.locationServicesEnabled) {
@@ -63,10 +80,11 @@ Module.prototype = {
                 id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
             }
         }, function(e) {
-            if (e.success && e.radiolistener[0]['photo_urls']) {
+            if (e.success && e.radiolistener.length) {
                 _done({
-                    image : e.radiolistener[0]['photo_urls'],
-                    twitter : e.radiolistener[0].twitter_enabled
+                    image : (e.radiolistener[0]['photo_urls']) ? e.radiolistener[0]['photo_urls'] : '',
+                    twitter : e.radiolistener[0].twitter_enabled,
+                    slogan : e.radiolistener[0].slogan
                 });
             } else {
                 console.log('NO PHOTO');
@@ -82,12 +100,29 @@ Module.prototype = {
                 'twitter_handle' : _handle,
                 'twitter_enabled' : (_public) ? 1 : 0
             }
-        }, function() {
+        }, function(e   ) {
+            if (e.success)  Ti.Media.vibrate([0,50]);
         });
     },
-    savePhoto : function(_photo) {
+    saveSlogan : function(_args) {
+        console.log(_args);
+        Cloud.Objects.update({
+            classname : 'radiolistener',
+            id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
+            fields : {
+                'slogan' : _args.message,
+            }
+        }, function(e) {
+            if (e.success) {
+                Ti.Media.vibrate([0,50]);
+                _args.done(_e);
+            } else
+                console.log('Error:' + ((_e.error && _e.message) || JSON.stringify(_e)));
+        });
+    },
+    savePhoto : function(_args) {
         Cloud.Photos.create({
-            photo : _photo,
+            photo : _args.photo,
             acl_id : ACL_ID,
             'photo_sync_sizes[]' : 'square_75',
             'photo_sync_sizes[]' : 'small_240',
@@ -106,7 +141,7 @@ Module.prototype = {
                     }
                 }, function(_e) {
                     if (_e.success) {
-                        console.log(_e.radiolistener[0]);
+                        _args.done();
                     } else {
                         console.log('Error:\n' + ((_e.error && _e.message) || JSON.stringify(_e)));
                     }
@@ -127,7 +162,7 @@ Module.prototype = {
 
                 }/*,
                  updated_at : {
-                 "$gt" : Moment().add(-3600*24, 'sec').toDate()
+                 "$gt" : Moment().add(-24, 'hour').toDate()
                  }*/
             },
             order : '-updated_at'
@@ -146,8 +181,9 @@ Module.prototype = {
                         listener[e.radiolistener[i].station].push({
                             lat : item.latitude,
                             lng : item.longitude,
-                            twitter : (item.twitter_handle && item.twitter_handle != '' && item.twitter_enabled) ? item.twitter_handle : null,
-                            photo : (item['photo_urls']) ? item['photo_urls']['medium_500'] : null
+                            slogan : item.slogan,
+                            twitter : (item.twitter_handle && item.twitter_handle != '' && item.twitter_enabled) ? item.twitter_handle.replace('@', '') : undefined,
+                            photo : (item['photo_urls']) ? item['photo_urls']['medium_500'] : undefined
                         });
                     }
                     //  console.log(e.radiolistener[i]);
