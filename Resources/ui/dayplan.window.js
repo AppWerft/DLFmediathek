@@ -6,6 +6,14 @@ var Model = require('model/stations'),
 module.exports = function() {
     var self = Ti.UI.createWindow();
     self.addEventListener('focus', function() {
+        Ti.App.fireEvent('app:station', {
+            station : Ti.App.Properties.getString('LAST_STATION')
+        });
+        Ti.App.fireEvent('app:tab', {
+            subtitle : 'Tagesübersicht',
+            title : (Ti.App.Properties.getString('LAST_STATION') != 'drk') ? 'Deutschlandfunk' : 'DeutschlandRadio Kultur',
+            icon : 'drk'
+        });
         if (self.childrens && self.childrens.length)
             return;
         var pages = [];
@@ -29,16 +37,7 @@ module.exports = function() {
             });
             //    self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
         });
-        self.addEventListener('focus', function() {
-            Ti.App.fireEvent('app:station', {
-                station : Ti.App.Properties.getString('LAST_STATION')
-            });
-            Ti.App.fireEvent('app:tab', {
-                subtitle : 'Tagesübersicht',
-                title : (Ti.App.Properties.getString('LAST_STATION') != 'drk') ? 'Deutschlandfunk' : 'DeutschlandRadio Kultur',
-                icon : 'drk'
-            });
-        });
+
     });
     return self;
 };

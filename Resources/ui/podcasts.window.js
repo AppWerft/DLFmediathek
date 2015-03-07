@@ -7,6 +7,10 @@ var Model = require('model/stations'),
 module.exports = function() {
     var self = Ti.UI.createWindow();
     self.addEventListener('focus', function() {
+        Ti.App.fireEvent('app:tab', {
+            subtitle : 'Podcast-Archiv'
+        });
+
         if (self.childrens && self.childrens.length)
             return;
         var pages = [];
@@ -70,11 +74,7 @@ module.exports = function() {
             //Geo.savePosition(stations[_e.index]);
         });
         self.add(self.FlipViewCollection);
-        self.addEventListener('focus', function() {
-            Ti.App.fireEvent('app:tab', {
-                subtitle : 'Podcast-Archiv'
-            });
-        });
+
     });
     return self;
 };
