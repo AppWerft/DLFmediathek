@@ -16,7 +16,6 @@ var Module = function() {
 
 Module.prototype = {
     _updateTimestamps : function(_args) {
-        console.log('Info: sort day data ' + _args.station);
         var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
         if (Ti.App.Properties.hasProperty(url)) {
             var items = JSON.parse(Ti.App.Properties.getString(url));
@@ -48,7 +47,6 @@ Module.prototype = {
             return [];
     },
     getCurrentOnAir : function(_args) {
-        console.log(_args);
         var currentonair = null;
         var items = this._updateTimestamps(_args);
         items.forEach(function(item) {

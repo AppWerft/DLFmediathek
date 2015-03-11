@@ -67,6 +67,21 @@ exports.schema = {
                 },
                 color : '#333'
             }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'duration',
+            properties : {
+                left : 0,
+                top : 0,
+                bottom : 10,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 18,
+                    fontFamily : 'ScalaSans'
+                },
+                color : '#333'
+            }
         }]
     }]
 };
@@ -282,7 +297,7 @@ exports.mediathek = {
             opacity : 0.5,
             left : 5,
             top : 32,
-             bottom : 5,
+            bottom : 5,
             bubbleParent : true,
             image : '/images/favadd.png',
             width : 30,
@@ -342,12 +357,27 @@ exports.mediathek = {
             bindId : 'autor',
             properties : {
                 left : 0,
+                top : 5,
+
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 12,
+                    fontFamily : 'ScalaSans'
+                },
+                color : '#333'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'duration',
+            properties : {
+                left : 0,
                 top : 0,
                 bottom : 10,
                 height : Ti.UI.SIZE,
                 touchEnabled : false,
                 font : {
-                    fontSize : 12,
+                    fontSize : 18,
                     fontFamily : 'ScalaSans'
                 },
                 color : '#333'

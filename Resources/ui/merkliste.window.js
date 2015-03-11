@@ -211,6 +211,7 @@ module.exports = function(station) {
     self.head.addEventListener('click', function() {
         self.close();
     });
+    require('vendor/rating.reminder')();
     return self;
 };
 

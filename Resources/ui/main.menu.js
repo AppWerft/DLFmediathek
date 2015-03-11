@@ -1,13 +1,12 @@
 var Player = Ti.Media.createAudioPlayer({
     allowBackground : true,
     volume : 1
-});
-var АктйонБар = require('com.alcoapps.actionbarextras');
-
-var stations = require('model/stations');
-var currentRadio = null;
+}),
+АктйонБар = require('com.alcoapps.actionbarextras'),
+    stations = require('model/stations'),
+    currentRadio = null,
 // listening
-var currentStation = null;
+    currentStation = null;
 // viewing
 
 module.exports = function(_event) {
@@ -31,9 +30,9 @@ module.exports = function(_event) {
                     Player.stop();
                     Player.release();
                     console.log('was playing');
-                    if (currentRadio == currentStation) {
+                   // if (currentRadio == currentStation) {
                         return;
-                    }
+                   // }
                 }
                 currentRadio = currentStation;
                 require('controls/resolveplaylist')({
@@ -63,37 +62,44 @@ module.exports = function(_event) {
             });
 
             // end of click handling
-
             /* Handling of PlayIcon*/
             var menuitem = _menuevent.menu.findItem('1');
             Player.addEventListener('change', function(_e) {
-                console.log('state: ' + _e.state);
+                console.log('state: ' + _e.state + ' ' + _e.description) ;
+                console.log('currentSation='+currentStation) ;
+                var playicon = (currentStation)
                 switch (_e.state) {
+                case 1:
+                     menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
+                break;
                 case 3:
-                    menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_stop);
+                    menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_stop_'+currentStation]);
                     break;
                 case 4:
                 case 5:
-                    menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_play);
+                    menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_'+currentStation]);
                     break;
 
                 };
             });
             activity.actionBar.displayHomeAsUp = false;
             Ti.App.addEventListener('app:station', function(_e) {
+                 var menuitem = _menuevent.menu.findItem('1');
                 currentStation = _e.station;
                 if (!currentRadio)
                     currentRadio = _e.station;
-                console.log('STATIONSWEXEL  ' + _e.station);
                 switch (_e.station) {
                 case 'dlf':
                     АктйонБар.setTitle('Deutschlandfunk');
+                    if (!Player.isPlaying()) menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_play_dlf);
                     break;
                 case 'drk':
                     АктйонБар.setTitle('DRadio Kultur');
+                     if (!Player.isPlaying()) menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_play_drk);
                     break;
                 case 'drw':
                     АктйонБар.setTitle('DRadio Wissen');
+                     if (!Player.isPlaying()) menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_play_drw);
                     break;
                 }
                 activity.actionBar.logo = '/images/' + _e.station + '.png';
@@ -104,7 +110,6 @@ module.exports = function(_event) {
                     Player.release();
                 }
             });
-
             Ti.App.addEventListener('app:tab', function(_event) {
                 if (_event.title)
                     АктйонБар.setTitle(_event.title);
@@ -122,7 +127,6 @@ module.exports = function(_event) {
                     activity.actionBar.setDisplayHomeAsUp(false);
                     activity.actionBar.onHomeIconItemSelected = function() {}
                 }
-
             });
             Ti.App.addEventListener('app:play', function(_event) {
                 var self = Ti.UI.createAlertDialog({

@@ -141,6 +141,10 @@ module.exports = function(_args) {
                             autor : {
                                 text : (item.author) ? 'Autor: ' + item.author : '',
                                 height : (item.author) ? Ti.UI.SIZE : 0
+                            },
+                            duration : {
+                                text : (item.duration) ? 'Länge: ' + Moment.unix(item.duration).format('m:ss') : '',
+                                
                             }
                         });
                     });
@@ -204,7 +208,7 @@ module.exports = function(_args) {
             });
         }
     });
-
+    setInterval(self.updateCurrentinTopBox, 10000);
     Ti.App.addEventListener('app:state', function(_payload) {
         activityworking = _payload.state;
     });

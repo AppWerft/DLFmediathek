@@ -133,7 +133,6 @@ module.exports = function(args) {
         });
     }
     Geo.loadOwnPhoto(function(_res) {
-        console.log(_res);
         self.twitterSwitch && self.twitterSwitch.setValue((_res.twitter) ? true : false);
         self.avatar.setImage(_res.image.original);
         self.avatar.opacity = 1;
@@ -145,6 +144,7 @@ module.exports = function(args) {
         region : region,
         animate : true,
         regionFit : true,
+        compassEnabled : false,
         userLocation : false,
         enableZoomControls : false,
         width : Ti.UI.FILL,
@@ -157,7 +157,6 @@ module.exports = function(args) {
                 var pins = [];
                 stations.forEach(function(station) {
                     _list[station].forEach(function(_pos) {
-                        console.log(_pos);
                         pins.push(Map.createAnnotation({
                             latitude : _pos.lat,
                             longitude : _pos.lng,
@@ -182,10 +181,16 @@ module.exports = function(args) {
     updatePins();
     setInterval(updatePins, 300000);
     self.mapView.addEventListener('regionchanged', function(_e) {
-        if (_e.latitudeDelta < 0.6 || _e.longitudeDelta < 0.6) {
-            self.mapView.setRegion(Ti.App.Properties.getObject('REGION'));
-        } else
-            Ti.App.Properties.setObject('REGION', _e);
+        if (_e.latitudeDelta < 0.4 || _e.longitudeDelta < 0.4) {
+            _e.source.setLocation(Ti.App.Properties.getObject('REGION'));
+        } else {
+            Ti.App.Properties.setObject('REGION', {
+                latitude : _e.latitude,
+                longitude : _e.longitude,
+                latitudeDelta : _e.latitudeDelta,
+                longitudeDelta : _e.longitudeDelta
+            });
+        }
     });
     self.add(self.mapView);
     self.add(self.drawer);

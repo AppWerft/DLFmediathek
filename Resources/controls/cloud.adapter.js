@@ -56,7 +56,7 @@ Module.prototype = {
             Ti.Geolocation.getCurrentPosition(function(_e) {
                 var coords = _e.coords;
                 coords.station = _station;
-                savePosition(coords);
+                savePosition(coords,_station);
 
             });
         } else {
@@ -65,7 +65,7 @@ Module.prototype = {
                 onload : function() {
                     var coords = JSON.parse(this.responseText);
                     coords.station = _station;
-                    savePosition(coords);
+                    savePosition(coords,_station);
                 }
             });
             xhr.open('GET', 'https://freegeoip.net/json/');
@@ -105,7 +105,6 @@ Module.prototype = {
         });
     },
     saveSlogan : function(_args) {
-        console.log(_args);
         Cloud.Objects.update({
             classname : 'radiolistener',
             id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
@@ -131,7 +130,6 @@ Module.prototype = {
             Cloud.onsendstream = Cloud.ondatastream = null;
             if (e.success) {
                 var photo = e.photos[0];
-                console.log(photo.urls);
                 Cloud.Objects.update({
                     classname : 'radiolistener',
                     id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
@@ -246,7 +244,7 @@ function loginUser(_args) {
     });
 }
 
-function savePosition(_coords) {
+function savePosition(_coords,_station) {
     if (!Ti.App.Properties.hasProperty('RADIOLISTENERproduction')) {
         Cloud.Objects.create({
             classname : 'radiolistener',
@@ -271,6 +269,7 @@ function savePosition(_coords) {
             fields : {
                 latitude : _coords.latitude,
                 longitude : _coords.longitude,
+                 station:_station
             }
         }, function(_e) {
             if (_e.success) {
