@@ -56,7 +56,7 @@ Module.prototype = {
             Ti.Geolocation.getCurrentPosition(function(_e) {
                 var coords = _e.coords;
                 coords.station = _station;
-                savePosition(coords,_station);
+                savePosition(coords, _station);
 
             });
         } else {
@@ -65,7 +65,7 @@ Module.prototype = {
                 onload : function() {
                     var coords = JSON.parse(this.responseText);
                     coords.station = _station;
-                    savePosition(coords,_station);
+                    savePosition(coords, _station);
                 }
             });
             xhr.open('GET', 'https://freegeoip.net/json/');
@@ -100,8 +100,9 @@ Module.prototype = {
                 'twitter_handle' : _handle,
                 'twitter_enabled' : (_public) ? 1 : 0
             }
-        }, function(e   ) {
-            if (e.success)  Ti.Media.vibrate([0,50]);
+        }, function(e) {
+            if (e.success)
+                Ti.Media.vibrate([0, 50]);
         });
     },
     saveSlogan : function(_args) {
@@ -113,7 +114,7 @@ Module.prototype = {
             }
         }, function(e) {
             if (e.success) {
-                Ti.Media.vibrate([0,50]);
+                Ti.Media.vibrate([0, 50]);
                 _args.done(_e);
             } else
                 console.log('Error:' + ((_e.error && _e.message) || JSON.stringify(_e)));
@@ -244,40 +245,41 @@ function loginUser(_args) {
     });
 }
 
-function savePosition(_coords,_station) {
-    if (!Ti.App.Properties.hasProperty('RADIOLISTENERproduction')) {
-        Cloud.Objects.create({
-            classname : 'radiolistener',
-            acl_id : ACL_ID,
-            fields : {
-                station : _coords.station,
-                latitude : _coords.latitude,
-                longitude : _coords.longitude,
-                coordinates : [_coords.longitude, _coords.latitude]
-            }
-        }, function(_e) {
-            if (_e.success) {
-                Ti.App.Properties.setString('RADIOLISTENERproduction', _e.radiolistener[0].id);
-            } else {
-                console.log(_e);
-            }
-        });
-    } else {
-        Cloud.Objects.update({
-            classname : 'radiolistener',
-            id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
-            fields : {
-                latitude : _coords.latitude,
-                longitude : _coords.longitude,
-                 station:_station
-            }
-        }, function(_e) {
-            if (_e.success) {
-                console.log(_e.radiolistener[0]);
-            } else {
-                console.log('Error:\n' + ((_e.error && _e.message) || JSON.stringify(_e)));
-            }
-        });
-    }
+function savePosition(_coords, _station) {
+    if (_coords && _station) {
+        if (!Ti.App.Properties.hasProperty('RADIOLISTENERproduction')) {
+            Cloud.Objects.create({
+                classname : 'radiolistener',
+                acl_id : ACL_ID,
+                fields : {
+                    station : _coords.station,
+                    latitude : _coords.latitude,
+                    longitude : _coords.longitude,
+                    coordinates : [_coords.longitude, _coords.latitude]
+                }
+            }, function(_e) {
+                if (_e.success) {
+                    Ti.App.Properties.setString('RADIOLISTENERproduction', _e.radiolistener[0].id);
+                } else {
+                    console.log(_e);
+                }
+            });
+        } else {
+            Cloud.Objects.update({
+                classname : 'radiolistener',
+                id : Ti.App.Properties.getString('RADIOLISTENERproduction'),
+                fields : {
+                    latitude : _coords.latitude,
+                    longitude : _coords.longitude,
+                }
+            }, function(_e) {
+                if (_e.success) {
+                    console.log(_e.radiolistener[0]);
+                } else {
+                    console.log('Error:\n' + ((_e.error && _e.message) || JSON.stringify(_e)));
+                }
+            });
+        }
+    }s
 }
 

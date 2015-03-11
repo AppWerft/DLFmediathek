@@ -38,7 +38,7 @@ exports.schema = {
             left : 70,
             top : 5,
             height : Ti.UI.SIZE,
-            right : 25
+            right : 15
         },
         childTemplates : [{
             type : 'Ti.UI.Label',
@@ -60,6 +60,7 @@ exports.schema = {
                 left : 0,
                 top : 0,
                 html : '',
+                height : Ti.UI.SIZE,
                 touchEnabled : false,
                 font : {
                     fontSize : 16,
@@ -73,14 +74,14 @@ exports.schema = {
             properties : {
                 left : 0,
                 top : 0,
-                bottom : 10,
+                bottom : 5,
                 height : Ti.UI.SIZE,
                 touchEnabled : false,
                 font : {
                     fontSize : 18,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'ScalaSansBold'
                 },
-                color : '#333'
+                color : '#888'
             }
         }]
     }]

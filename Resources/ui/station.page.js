@@ -76,7 +76,7 @@ module.exports = function(_args) {
             lastPubDate = currentItem.pubDate;
             self.topBox.setTop(8);
             self.bottomView.setTop(HEIGHT_OF_TOPBOX);
-
+            TopBoxWidget.setProgress(currentItem.progress);
             TopBoxWidget.setPubDate(currentItem.pubDate);
             TopBoxWidget.setTitle(currentItem.title);
             TopBoxWidget.setDescription(currentItem.description);
@@ -143,8 +143,8 @@ module.exports = function(_args) {
                                 height : (item.author) ? Ti.UI.SIZE : 0
                             },
                             duration : {
-                                text : (item.duration) ? 'Länge: ' + Moment.unix(item.duration).format('m:ss') : '',
-                                
+                                text : (item.duration) ? 'Dauer: ' + Moment().startOf('day').seconds(item.duration).format('m:ss') : '',
+
                             }
                         });
                     });
@@ -201,14 +201,13 @@ module.exports = function(_args) {
                 });
             });
             /**/
-
         } else if (_e.bindId && _e.bindId == 'playtrigger') {
             Ti.App.fireEvent('app:play', {
                 item : JSON.parse(_e.itemId)
             });
         }
     });
-    setInterval(self.updateCurrentinTopBox, 10000);
+    setInterval(self.updateCurrentinTopBox, 5000);
     Ti.App.addEventListener('app:state', function(_payload) {
         activityworking = _payload.state;
     });

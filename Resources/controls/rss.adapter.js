@@ -1,6 +1,7 @@
 var Moment = require('vendor/moment'),
     XMLTools = require('vendor/XMLTools'),
     Model = require('model/stations');
+Moment.locale('de   ');
 
 var toType = function(obj) {
     return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
@@ -15,28 +16,39 @@ var Module = function() {
 };
 
 Module.prototype = {
+    sanitizeHTML : function(foo) {
+        var bar = ( typeof foo == 'string')//
+        ? foo.replace(/[\s]+<p>[\s]+/gm, '').replace(/[\s]+<\/p>[\s]+/gm, '').replace(/[\n]+/gm, '<br/>▻ ') : undefined;
+        if (bar != undefined) {
+            bar = bar.replace('▻ Moderation', 'Moderation');
+            bar = bar.replace('▻ Von', 'von ');
+            bar = bar.replace('▻ Am Mikrofon', 'am Mikrofon');
+        }
+        return bar;
+    },
     _updateTimestamps : function(_args) {
         var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
         if (Ti.App.Properties.hasProperty(url)) {
             var items = JSON.parse(Ti.App.Properties.getString(url));
             var length = items.length;
-            var laststart = Moment().startOf('day');
             var ndx = 0;
             for ( i = 0; i < length; i++) {
                 var item = items[i];
-                if (i == 1) {
-                    items[0].duration = Moment(item.pubDate).diff(Moment().startOf('day'), 'seconds');
-                    items[1].duration = Moment(item.pubDate).diff(laststart, 'seconds');
-                    items[0].endtime = Moment(item.pubDate);
-                    items[1].endtime = Moment(items[2].pubDate);
-                } else if (i == length - 1) {
-                    items[i].duration = Moment().startOf('day').add(1, 'day').diff(Moment(item.pubDate), 'seconds');
-                    items[i].endtime = Moment().startOf('day').add(1, 'day');
+                if (i == 0) {
+                    item.endtime = Moment(items[1].pubDate);
+                    item.duration = items[0].endtime.diff(Moment().startOf('day')) / 1000;
+                } else if (i != length - 1) {
+                    item.endtime = Moment(items[i + 1].pubDate);
+                    item.duration = item.endtime.diff(Moment(item.pubDate)) / 1000;
                 } else {
-                    items[i].duration = Moment(item.pubDate).diff(laststart, 'seconds');
-                    items[i].endtime = Moment(items[i + 1].pubDate);
+                    item.endtime = Moment().startOf('day').add(1, 'day');
+                    item.duration = item.endtime.diff(Moment(item.pubDate)) / 1000;
                 }
-                laststart = Moment(item.pubDate);
+                item.progress = Moment().diff(Moment(item.pubDate))/item.duration/1000;
+                item.duration_mmss = (item.duration > 3600)//
+                ? Moment.unix(item.duration).format('H:mm:ss')//
+                : Moment.unix(item.duration).format('m:ss');
+                item.description = this.sanitizeHTML(item.description);
                 item.isonair = (Moment().isBetween(item.pubDate, item.endtime)) ? true : false;
                 item.ispast = (Moment().isBefore(item.endtime)) ? false : true;
                 if (!item.endtime.isAfter(Moment()))
@@ -62,7 +74,9 @@ Module.prototype = {
         if (Ti.App.Properties.hasProperty(url) && _args.done) {
             _args.done({
                 ok : true,
-                items : JSON.parse(Ti.App.Properties.getString(url))
+                items : that._updateTimestamps({
+                    station : _args.station
+                })
             });
             return;
         }
@@ -73,14 +87,16 @@ Module.prototype = {
                 if (channel.item && toType(channel.item) != 'array') {
                     channel.item = [channel.item];
                 }
+                Ti.App.Properties.setString(url, JSON.stringify(channel.item));
                 var result = {
                     ok : true,
-                    items : channel.item
+                    items : that._updateTimestamps({
+                        station : _args.station
+                    })
                 };
                 // back to caller
                 _args.done && _args.done(result);
                 // persist
-                Ti.App.Properties.setString(url, JSON.stringify(channel.item));
                 try {
                     if (that.rss && that.rss.isIndexOf(url) == -1) {
                         that.rss.push({

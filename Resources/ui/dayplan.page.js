@@ -38,13 +38,12 @@ module.exports = function(station) {
                 item.link = null;
             if (item.ispast)
                 return;
-                
+            item.description = RSS.sanitizeHTML(item.description);    
             items.push({
                 properties : {
                     accessoryType : (item.link) ? Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
                     itemId : (item.link) ? JSON.stringify(item) : undefined,
                 },
-               
                 onair : {
                     visible : (item.isonair) ? true : false,
                     height : (item.isonair) ? 40 : 5,
@@ -54,24 +53,24 @@ module.exports = function(station) {
                     color : (item.endtime.isAfter(Moment())) ? '#333' : '#bbb'
                 },
                 description : {
-                    html : ( typeof item.description == 'string') ? item.description : '',
-                    height : ( typeof item.description == 'string') ? Ti.UI.SIZE : 0,
+                    html : item.description,
+                    height : (!!item.description) ? Ti.UI.SIZE : 0,
                     opacity : (item.endtime.isAfter(Moment())) ? 1 : 0.7
                 },
                 title : {
                     text : item.title,
                     color : Model[station].color,
                     opacity : (item.endtime.isAfter(Moment())) ? 1 : 0.7
-                }
+                },
+                duration : {
+                    text :  'Dauer: ' + item.duration_mmss
+                },
             });
 
         });
         self.sections[0].setItems(items);
         //  self.list.scrollToItem(0, ndx);
     }
-
-   
-
     var self = Ti.UI.createListView({
         height : Ti.UI.FILL,
         station: station,
