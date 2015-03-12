@@ -201,6 +201,9 @@ module.exports = function(args) {
             icon : 'commonicon',
             leftmenu : true
         });
+        console.log('Map focus -------------------');
+        require('vendor/map.dialog')();
+
     });
 
     self.mapView.addEventListener('click', function(_e) {

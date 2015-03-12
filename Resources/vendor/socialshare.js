@@ -1,14 +1,18 @@
 var urlshortener = function(_args) {
     var self = Ti.Network.createHTTPClient({
-        onload : function() {
+        onload : function(_e) {
+            console.log(_e);
             _args.done(JSON.parse(this.responseText).id);
+        },
+        onerror : function(_e) {
+            console.log(_e);
         }
     });
     self.open('POST', 'https://www.googleapis.com/urlshortener/v1/url');
     self.setRequestHeader('Content-Type', 'application/json');
     var payload = {
         longUrl : _args.url,
-        key : Ti.App.Properties.getString('shorter')
+        key : Ti.App.Properties.getString('GOOGLE_API_KEY_SHORTER')
     };
     self.send(JSON.stringify(payload));
 };

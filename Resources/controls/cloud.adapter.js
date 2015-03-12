@@ -48,6 +48,8 @@ Module.prototype = {
         }
     },
     savePosition : function(_station) {
+        if (Ti.App.Properties.hasProperty('GEOALLOWED')) {
+           
         if (Ti.Geolocation.locationServicesEnabled) {
             Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_THREE_KILOMETERS;
             Ti.Geolocation.purpose = 'Hörerposition festhalten';
@@ -70,7 +72,7 @@ Module.prototype = {
             });
             xhr.open('GET', 'https://freegeoip.net/json/');
             xhr.send();
-        }
+        }}
 
     },
     loadOwnPhoto : function(_done) {
@@ -280,6 +282,6 @@ function savePosition(_coords, _station) {
                 }
             });
         }
-    }s
+    }
 }
 

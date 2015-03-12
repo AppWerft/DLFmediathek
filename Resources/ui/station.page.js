@@ -1,4 +1,5 @@
 var Favs = new (require('controls/favorites.adapter'))(),
+    Model = require('model/stations');
     RSS = new (require('controls/rss.adapter'))();
 var Moment = require('vendor/moment');
 Moment.locale('de');
@@ -195,7 +196,7 @@ module.exports = function(_args) {
             require('ui/sharing.chooser')(function(_type) {
                 require('vendor/socialshare')({
                     type : _type,
-                    message : 'Höre gerade „' + JSON.parse(_e.itemId).subtitle + '“ auf ' + _args.name,
+                    message : 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“ auf ' + Model[_args.station].name,
                     url : JSON.parse(_e.itemId).url,
                     // image : fileToShare.nativePath,
                 });
