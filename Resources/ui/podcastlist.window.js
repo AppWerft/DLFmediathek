@@ -8,8 +8,7 @@ module.exports = function(_args) {
         fullscreen : true,
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
-    console.log(_args.station);
-    var Player = new (require('ui/audioplayer.widget'))();
+    var Player = require('ui/audioplayer.widget').createPlayer();
     self.AudioPlayerView = Player.createView({
         color : _args.color
     });
@@ -29,7 +28,6 @@ module.exports = function(_args) {
             _feeditems.items.forEach(function(item) {
                 var res = /<img src="(.*?)" /gmi.exec(item.description);
                 var image = (res) ? res[1] : null;
-                console.log(item);
                 items.push({
                     pubdate : {
                         text : Moment(item.pubDate).format('LLL')

@@ -136,6 +136,10 @@ Module.prototype = {
             }
             rows.close();
             link.close();
+            // sort bei pubDate:
+            items.sort(function(a,b){
+               return (a.pubDate > b.pubDate) ? true : false; 
+            });
             _args.done({
                 ok : true,
                 items : items

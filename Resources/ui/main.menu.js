@@ -2,21 +2,27 @@ var Player = Ti.Media.createAudioPlayer({
     allowBackground : true,
     volume : 1
 }),
+Model = require('model/stations'),
 АктйонБар = require('com.alcoapps.actionbarextras'),
     stations = require('model/stations'),
-    currentRadio = null,
+    currentRadio = Ti.App.Properties.getString('LAST_STATION', 'dlf'),
 // listening
-    currentStation = null;
+    currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 // viewing
 
+
+
+
 module.exports = function(_event) {
-    var currentStationName = 'dlf';
-    АктйонБар.setTitle('DRadio');
+    var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+    var currentStationName = laststation;
+    АктйонБар.setTitle(Model[laststation].name);
     АктйонБар.setSubtitle('Mediathek');
     АктйонБар.setFont("ScalaSansBold");
     АктйонБар.subtitleColor = "#ccc";
     var activity = _event.source.getActivity();
     if (activity) {
+        activity.actionBar.logo = '/images/' +laststation + '.png';
         activity.onCreateOptionsMenu = function(_menuevent) {
             _menuevent.menu.clear();
             _menuevent.menu.add({
@@ -29,15 +35,15 @@ module.exports = function(_event) {
                 if (Player.isPlaying()) {
                     Player.stop();
                     Player.release();
-                    console.log('was playing');
-                   // if (currentRadio == currentStation) {
                         return;
-                   // }
                 }
                 currentRadio = currentStation;
                 require('controls/resolveplaylist')({
                     playlist : url,
                     onload : function(_url) {
+                        Ti.UI.createNotification({
+                            message : 'Wir hören jetzt das laufende „' +stations[currentStation].name + '“.'}
+                        ).show();
                         Player.release();
                         Player.setUrl(_url);
                         Player.start();
@@ -84,7 +90,8 @@ module.exports = function(_event) {
             });
             activity.actionBar.displayHomeAsUp = false;
             Ti.App.addEventListener('app:station', function(_e) {
-                 var menuitem = _menuevent.menu.findItem('1');
+                console.log(_e);
+                var menuitem = _menuevent.menu.findItem('1');
                 currentStation = _e.station;
                 if (!currentRadio)
                     currentRadio = _e.station;

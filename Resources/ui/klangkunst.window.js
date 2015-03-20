@@ -4,16 +4,22 @@ var Model = require('model/stations'),
     alarmManager = require('bencoding.alarmmanager').createAlarmManager();
 
 module.exports = function(station) {
-    Ti.App.fireEvent('app:tab', {
-        subtitle : 'Klangkunst',
-        title : 'DeutschlandRadio Kultur',
-        icon : 'drk'
-    });
+    
     if (!station)
         station = 'drk';
     var color = Model[station].color;
     var self = Ti.UI.createWindow();
     self.addEventListener('focus', function() {
+        
+        Ti.App.fireEvent('app:tab', {
+            subtitle : 'DeutschlandRadio Kultur',
+            title : 'Klangkunst',
+            icon : 'commonicon',
+            leftmenu : false
+        });
+        
+        
+        
         if (self.childrens && self.childrens.length)
             return;
         self.list = Ti.UI.createListView({

@@ -1,4 +1,4 @@
-var Module = function() {
+var Player = function() {
     this._player = Ti.Media.createAudioPlayer({
         allowBackground : true,
         volume : 1
@@ -24,10 +24,10 @@ var Module = function() {
             that._equalizer.opacity = 0;
             that._control.image = '/images/play.png';
             break;
-         case 'stopping':
+        case 'stopping':
             that._equalizer.opacity = 0;
             that._control.image = '/images/leer.png';
-            break;   
+            break;
         case 'starting':
             that._control.image = '/images/leer.png';
             break;
@@ -46,7 +46,7 @@ var Module = function() {
     });
     return this;
 };
-Module.prototype = {
+Player.prototype = {
     createView : function(args) {
         this._view = Ti.UI.createView({
             visible : false
@@ -142,6 +142,13 @@ Module.prototype = {
         return this._view;
     },
     startPlayer : function(args) {
+        if (Ti.Network.online != true) {
+            Ti.UI.createNotification({
+                message : 'Bitte Internetverbindung prüfen'
+            }).show();
+            this.stopPlayer();
+            return;
+        }
         Ti.App.fireEvent('app:stop');
         this._view.setVisible(true);
         this._progress.setMax(args.sec);
@@ -163,4 +170,6 @@ Module.prototype = {
     }
 };
 
-module.exports = Module;
+exports.createPlayer = function() {
+    return new Player();
+};

@@ -8,7 +8,7 @@ module.exports = function() {
     var self = require('ui/generic.window')({
         title : 'DeutschlandRadio',
         subtitle : 'Meine Podcasts',
-        station : null
+        station : null,singlewindow:true
     });
     self.list = Ti.UI.createListView({
         templates : {
@@ -36,8 +36,6 @@ module.exports = function() {
                 "image" : "http://www.deutschlandfunk.de/media/files/d/d4a13a32cde15fff1f5bdbfc3688d14av1.jpg",
                 "faved" : 1
             };*/
-            console.log(item.image);
-             console.log(station);
             dataItems.push({
                 properties : {
                     accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,

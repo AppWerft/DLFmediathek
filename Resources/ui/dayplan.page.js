@@ -38,7 +38,7 @@ module.exports = function(station) {
                 item.link = null;
             if (item.ispast)
                 return;
-            item.description = RSS.sanitizeHTML(item.description);    
+            item.description = RSS.sanitizeHTML(item.description);
             items.push({
                 properties : {
                     accessoryType : (item.link) ? Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
@@ -63,7 +63,7 @@ module.exports = function(station) {
                     opacity : (item.endtime.isAfter(Moment())) ? 1 : 0.7
                 },
                 duration : {
-                    text :  'Dauer: ' + item.duration_mmss
+                    text : 'Dauer: ' + item.duration_mmss
                 },
             });
 
@@ -71,9 +71,10 @@ module.exports = function(station) {
         self.sections[0].setItems(items);
         //  self.list.scrollToItem(0, ndx);
     }
+
     var self = Ti.UI.createListView({
         height : Ti.UI.FILL,
-        station: station,
+        station : station,
         backgroundColor : Model[station].color,
         templates : {
             'schema' : require('TEMPLATES').schema,
@@ -81,16 +82,15 @@ module.exports = function(station) {
         defaultItemTemplate : 'schema',
         sections : [Ti.UI.createListSection({})]
     });
-    
 
     var cron = setInterval(function() {
         RSS.getRSS({
-            station :station,
+            station : station,
             done : updateListFunc
         });
     }, 30000);
     RSS.getRSS({
-        station :station,
+        station : station,
         done : updateListFunc
     });
     self.addEventListener('itemclick', function(_e) {
@@ -101,15 +101,25 @@ module.exports = function(station) {
             var item = JSON.parse(_e.itemId);
             var win = require('ui/generic.window')({
                 subtitle : item.title,
-                title : 'Deutschlandradio',
-                station : station
+                title : Model[station].name,
+                station : station,
+                singlewindow:true
             });
-            var web = Ti.UI.createWebView({
-                borderRadius : 1,
-                enableZoomControls : false,
-                url : item.link
+            win.container = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
+                view : Ti.UI.createWebView({
+                    borderRadius : 1,
+                    enableZoomControls : false,
+                    url : item.link
+                }),
+                height : Ti.UI.FILL,
+                width : Ti.UI.FILL
             });
-            win.add(web);
+            win.container.setRefreshing(true);
+            win.container.view.addEventListener('load', function() {
+                console.log(win.container.view);
+                win.container.setRefreshing(false);
+            });
+            win.add(win.container);
             win.open();
         }
 

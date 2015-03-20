@@ -12,7 +12,7 @@ module.exports = function() {
 
     var pages = [];
     for (var station in Model) {
-        pages.push(require('ui/station.page')({
+        pages.push(require('ui/mediathek.page')({
             station : station,
             color : Model[station].color,
             podcasts : Model[station].podcasts,
@@ -27,11 +27,6 @@ module.exports = function() {
         currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
         height : Ti.UI.FILL
     });
-    setTimeout(function() {
-        Ti.App.fireEvent('app:station', {
-            station : Ti.App.Properties.getString('LAST_STATION', 'dlf')
-        });
-    }, 2000);
     self.FlipViewCollection.addEventListener('flipped', function(_e) {
         Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
         Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);

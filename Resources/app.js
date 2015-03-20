@@ -4,11 +4,11 @@
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
         tabs : [Ti.UI.createTab({
             title : 'Mediathek',
-
-        }), Ti.UI.createTab({
-            title : 'Podcasts',
+            window: require('ui/mediathek.window')()
         }), Ti.UI.createTab({
             title : 'Tagesübersicht',
+        }), Ti.UI.createTab({
+            title : 'Podcasts',
         }), Ti.UI.createTab({
             title : 'Hörerkarte',
         }), Ti.UI.createTab({
@@ -18,9 +18,9 @@
 
     self.addEventListener('open', require('ui/main.menu'));
 
-    ['mediathek', 'podcasts', 'dayplan', 'map', 'klangkunst'].forEach(function(win, ndx) {
+    ['dayplan', 'podcasts','map', 'klangkunst'].forEach(function(win, ndx) {
         setTimeout(function() {
-            self.tabs[ndx].setWindow(require('ui/'+ win+ '.window')());
+            self.tabs[ndx+1].setWindow(require('ui/'+ win+ '.window')());
         }, ndx * 100);
     });
 
@@ -32,7 +32,7 @@
         station : 'drk'
     });
     self.open();
-
+    self.setActiveTab(0);
    
     var gcm = require('vendor/gcmjs'),
         pendingData = gcm.getData();

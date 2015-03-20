@@ -14,6 +14,6 @@ android/keystore_path=/Users/fuerst/.android.keystore
 android/keystore_path.type=String
 android/recent_output=/Users/fuerst/Documents/TitaniumStudioWorkspace/DLRmediathek
 android/recent_output.type=String
-android/sdk_version=2.3.3
+android/sdk_version=3.2
 android/sdk_version.type=String
 eclipse.preferences.version=1

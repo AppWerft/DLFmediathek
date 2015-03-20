@@ -139,6 +139,25 @@ module.exports = function(args) {
         self.slogan.value = _res.slogan || '';
     });
     // self.container4self.mapView = Ti.UI.createView();
+    var rc = Map.isGooglePlayServicesAvailable();
+    if (rc != Map.SUCCESS) {
+        switch (rc) {
+        case Map.SERVICE_MISSING:
+            alert('GooglePlayService ist nicht installiert');
+            break;
+        case Map.SERVICE_VERSION_UPDATE_REQUIRED:
+            alert('GooglePlayService ist nicht in aktueller Version.');
+            break;
+        case Map.SERVICE_DISABLED:
+            alert('GooglePlayService ist abgeschaltet.');
+            break;
+        case Map.SERVICE_INVALID:
+            alert('GooglePlayService kann sich nicht bei Google anmelden.');
+            break;
+        default:
+            alert('Unbekannter Fehler.');
+        }
+    }
     self.mapView = Map.createView({
         mapType : Map.TERRAIN_TYPE,
         region : region,
@@ -181,7 +200,7 @@ module.exports = function(args) {
     updatePins();
     setInterval(updatePins, 300000);
     self.mapView.addEventListener('regionchanged', function(_e) {
-        if (_e.latitudeDelta < 0.4 || _e.longitudeDelta < 0.4) {
+        if (_e.latitudeDelta < 0.1 || _e.longitudeDelta < 0.1) {
             _e.source.setLocation(Ti.App.Properties.getObject('REGION'));
         } else {
             Ti.App.Properties.setObject('REGION', {
