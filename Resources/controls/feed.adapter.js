@@ -130,7 +130,6 @@ Module.prototype = {
                     pubDate : rows.getFieldByName('pubDate'),
                     title : rows.getFieldByName('title'),
                     description : rows.getFieldByName('description'),
-                    timestamp : Moment(rows.getFieldByName('pubDate')).unix(),
                     channelurl : rows.getFieldByName('channelurl'),
                     link : rows.getFieldByName('link'),
                     guid : rows.getFieldByName('guid'),
@@ -144,11 +143,6 @@ Module.prototype = {
             }
             rows.close();
             link.close();
-            // sort bei pubDate:
-            items.sort(function(a, b) {
-                console.log(a.timestamp - b.timestamp);
-                return parseInt(a.timestamp) > parseInt(b.timestamp);
-            });
             _args.done({
                 ok : true,
                 items : items
