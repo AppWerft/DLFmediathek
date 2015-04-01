@@ -122,23 +122,32 @@ Module.prototype = {
     // get feed with all items
     getFeed : function(_args) {
         var link = Ti.Database.open(DB);
-        var rows = link.execute('SELECT * FROM items WHERE channelurl=? ORDER BY pubDate DESC', _args.url);
+        var rows = link.execute('SELECT * FROM items WHERE channelurl=? ORDER BY DATE(pubDate) DESC', _args.url);
         var items = [];
         if (rows.getRowCount() > 0) {
             while (rows.isValidRow()) {
-                var count = rows.getFieldCount();
-                var item = {};
-                for (var i = 0; i < count; i++) {
-                    item[rows.getFieldName(i)] = rows.field(i);
-                }
-                items.push(item);
+                items.push({
+                    pubDate : rows.getFieldByName('pubDate'),
+                    title : rows.getFieldByName('title'),
+                    description : rows.getFieldByName('description'),
+                    timestamp : Moment(rows.getFieldByName('pubDate')).unix(),
+                    channelurl : rows.getFieldByName('channelurl'),
+                    link : rows.getFieldByName('link'),
+                    guid : rows.getFieldByName('guid'),
+                    enclosure_url : rows.getFieldByName('enclosure_url'),
+                    enclosure_type : rows.getFieldByName('enclosure_type'),
+                    author : rows.getFieldByName('author'),
+                    duration : rows.getFieldByName('duration'),
+                    channelurl : rows.getFieldByName('channelurl'),
+                });
                 rows.next();
             }
             rows.close();
             link.close();
             // sort bei pubDate:
-            items.sort(function(a,b){
-               return (a.pubDate > b.pubDate) ? true : false; 
+            items.sort(function(a, b) {
+                console.log(a.timestamp - b.timestamp);
+                return parseInt(a.timestamp) > parseInt(b.timestamp);
             });
             _args.done({
                 ok : true,
@@ -210,7 +219,10 @@ Module.prototype = {
                 channel.lastBuildDate, //
                 channel.image.url, //
                 faved);
-                channel.item.forEach(function(item) {
+                channel.item.sort(function(a, b) {
+                    return parseInt(a.timestamp) > parseInt(b.timestamp);
+                });
+                    channel.item.forEach(function(item) {
                     link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', _args.url, item.title, item.link, item.description, item.guid, //
                     item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], item.pubDate, 0);
                 });

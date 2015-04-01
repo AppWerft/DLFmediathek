@@ -45,7 +45,7 @@ module.exports = function(_event) {
                             message : 'Wir hören jetzt das laufende „' +stations[currentStation].name + '“.'}
                         ).show();
                         Player.release();
-                        Player.setUrl(_url);
+                        Player.setUrl(_url+ '?_='+ Math.random());
                         Player.start();
                     }
                 });
@@ -90,7 +90,6 @@ module.exports = function(_event) {
             });
             activity.actionBar.displayHomeAsUp = false;
             Ti.App.addEventListener('app:station', function(_e) {
-                console.log(_e);
                 var menuitem = _menuevent.menu.findItem('1');
                 currentStation = _e.station;
                 if (!currentRadio)
