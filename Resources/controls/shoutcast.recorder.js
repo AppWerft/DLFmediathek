@@ -6,13 +6,14 @@
 
  **/
 const BLOCKSIZE = 1024;
+const DURATION = 60000;
 var moment = require('vendor/moment');
 
 module.exports = function(_args) {
     if (!_args.url)
         _args.url = URL;
     if (!_args.duration)
-        _args.duration = 5000;
+        _args.duration = DURATION;
     var f = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent()) ? Ti.Filesystem.externalStorageDirectory : Ti.Filesystem.applicationDataDirectory, moment().format('YYYY-MM-DD_HHmm') + '.mp3');
     var regex = /^(?:([^\:]*)\:\/\/)?(?:([^\:\@]*)(?:\:([^\@]*))?\@)?(?:([^\/\:]*)\.(?=[^\.\/\:]*\.[^\.\/\:]*))?([^\.\/\:]*)(?:\.([^\/\.\:]*))?(?:\:([0-9]*))?(\/[^\?#]*(?=.*?\/)\/)?([^\?#]*)?(?:\?([^#]*))?(?:#(.*))?/;
     var res = _args.url.match(regex);
@@ -24,6 +25,8 @@ module.exports = function(_args) {
         port : _args.port,
         connected : function(e) {
             Ti.Stream.pump(e.socket, function(_read) {
+                console.log(_read.error);
+                console.log(_read.totalBytesProcessed);
                 try {
                     if (_read.buffer) {
                         var instream = Ti.Stream.createStream({
@@ -44,7 +47,7 @@ module.exports = function(_args) {
                         Ti.API.error('Error: read callback called with no buffer!');
                     }
                 } catch (ex) {
-                    console.log('excepetion');
+                    console.log('exception');
                     Ti.API.error(ex);
                 }
             }, BLOCKSIZE, true);
