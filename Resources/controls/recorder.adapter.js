@@ -1,14 +1,24 @@
 var URL = 'http://dradio_mp3_dlf_m.akacast.akamaistream.net/7/249/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dlf_m';
+var f = Ti.FileSystem.getFile(Ti.FileSystem.ApplicationFolder,'test.mp3');
 
 module.exports = function(_args) {
+    if (!_args.url)
+        _args.url = URL;
+    var regex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)(:([^\/]*))?((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(\?([^#]*))?(#(.*))?$/;
+    var res = _args.match(regex);
+    var url = {
+        port : res[2],
+        host : res[1],
+        path : res[3]
+    };
     var socket = Ti.Network.Socket.createTCP({
-        host : 'dradio_mp3_dlf_m.akacast.akamaistream.net',
-        port : 80,
+        host : url.host,
+        port : url.port,
         connected : function(e) {
             Ti.API.info('Socket opened!');
             Ti.Stream.pump(e.socket, readCallback, 1024, true);
             Ti.Stream.write(socket, Ti.createBuffer({
-                value : 'GET '+URL+ ' HTTP/1.1\r\n\r\n'
+                value : 'GET ' + URL + ' HTTP/1.1\r\n\r\n'
             }), writeCallback);
         },
         error : function(e) {
@@ -26,26 +36,29 @@ module.exports = function(_args) {
             // Error / EOF on socket. Do any cleanup here.
         }
         try {
-            
-            var instream = Ti.Stream.createStream({
-    mode : Ti.Stream.MODE_READ,
-    source : this.responseData
-});
-var outstream = f.open(Ti.Filesystem.MODE_WRITE);
-var buffer = Ti.createBuffer({
-    length : 1024
-});
-var read_bytes = 0;
-while (( read_bytes = instream.read(buffer)) > 0) {
-    outstream.write(buffer, 0, read_bytes);
-}
-instream.close();
-outstream.close();
-
+            if (e.buffer) {
+                var instream = Ti.Stream.createStream({
+                    mode : Ti.Stream.MODE_READ,
+                    source : e.buffer
+                });
+                var outstream = f.open(Ti.Filesystem.MODE_WRITE);
+                var buffer = Ti.createBuffer({
+                    length : 1024
+                });
+                var read_bytes = 0;
+                while (( read_bytes = instream.read(buffer)) > 0) {
+                    outstream.write(buffer, 0, read_bytes);
+                }
+                instream.close();
+                outstream.close();
+            } else {
+                Ti.API.error('Error: read callback called with no buffer!');
+            }
             // hier blockweise lesen und speichern und irgendwann beenden, aber wie?
         } catch (ex) {
             Ti.API.error(ex);
         }
     }
+
 };
 
