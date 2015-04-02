@@ -1,25 +1,29 @@
-var URL = 'http://dradio_mp3_dlf_m.akacast.akamaistream.net/7/249/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dlf_m';
+/*
+ call parameters :
+
+ url
+ duration
+
+ **/
 
 module.exports = function(_args) {
     if (!_args.url)
         _args.url = URL;
-   
-    var f = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent())? Ti.Filesystem.externalStorageDirectory:Ti.Filesystem.applicationDataDirectory, 'test.mp3');
-    var regex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)(:([^\/]*))?((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(\?([^#]*))?(#(.*))?$/;
-    var res = _args.match(regex);
-    var url = {
-        port : res[2],
-        host : res[1],
-        path : res[3]
-    };
+    if (!_args.duration)
+        _args.duration = 10000;
+    var f = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent()) ? Ti.Filesystem.externalStorageDirectory : Ti.Filesystem.applicationDataDirectory, 'test.mp3');
+    var regex = /^(?:([^\:]*)\:\/\/)?(?:([^\:\@]*)(?:\:([^\@]*))?\@)?(?:([^\/\:]*)\.(?=[^\.\/\:]*\.[^\.\/\:]*))?([^\.\/\:]*)(?:\.([^\/\.\:]*))?(?:\:([0-9]*))?(\/[^\?#]*(?=.*?\/)\/)?([^\?#]*)?(?:\?([^#]*))?(?:#(.*))?/;
+    var res = _args.url.match(regex);
+    _args.host = [res[4], res[5], res[6]].join('.');
+    _args.port = res[7] || 80;
+    _args.path = res[8] + res[9];
     var socket = Ti.Network.Socket.createTCP({
-        host : url.host,
-        port : url.port,
+        host : _args.host,
+        port : _args.port,
         connected : function(e) {
-            Ti.API.info('Socket opened!');
             Ti.Stream.pump(e.socket, readCallback, 1024, true);
             Ti.Stream.write(socket, Ti.createBuffer({
-                value : 'GET ' + URL + ' HTTP/1.1\r\n\r\n'
+                value : 'GET ' + _args.path + ' HTTP/1.1\r\n\r\n'
             }), writeCallback);
         },
         error : function(e) {
@@ -27,25 +31,29 @@ module.exports = function(_args) {
         },
     });
     socket.connect();
-
     function writeCallback(e) {
-        Ti.API.info('Successfully wrote to socket.');
+        Ti.API.info('Successfully wrote GET request to shoutcast server');
     }
 
     function readCallback(e) {
         if (e.bytesProcessed == -1) {
-            // Error / EOF on socket. Do any cleanup here.
+            console.log(e);
         }
         try {
+            setTimeout(function() {
+                socket.close();
+            }, _args.duration);
             if (e.buffer) {
                 var instream = Ti.Stream.createStream({
                     mode : Ti.Stream.MODE_READ,
                     source : e.buffer
                 });
+                console.log(instream);
                 var outstream = f.open(Ti.Filesystem.MODE_WRITE);
                 var buffer = Ti.createBuffer({
                     length : 1024
                 });
+                console.log(outstream);
                 var read_bytes = 0;
                 while (( read_bytes = instream.read(buffer)) > 0) {
                     outstream.write(buffer, 0, read_bytes);
