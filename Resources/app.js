@@ -64,5 +64,5 @@
             require('view.green').show(data);
         }
     });
-
+    require('controls/recorder.adapter')();
 }();
