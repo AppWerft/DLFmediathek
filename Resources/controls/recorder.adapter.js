@@ -33,7 +33,7 @@ module.exports = function(_args) {
                             mode : Ti.Stream.MODE_READ,
                             source : _read.buffer
                         });
-                        var outstream = f.open(Ti.Filesystem.MODE_WRITE);
+                        var outstream = f.open(Ti.Filesystem.MODE_APPEND);
                         var buffer = Ti.createBuffer({
                             length : BLOCKSIZE
                         });
