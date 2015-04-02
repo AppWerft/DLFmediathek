@@ -1,9 +1,10 @@
 var URL = 'http://dradio_mp3_dlf_m.akacast.akamaistream.net/7/249/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dlf_m';
-var f = Ti.FileSystem.getFile(Ti.FileSystem.ApplicationFolder,'test.mp3');
+
 
 module.exports = function(_args) {
     if (!_args.url)
         _args.url = URL;
+    var f = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'test.mp3');    
     var regex = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)(:([^\/]*))?((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(\?([^#]*))?(#(.*))?$/;
     var res = _args.match(regex);
     var url = {
