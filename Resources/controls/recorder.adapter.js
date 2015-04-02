@@ -6,13 +6,14 @@
 
  **/
 const BLOCKSIZE = 1024;
+var moment = require('vendor/moment');
 
 module.exports = function(_args) {
     if (!_args.url)
         _args.url = URL;
     if (!_args.duration)
-        _args.duration = 3000;
-    var f = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent()) ? Ti.Filesystem.externalStorageDirectory : Ti.Filesystem.applicationDataDirectory, 'test.mp3');
+        _args.duration = 5000;
+    var f = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent()) ? Ti.Filesystem.externalStorageDirectory : Ti.Filesystem.applicationDataDirectory, moment().format('YYYY-MM-DD_HHmm') + '.mp3');
     var regex = /^(?:([^\:]*)\:\/\/)?(?:([^\:\@]*)(?:\:([^\@]*))?\@)?(?:([^\/\:]*)\.(?=[^\.\/\:]*\.[^\.\/\:]*))?([^\.\/\:]*)(?:\.([^\/\.\:]*))?(?:\:([0-9]*))?(\/[^\?#]*(?=.*?\/)\/)?([^\?#]*)?(?:\?([^#]*))?(?:#(.*))?/;
     var res = _args.url.match(regex);
     _args.host = [res[4], res[5], res[6]].join('.');
@@ -23,10 +24,6 @@ module.exports = function(_args) {
         port : _args.port,
         connected : function(e) {
             Ti.Stream.pump(e.socket, function(_read) {
-                if (_read.bytesProcessed == -1) {
-                    console.log('bytesProcessed == -1');
-                    console.log(_read);
-                }
                 try {
                     if (_read.buffer) {
                         var instream = Ti.Stream.createStream({
@@ -39,7 +36,6 @@ module.exports = function(_args) {
                         });
                         var read_bytes = 0;
                         while (( read_bytes = instream.read(buffer)) > 0) {
-                            console.log('read_bytes: ' + read_bytes);
                             outstream.write(buffer, 0, read_bytes);
                         }
                         instream.close();
@@ -48,7 +44,7 @@ module.exports = function(_args) {
                         Ti.API.error('Error: read callback called with no buffer!');
                     }
                 } catch (ex) {
-                    console.log('excepetzion');
+                    console.log('excepetion');
                     Ti.API.error(ex);
                 }
             }, BLOCKSIZE, true);
@@ -67,8 +63,6 @@ module.exports = function(_args) {
 
     setTimeout(function() {
         !!socket && socket.close();
-        console.log('size=' + f.getSize());
-        console.log(f.spaceAvailable());
     }, _args.duration);
 
 };
