@@ -56,6 +56,7 @@ module.exports = function(_args) {
                 });
                 var read_bytes = 0;
                 while (( read_bytes = instream.read(buffer)) > 0) {
+                    console.log(read_bytes);
                     outstream.write(buffer, 0, read_bytes);
                 }
                 instream.close();
