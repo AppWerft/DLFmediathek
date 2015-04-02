@@ -6,7 +6,7 @@
 
  **/
 const BLOCKSIZE = 1024;
-const DURATION = 60000;
+const DURATION = 10000;
 var moment = require('vendor/moment');
 
 module.exports = function(_args) {
@@ -24,25 +24,25 @@ module.exports = function(_args) {
         host : _args.host,
         port : _args.port,
         connected : function(e) {
-            Ti.Stream.pump(e.socket, function(_read) {
-                console.log(_read.error);
-                console.log(_read.totalBytesProcessed);
+            Ti.Stream.pump(e.socket, function(_pump) {
+                console.log(_pump.error);
+                console.log(_pump.totalBytesProcessed);
                 try {
-                    if (_read.buffer) {
-                        var instream = Ti.Stream.createStream({
+                    if (_pump.buffer) {
+                        var foo_stream = Ti.Stream.createStream({
                             mode : Ti.Stream.MODE_READ,
-                            source : _read.buffer
+                            source : _pump.buffer
                         });
-                        var outstream = f.open(Ti.Filesystem.MODE_APPEND);
+                        var bar_stream = f.open(Ti.Filesystem.MODE_APPEND);
                         var buffer = Ti.createBuffer({
                             length : BLOCKSIZE
                         });
                         var read_bytes = 0;
-                        while (( read_bytes = instream.read(buffer)) > 0) {
-                            outstream.write(buffer, 0, read_bytes);
+                        while (( read_bytes = foo_stream.read(buffer)) > 0) {
+                            bar_stream.write(buffer, 0, read_bytes);
                         }
-                        instream.close();
-                        outstream.close();
+                        foo_stream.close();
+                        bar_stream.close();
                     } else {
                         Ti.API.error('Error: read callback called with no buffer!');
                     }
