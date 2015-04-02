@@ -31,6 +31,8 @@ module.exports = function(_args) {
         },
     });
     socket.connect();
+    var instream,
+        outstream;
     function writeCallback(e) {
         Ti.API.info('Successfully wrote GET request to shoutcast server');
     }
@@ -38,19 +40,20 @@ module.exports = function(_args) {
     function readCallback(e) {
         if (e.bytesProcessed == -1) {
             console.log(e);
-        }
-        try {
             setTimeout(function() {
-                socket.close();
+                socket && socket.close();
                 instream && instream.close();
                 outstream && outstream.close();
             }, _args.duration);
+        }
+        try {
+
             if (e.buffer) {
-                var instream = Ti.Stream.createStream({
+                instream = Ti.Stream.createStream({
                     mode : Ti.Stream.MODE_READ,
                     source : e.buffer
                 });
-                var outstream = f.open(Ti.Filesystem.MODE_WRITE);
+                outstream = f.open(Ti.Filesystem.MODE_WRITE);
                 var buffer = Ti.createBuffer({
                     length : 1024
                 });
