@@ -49,7 +49,7 @@ module.exports = function(_args) {
                 } catch (ex) {
                     console.log('exception');
                     Ti.API.error(ex);
-                }
+                } 
             }, BLOCKSIZE, true);
             Ti.Stream.write(e.socket, Ti.createBuffer({
                 value : 'GET ' + _args.path + ' HTTP/1.1\r\n\r\n'
@@ -67,6 +67,5 @@ module.exports = function(_args) {
     setTimeout(function() {
         !!socket && socket.close();
     }, _args.duration);
-
 };
 
