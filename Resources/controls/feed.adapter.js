@@ -18,8 +18,10 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBER')) {
-        Ti.App.Properties.setString('SERVICESUBSCRIBER', '1');
+    console.log(Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600)));
+    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBER2')) {
+        Ti.App.Properties.setString('SERVICESUBSCRIBER2', '1');
+        var nextsynctime =  Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600));
         alarmManager.addAlarmNotification({
             requestCode : 2, // must be INT to identify the alarm
             second : 10,
@@ -29,13 +31,13 @@ var Module = function() {
             icon : Ti.App.Android.R.drawable.appicon,
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         });
-
-        require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
-            service : 'de.appwerft.dlrmediathek.FeedtesterService',
-            second : Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600)).diff(Moment(), 'seconds'),
+        alarmManager.addAlarmService({
+            service : 'de.appwerft.dlrmediathek.PodcastsyncService',
+            second :nextsynctime.diff(Moment(), 'seconds'),
             repeat : 'daily'
         });
     }
+    
     return this;
 };
 
@@ -128,9 +130,9 @@ Module.prototype = {
             while (rows.isValidRow()) {
                 items.push({
                     pubDate : rows.getFieldByName('pubDate'),
+                    timestamp : Moment(rows.getFieldByName('pubDate')).unix(),
                     title : rows.getFieldByName('title'),
                     description : rows.getFieldByName('description'),
-                    channelurl : rows.getFieldByName('channelurl'),
                     link : rows.getFieldByName('link'),
                     guid : rows.getFieldByName('guid'),
                     enclosure_url : rows.getFieldByName('enclosure_url'),
@@ -216,7 +218,7 @@ Module.prototype = {
                 channel.item.sort(function(a, b) {
                     return parseInt(a.timestamp) > parseInt(b.timestamp);
                 });
-                    channel.item.forEach(function(item) {
+                channel.item.forEach(function(item) {
                     link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', _args.url, item.title, item.link, item.description, item.guid, //
                     item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], item.pubDate, 0);
                 });

@@ -90,7 +90,6 @@ module.exports = function(_event) {
             });
             activity.actionBar.displayHomeAsUp = false;
             Ti.App.addEventListener('app:station', function(_e) {
-                var menuitem = _menuevent.menu.findItem('1');
                 currentStation = _e.station;
                 if (!currentRadio)
                     currentRadio = _e.station;

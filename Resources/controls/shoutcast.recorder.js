@@ -30,7 +30,7 @@ module.exports = function(_args) {
                 try {
                     if (_pump.buffer) {
                         var foo_stream = Ti.Stream.createStream({
-                            mode : Ti.Stream.MODE_READ  ,
+                            mode : Ti.Stream.MODE_READ,
                             source : _pump.buffer
                         });
                         var bar_stream = mp3file.open(Ti.Filesystem.MODE_APPEND);
@@ -56,17 +56,14 @@ module.exports = function(_args) {
             }), function(_write) {
                 Ti.API.info('Successfully wrote GET request to shoutcast server');
             });
-
+            setTimeout(function() {
+                !!socket && socket.close();
+            }, _args.duration);
         },
         error : function(e) {
             Ti.API.info('Error (' + e.errorCode + '): ' + e.error);
         },
     });
     socket.connect();
-
-    setTimeout(function() {
-        !!socket && socket.close();
-    }, _args.duration);
-
 };
 
