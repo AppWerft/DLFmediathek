@@ -18,7 +18,7 @@ var mirrorPodcasts = function() {
             });
             return;
             // would stop service totally:
-            Ti.Android.stopService(Ti.Android.currentService.getIntent());
+            //Ti.Android.stopService(Ti.Android.currentService.getIntent());
         }
     });
 };

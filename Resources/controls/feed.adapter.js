@@ -1,6 +1,6 @@
 var Moment = require('vendor/moment'),
-    XMLTools = require('vendor/XMLTools'),
-    alarmManager = require('bencoding.alarmmanager').createAlarmManager();
+    XMLTools = require('vendor/XMLTools');
+   
 
 const DB = Ti.App.Properties.getString('DATABASE');
 
@@ -18,27 +18,7 @@ var Module = function() {
         link.execute('CREATE INDEX IF NOT EXISTS "itemsurlindex" ON "items" (channelurl)');
         link.close();
     }
-    console.log(Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600)));
-    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBER3')) {
-        Ti.App.Properties.setString('SERVICESUBSCRIBER3', '1');
-        var nextsynctime = Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600));
-        alarmManager.addAlarmNotification({
-            requestCode : 2, // must be INT to identify the alarm
-            second : 10,
-            contentTitle : 'DLR Mediathek',
-            contentText : ' Podcastssynchronisierung gestartet',
-            playSound : true,
-            icon : Ti.App.Android.R.drawable.appicon,
-            sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
-        });
-        alarmManager.addAlarmService({
-            service : 'de.appwerft.dlrmediathek.PodcastsyncService',
-            second : nextsynctime.diff(Moment(), 'seconds'),
-            repeat : 'daily'
-        });
-    }
-
-    return this;
+     return this;
 };
 
 Module.prototype = {
@@ -63,7 +43,6 @@ Module.prototype = {
                 var feed = feeds.shift();
                 if (feed) {
                     total++;
-                    console.log(feed.href);
                     that.loadFeed({
                         url : feed.href,
                         done : loadfeed
@@ -145,9 +124,6 @@ Module.prototype = {
             link.close();
             items.sort(function(a, b) {
                 return Moment(b.pubDate).unix() - Moment(a.pubDate).unix() ;
-            });
-            items.forEach(function(item) {
-                console.log(item.pubDate);
             });
             _args.done({
                 ok : true,
