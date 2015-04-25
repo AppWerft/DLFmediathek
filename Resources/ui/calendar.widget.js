@@ -23,7 +23,7 @@ module.exports = function(args) {
         backgroundColor : color,
         font : {
             fontSize : 20,
-            fontFamily : 'ScalaSansBold'
+            fontFamily : 'Aller-Bold'
         },
     });
     self.add(Ti.UI.createLabel({
@@ -34,7 +34,7 @@ module.exports = function(args) {
         touchEnabled : false,
         font : {
             fontSize : 22,
-            fontFamily : 'ScalaSansBold'
+            fontFamily : 'Aller-Bold'
         },
     }));
     self.addEventListener('click', function(_e) {

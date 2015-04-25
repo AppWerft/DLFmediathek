@@ -19,9 +19,9 @@ var Module = function() {
         link.close();
     }
     console.log(Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600)));
-    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBER2')) {
-        Ti.App.Properties.setString('SERVICESUBSCRIBER2', '1');
-        var nextsynctime =  Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600));
+    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBER3')) {
+        Ti.App.Properties.setString('SERVICESUBSCRIBER3', '1');
+        var nextsynctime = Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600));
         alarmManager.addAlarmNotification({
             requestCode : 2, // must be INT to identify the alarm
             second : 10,
@@ -33,11 +33,11 @@ var Module = function() {
         });
         alarmManager.addAlarmService({
             service : 'de.appwerft.dlrmediathek.PodcastsyncService',
-            second :nextsynctime.diff(Moment(), 'seconds'),
+            second : nextsynctime.diff(Moment(), 'seconds'),
             repeat : 'daily'
         });
     }
-    
+
     return this;
 };
 
@@ -69,7 +69,6 @@ Module.prototype = {
                         done : loadfeed
                     });
                 } else {
-                    console.log(ndx + ' ' + stations.length);
                     ndx++;
                     if (ndx < stations.length) {
                         loadfeeds();
@@ -124,13 +123,12 @@ Module.prototype = {
     // get feed with all items
     getFeed : function(_args) {
         var link = Ti.Database.open(DB);
-        var rows = link.execute('SELECT * FROM items WHERE channelurl=? ORDER BY DATE(pubDate) DESC', _args.url);
+        var rows = link.execute('SELECT * FROM items WHERE channelurl=? ORDER BY pubDate DESC', _args.url);
         var items = [];
         if (rows.getRowCount() > 0) {
             while (rows.isValidRow()) {
                 items.push({
                     pubDate : rows.getFieldByName('pubDate'),
-                    timestamp : Moment(rows.getFieldByName('pubDate')).unix(),
                     title : rows.getFieldByName('title'),
                     description : rows.getFieldByName('description'),
                     link : rows.getFieldByName('link'),
@@ -145,6 +143,12 @@ Module.prototype = {
             }
             rows.close();
             link.close();
+            items.sort(function(a, b) {
+                return Moment(b.pubDate).unix() - Moment(a.pubDate).unix() ;
+            });
+            items.forEach(function(item) {
+                console.log(item.pubDate);
+            });
             _args.done({
                 ok : true,
                 items : items
@@ -178,7 +182,7 @@ Module.prototype = {
                 channel.item.forEach(function(item) {
                     link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
                     _args.url, item.title, item.link, item.description, item.guid, //
-                    item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], item.pubDate, 0);
+                    item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], Moment(item.pubDate).toDate(), 0);
                 });
                 link.close();
                 channel.item.faved = that.isFaved(_args.url);

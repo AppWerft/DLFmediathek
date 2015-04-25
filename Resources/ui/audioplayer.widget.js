@@ -97,7 +97,7 @@ Player.prototype = {
             font : {
                 fontSize : 18,
                 fontWeight : 'bold',
-                fontFamily : 'ScalaSansBold'
+                fontFamily : 'Aller-Bold'
             },
             left : 10,
         });

@@ -319,12 +319,6 @@ module.exports = [{
         "alt" : "DLF Nachrichten",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/a/a1f6f267844a1c3ca844d183e56988cav1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
-}, {
-    "href" : "http://www.deutschlandfunk.de/podcast-pisaplus.1181.de.podcast.xml",
-    "img" : {
-        "alt" : "Pisaplus",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/7/70e59d1a698b005e054e81f7d7944acav1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
-    }
 },  {
     "href" : "http://www.deutschlandfunk.de/podcast-presseschau.1115.de.podcast.xml",
     "img" : {

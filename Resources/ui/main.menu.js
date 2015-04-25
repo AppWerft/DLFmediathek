@@ -11,14 +11,12 @@ Model = require('model/stations'),
 // viewing
 
 
-
-
 module.exports = function(_event) {
     var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
     var currentStationName = laststation;
     АктйонБар.setTitle(Model[laststation].name);
     АктйонБар.setSubtitle('Mediathek');
-    АктйонБар.setFont("ScalaSansBold");
+    АктйонБар.setFont("Aller");
     АктйонБар.subtitleColor = "#ccc";
     var activity = _event.source.getActivity();
     if (activity) {

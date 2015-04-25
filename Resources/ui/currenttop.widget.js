@@ -14,7 +14,7 @@ var Module = function() {
         color : '#eee',
         font : {
             fontSize : 16,
-            fontFamily : 'ScalaSans'
+            fontFamily : 'Aller'
         },
     });
     this._view.title = Ti.UI.createLabel({
@@ -23,7 +23,7 @@ var Module = function() {
         text : '',
         font : {
             fontSize : 20,
-            fontFamily : 'ScalaSansBold'
+            fontFamily : 'Aller-Bold'
         },
         right : 50
     });

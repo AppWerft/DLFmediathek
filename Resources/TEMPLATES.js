@@ -13,8 +13,9 @@ exports.schema = {
             top : 5,
             color : '#777',
             font : {
-                fontSize : 24,
-                fontFamily : 'ScalaSansBold'
+                fontSize : 22,
+               
+                fontFamily : 'Aller'
             },
         }
     }, {
@@ -35,8 +36,8 @@ exports.schema = {
         properties : {
             width : Ti.UI.FILL,
             layout : 'vertical',
-            left : 70,
-            top : 5,
+            left : 80,
+            top : 0,
             height : Ti.UI.SIZE,
             right : 15
         },
@@ -47,7 +48,7 @@ exports.schema = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller-Bold'
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -64,7 +65,7 @@ exports.schema = {
                 touchEnabled : false,
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
                 color : '#333'
             }
@@ -78,8 +79,8 @@ exports.schema = {
                 height : Ti.UI.SIZE,
                 touchEnabled : false,
                 font : {
-                    fontSize : 18,
-                    fontFamily : 'ScalaSansBold'
+                    fontSize : 16,
+                    fontFamily : 'Aller'
                 },
                 color : '#888'
             }
@@ -116,8 +117,8 @@ exports.podcastlist = {
             properties : {
                 top : 5,
                 font : {
-                    fontSize : 20,
-                    fontFamily : 'ScalaSansBold'
+                    fontSize : 22,
+                    fontFamily : 'Aller-Bold'
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -133,7 +134,7 @@ exports.podcastlist = {
                 touchEnabled : false,
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
                 color : '#333'
             }
@@ -147,7 +148,7 @@ exports.podcastlist = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller'
                 },
             }
         }, {
@@ -160,7 +161,7 @@ exports.podcastlist = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller'
                 },
             }
         }, {
@@ -173,7 +174,7 @@ exports.podcastlist = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
             }
         }]
@@ -221,7 +222,7 @@ exports.klangkunst = {
                 top : 5,
                 font : {
                     fontSize : 20,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller-Bold'
                 },
                 left : 0,
                 height : Ti.UI.SIZE,
@@ -234,7 +235,7 @@ exports.klangkunst = {
                 top : 5,
                 font : {
                     fontSize : 20,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller'
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -250,7 +251,7 @@ exports.klangkunst = {
                 touchEnabled : false,
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
                 color : '#333'
             }
@@ -264,7 +265,7 @@ exports.klangkunst = {
                 color : '#777',
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller'
                 },
             }
         }]
@@ -284,11 +285,11 @@ exports.mediathek = {
         properties : {
             left : 5,
             touchEnabled : false,
-            top : 5,
-            color : '#777',
+            top : 2,
+            color : '#555',
             font : {
-                fontSize : 24,
-                fontFamily : 'ScalaSansBold'
+                fontSize : 22,
+                fontFamily : 'Aller'
             },
         }
     }, {
@@ -328,30 +329,16 @@ exports.mediathek = {
         },
         childTemplates : [{
             type : 'Ti.UI.Label',
-            bindId : 'title',
-            properties : {
-                color : '#060',
-                top : 5,
-                font : {
-                    fontSize : 20,
-                    fontFamily : 'ScalaSansBold'
-                },
-                left : 0,
-                width : Ti.UI.FILL,
-            }
-
-        }, {
-            type : 'Ti.UI.Label',
             bindId : 'subtitle',
             properties : {
                 left : 0,
-                top : 0,
+                top : 5,
                 touchEnabled : false,
                 font : {
-                    fontSize : 18,
-                    fontFamily : 'ScalaSans'
+                    fontSize : 20,
+                    fontFamily : 'Aller-Bold'
                 },
-                color : '#333'
+                color : '#555'
             }
         }, {
             type : 'Ti.UI.Label',
@@ -364,7 +351,7 @@ exports.mediathek = {
                 touchEnabled : false,
                 font : {
                     fontSize : 12,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
                 color : '#333'
             }
@@ -379,7 +366,7 @@ exports.mediathek = {
                 touchEnabled : false,
                 font : {
                     fontSize : 18,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
                 color : '#333'
             }
@@ -426,7 +413,7 @@ exports.merkliste = {
             bottom : 5,
             font : {
                 fontSize : 16,
-                fontFamily : 'ScalaSansBold'
+                fontFamily : 'Aller'
             },
             left : 5,
             textAlign : 'left',
@@ -459,7 +446,7 @@ exports.merkliste = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller'
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -475,7 +462,7 @@ exports.merkliste = {
                 touchEnabled : false,
                 font : {
                     fontSize : 18,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller-Bold'
                 },
                 color : '#555'
             }
@@ -489,7 +476,7 @@ exports.merkliste = {
                 touchEnabled : false,
                 font : {
                     fontSize : 12,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
                 color : '#333'
             }
@@ -503,7 +490,7 @@ exports.merkliste = {
                 color : '#777',
                 font : {
                     fontSize : 14,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
             }
         }]
@@ -549,7 +536,7 @@ exports.merklisteactive = {
             bottom : 5,
             font : {
                 fontSize : 18,
-                fontFamily : 'ScalaSansBold'
+                fontFamily : 'Aller'
             },
             left : 5,
             textAlign : 'left',
@@ -582,7 +569,7 @@ exports.merklisteactive = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller'
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -614,7 +601,7 @@ exports.merklisteactive = {
                 color : '#eee',
                 font : {
                     fontSize : 14,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
             }
         }]
@@ -654,7 +641,7 @@ exports.mypodcasts = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontFamily : 'ScalaSansBold'
+                    fontFamily : 'Aller-Bold    '
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -670,7 +657,7 @@ exports.mypodcasts = {
                 touchEnabled : false,
                 font : {
                     fontSize : 16,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
                 color : '#555'
             }
@@ -685,7 +672,7 @@ exports.mypodcasts = {
                 color : '#777',
                 font : {
                     fontSize : 14,
-                    fontFamily : 'ScalaSans'
+                    fontFamily : 'Aller'
                 },
             }
         }]

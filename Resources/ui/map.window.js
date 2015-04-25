@@ -38,7 +38,7 @@ module.exports = function(args) {
         right : 5,
         font : {
             fontSize : 14,
-            fontFamily : 'ScalaSans'
+            fontFamily : 'Aller'
         },
         text : 'Hier ist es möglich, den Karteneintrag um einen Selfie und einen Spruch zu erweitern.'
     }));
@@ -75,7 +75,7 @@ module.exports = function(args) {
         right : 2,
         font : {
             fontSize : 14,
-            fontFamily : 'ScalaSans'
+            fontFamily : 'Aller'
         },
         text : 'Warum höre ich Radio?'
     }));
@@ -97,7 +97,7 @@ module.exports = function(args) {
             right : 2,
             font : {
                 fontSize : 14,
-                fontFamily : 'ScalaSans'
+                fontFamily : 'Aller'
             },
             text : 'Zusätzlich Twitterhandle (@' + twitter + ') veröffentlichen:'
         }));
