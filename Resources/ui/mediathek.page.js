@@ -1,6 +1,6 @@
 var Favs = new (require('controls/favorites.adapter'))(),
     Model = require('model/stations');
-    RSS = new (require('controls/rss.adapter'))();
+RSS = new (require('controls/rss.adapter'))();
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
@@ -18,6 +18,9 @@ module.exports = function(_args) {
             live : _args.live,
             stream : _args.stream
         },
+    });
+    Ti.App.addEventListener('daychanged', function() {
+        self.date = Moment().startOf('day');
     });
     setTimeout(function() {
         self.calendarView = require('ui/calendar.widget')({
@@ -38,7 +41,6 @@ module.exports = function(_args) {
         height : 7,
         backgroundColor : _args.color
     }));
-
     self.bottomList = Ti.UI.createListView({
         top : 7,
         height : Ti.UI.FILL,
@@ -211,6 +213,5 @@ module.exports = function(_args) {
     Ti.App.addEventListener('app:state', function(_payload) {
         activityworking = _payload.state;
     });
-
     return self;
 };

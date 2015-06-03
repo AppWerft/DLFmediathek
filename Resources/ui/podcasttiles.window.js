@@ -10,9 +10,8 @@ module.exports = function() {
         Ti.App.fireEvent('app:tab', {
             subtitle : 'Podcast-Archiv'
         });
-
-        if (self.childrens && self.childrens.length)
-            return;
+    });
+    self.addEventListener('open', function() {
         var pages = [];
         for (var ndx = 0; ndx < stations.length; ndx++) {
             var podcasts = require('model/' + stations[ndx]);

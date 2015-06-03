@@ -12,6 +12,14 @@ var Module = function() {
     this.rss = {};
     var that = this;
     //this.cron = setInterval(that._updateTimestamps, 30000);
+    Ti.App.addEventListener('daychanged',function(){var RSS = new (require('controls/rss.adapter'))();
+            RSS.getRSS({
+                station : 'dlf'
+            });
+            RSS.getRSS({
+                station : 'drk'
+            });});
+     
     return this;
 };
 

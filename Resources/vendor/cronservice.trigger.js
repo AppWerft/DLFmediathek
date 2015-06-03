@@ -1,8 +1,12 @@
+
+
 module.exports = function() {
-    var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
-    if (!Ti.App.Properties.hasProperty('SERVICESUBSCRIBER4') || true) {
-        Ti.App.Properties.setString('SERVICESUBSCRIBER4', '1');
-        var nextsynctime = Moment().add(1, 'day').startOf('day').add(Math.round(Math.random() * 3600));
+    var Moment = require('vendor/moment');
+    var today = Moment().format('YYMMDD');
+    if (Ti.App.Properties.getString('LASTSYNC', '') != today) {
+        var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
+        Ti.App.Properties.setString('LASTSYNC', today);
+        var nextsynctime = Moment().add(100, 'sec');
         alarmManager.addAlarmNotification({
             requestCode : 2, // must be INT to identify the alarm
             second : 10,

@@ -13,11 +13,29 @@ Model = require('model/stations'),
 
 module.exports = function(_event) {
     var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+    var subtitles = _event.source.tabs.map(function(tab) {
+        return tab.title;
+    });
     var currentStationName = laststation;
     АктйонБар.setTitle(Model[laststation].name);
     АктйонБар.setSubtitle('Mediathek');
     АктйонБар.setFont("Aller");
     АктйонБар.subtitleColor = "#ccc";
+    _event.source.addEventListener('focus',function(_e){
+        АктйонБар.setSubtitle(subtitles[_e.index]);
+        //console.log('tabndx='+_e.index);
+        return;
+        if (_e.index==3 || _e.index == undefined) {
+           АктйонБар.setHomeAsUpIcon("/images/menu.png");
+           activity.actionBar.setDisplayHomeAsUp(true);
+           activity.actionBar.onHomeIconItemSelected = function() {
+              Ti.App.fireEvent('app:togglemapmenu');
+            }
+         } else {
+            activity.actionBar.setDisplayHomeAsUp(false);
+            activity.actionBar.onHomeIconItemSelected = function() {}
+         }
+    });
     var activity = _event.source.getActivity();
     if (activity) {
         activity.actionBar.logo = '/images/' +laststation + '.png';
@@ -111,24 +129,6 @@ module.exports = function(_event) {
                 if (Player.isPlaying()) {
                     Player.stop();
                     Player.release();
-                }
-            });
-            Ti.App.addEventListener('app:tab', function(_event) {
-                if (_event.title)
-                    АктйонБар.setTitle(_event.title);
-                if (_event.subtitle)
-                    АктйонБар.setSubtitle(_event.subtitle);
-                if (_event.icon)
-                    activity.actionBar.logo = '/images/' + _event.icon + '.png';
-                if (_event.leftmenu) {
-                    АктйонБар.setHomeAsUpIcon("/images/menu.png");
-                    activity.actionBar.setDisplayHomeAsUp(true);
-                    activity.actionBar.onHomeIconItemSelected = function() {
-                       Ti.App.fireEvent('app:togglemapmenu');
-                    }
-                } else {
-                    activity.actionBar.setDisplayHomeAsUp(false);
-                    activity.actionBar.onHomeIconItemSelected = function() {}
                 }
             });
             Ti.App.addEventListener('app:play', function(_event) {

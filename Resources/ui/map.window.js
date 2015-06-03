@@ -86,6 +86,7 @@ module.exports = function(args) {
         width : '90%',
         height : 35
     });
+
     self.drawer.add(self.slogan);
     self.slogan.addEventListener('change', function() {
         self.save.show();
@@ -213,17 +214,16 @@ module.exports = function(args) {
     });
     self.add(self.mapView);
     self.add(self.drawer);
-    self.addEventListener('focus', function() {
-        Ti.App.fireEvent('app:tab', {
-            subtitle : 'Hörerkarte',
-            title : 'DeutschlandRadio',
-            icon : 'commonicon',
-            leftmenu : true
-        });
+    function onFocus() {
+        self.slogan.blur();
+        self.removeEventListener('focus', onFocus);
         console.log('Map focus -------------------');
         require('vendor/map.dialog')();
-
-    });
+        setTimeout(function() {
+            self.addEventListener('focus', onFocus);
+        }, 200);
+    };
+    self.addEventListener('focus', onFocus);
 
     self.mapView.addEventListener('click', function(_e) {
         if (_e.annotation.subtitle && _e.clicksource != 'pin') {

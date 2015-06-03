@@ -28,7 +28,8 @@ module.exports = function(_args) {
                 console.log(_pump.error);
                 console.log(_pump.totalBytesProcessed);
                 try {
-                    if (_pump.buffer) {
+                    if (_pump &&_pump.buffer) {
+                        
                         var foo_stream = Ti.Stream.createStream({
                             mode : Ti.Stream.MODE_READ,
                             source : _pump.buffer
@@ -56,7 +57,8 @@ module.exports = function(_args) {
             }), function(_write) {
                 Ti.API.info('Successfully wrote GET request to shoutcast server');
             });
-            setTimeout(function() {
+            var timer =setTimeout(function() {
+                
                 !!socket && socket.close();
             }, _args.duration);
         },
