@@ -19,6 +19,10 @@ module.exports = function(_args) {
             stream : _args.stream
         },
     });
+    var Player = require('ui/hlsplayer.widget').createPlayer();
+    self.PlayerView = Player.createView({
+        color : _args.color
+    });
     Ti.App.addEventListener('daychanged', function() {
         self.date = Moment().startOf('day');
     });
@@ -202,11 +206,20 @@ module.exports = function(_args) {
                     // image : fileToShare.nativePath,
                 });
             });
-            /**/
+
         } else if (_e.bindId && _e.bindId == 'playtrigger') {
-            Ti.App.fireEvent('app:play', {
-                item : JSON.parse(_e.itemId)
+            self.add(self.PlayerView);
+            
+            var data = JSON.parse(_e.itemId);
+            console.log(data);
+            Player.startPlayer({
+                url : data.url,
+                duration: data.duration,
+                title : data.title + ': ' + data.subtitle
             });
+            /*Ti.App.fireEvent('app:play', {
+             item : JSON.parse(_e.itemId)
+             });*/
         }
     });
     setInterval(self.updateCurrentinTopBox, 5000);

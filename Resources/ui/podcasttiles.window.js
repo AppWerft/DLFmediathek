@@ -4,6 +4,7 @@ var Model = require('model/stations'),
     Podcast = new (require('controls/feed.adapter'))(),
     stations = ['dlf', 'drk', 'drw'];
 
+
 module.exports = function() {
     var self = Ti.UI.createWindow();
     self.addEventListener('focus', function() {
@@ -11,7 +12,8 @@ module.exports = function() {
             subtitle : 'Podcast-Archiv'
         });
     });
-    self.addEventListener('open', function() {
+    self.addEventListener('focus', function() {
+        if (self.children) return;
         var pages = [];
         for (var ndx = 0; ndx < stations.length; ndx++) {
             var podcasts = require('model/' + stations[ndx]);

@@ -22,7 +22,7 @@
     ['podcasttiles','dayplan'].forEach(function(win, ndx) {
         setTimeout(function() {
             self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
-        }, ndx * 100);
+        }, ndx * 500);
     });
     setInterval(function() {
         var today = Moment().format('YYYYMMDD');
