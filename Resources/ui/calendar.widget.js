@@ -12,7 +12,7 @@ module.exports = function(args) {
         height : 40,
         color : 'white',
         text : 'Heute',
-        zIndex : 999,
+       
         transform : Ti.UI.create2DMatrix({
             rotate : 90,
             anchorPoint : {

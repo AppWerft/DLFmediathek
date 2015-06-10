@@ -24,7 +24,7 @@ module.exports = function(_event) {
     _event.source.addEventListener('focus',function(_e){
         АктйонБар.setSubtitle(subtitles[_e.index]);
         //console.log('tabndx='+_e.index);
-        return;
+        /*
         if (_e.index==3 || _e.index == undefined) {
            АктйонБар.setHomeAsUpIcon("/images/menu.png");
            activity.actionBar.setDisplayHomeAsUp(true);
@@ -34,7 +34,7 @@ module.exports = function(_event) {
          } else {
             activity.actionBar.setDisplayHomeAsUp(false);
             activity.actionBar.onHomeIconItemSelected = function() {}
-         }
+         }*/
     });
     var activity = _event.source.getActivity();
     if (activity) {
@@ -81,8 +81,14 @@ module.exports = function(_event) {
                 showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
             }).addEventListener("click", function(_e) {
                 require('ui/mypodcasts.window')().open();
-            });
-
+            });/*
+            _menuevent.menu.add({
+                title : 'Hörerkarte',
+                itemId : '7',
+                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+            }).addEventListener("click", function(_e) {
+                require('ui/map.window')().open();
+            });*/
             // end of click handling
             /* Handling of PlayIcon*/
             var menuitem = _menuevent.menu.findItem('1');

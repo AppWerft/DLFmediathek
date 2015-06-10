@@ -1,3 +1,23 @@
+String.prototype.toHHMMSS = function() {
+    var sec_num = parseInt(this, 10);
+    // don't forget the second param
+    var hours = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours < 10) {
+        hours = "0" + hours;
+    }
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+    var time = (hours) ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
+    return time;
+};
+
 var Player = function() {
     this._player = Ti.Media.createAudioPlayer({
         allowBackground : true,
@@ -6,6 +26,8 @@ var Player = function() {
     var that = this;
     this._player.addEventListener('progress', function(_e) {
         that._progress.setValue(_e.progress / 1000);
+        that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + that.duration);
+
     });
     this._player.addEventListener('complete', function(_e) {
         Ti.API.error(_e.error);
@@ -32,10 +54,13 @@ var Player = function() {
             that._control.image = '/images/leer.png';
             break;
         case 'paused':
+            that._subtitle.ellipsize = false;
             that._equalizer.opacity = 0;
             that._control.image = '/images/play.png';
             break;
         case 'playing':
+            that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+            that._spinner.hide();
             that._equalizer.animate({
                 opacity : 1,
                 duration : 700
@@ -48,13 +73,13 @@ var Player = function() {
 };
 Player.prototype = {
     createView : function(args) {
-        this._view = Ti.UI.createView({
+        this.color = (args.color) ? args.color : 'black', this._view = Ti.UI.createView({
             visible : false
         });
         this._view.add(Ti.UI.createView({
             opacity : 0.5,
             touchEnabled : false,
-            backgroundColor : (args.color) ? args.color : 'black'
+            backgroundColor : this.color
         }));
         this._view.add(Ti.UI.createView({
             opacity : 0.5,
@@ -64,8 +89,8 @@ Player.prototype = {
         this._container = Ti.UI.createView({
             bubbleParent : false,
             touchEnabled : false,
-            height : 150,
-            bottom : 0,
+            height : 230,
+            bottom : -230,
             backgroundColor : 'white'
         });
         this._view.add(this._container);
@@ -79,27 +104,44 @@ Player.prototype = {
             max : 100
         });
         this._duration = Ti.UI.createLabel({
-            bottom : 5,
+            bottom : 105,
             bubbleParent : false,
             touchEnabled : false,
             font : {
-                fontSize : 10
+                fontSize : 12
             },
             right : 10,
         });
         this._title = Ti.UI.createLabel({
-            bottom : 70,
+            top : 10,
             bubbleParent : false,
             touchEnabled : false,
-            color : '#555',
+            color : this.color,
             height : 36,
             height : Ti.UI.SIZE,
             font : {
-                fontSize : 18,
+                fontSize : 20,
                 fontWeight : 'bold',
                 fontFamily : 'Aller-Bold'
             },
             left : 10,
+        });
+        this._subtitle = Ti.UI.createLabel({
+            top : 40,
+            bubbleParent : false,
+            touchEnabled : false,
+            color : '#555',
+            horizontalWrap : false,
+            wordWrap : false,
+            width : Ti.UI.FILL,
+            ellipsize : true,
+            height : 20,
+            font : {
+                fontSize : 16,
+                fontFamily : 'Aller-Bold'
+            },
+            left : 10,
+            right : 15
         });
         this._control = Ti.UI.createImageView({
             width : 50,
@@ -107,8 +149,19 @@ Player.prototype = {
             bubbleParent : false,
             left : 10,
             image : '/images/play.png',
-            bottom : 15
+            bottom : 115
         });
+        this._spinner = Ti.UI.createActivityIndicator({
+            style : Ti.UI.ActivityIndicatorStyle.BIG,
+            bottom : -102,
+            left : -3,
+            transform : Ti.UI.create2DMatrix({
+                scale : 0.8
+            }),
+            height : Ti.UI.SIZE,
+            width : Ti.UI.SIZE
+        });
+
         this._equalizer = Ti.UI.createWebView({
             borderRadius : 1,
             width : 200,
@@ -122,10 +175,12 @@ Player.prototype = {
             opacity : 0,
             enableZoomControls : false
         });
-        this._view.add(this._progress);
-        this._view.add(this._duration);
-        this._view.add(this._title);
-        this._view.add(this._control);
+        this._container.add(this._progress);
+        this._container.add(this._duration);
+        this._container.add(this._title);
+        this._container.add(this._subtitle);
+        this._container.add(this._control);
+        this._container.add(this._spinner);
 
         var that = this;
         this._control.addEventListener('click', function() {
@@ -149,16 +204,28 @@ Player.prototype = {
             this.stopPlayer();
             return;
         }
+        args.duration && (this.duration = args.duration.toHHMMSS());
         Ti.App.fireEvent('app:stop');
         this._view.setVisible(true);
-        this._progress.setMax(args.sec);
+        var that = this;
+        this._container.animate({
+            bottom : -90
+        }, function() {
+            that._container.animate({
+                bottom : -100,
+                duration : 10
+            });
+        });
+        this._spinner.show();
+        this._progress.setMax(args.duration);
         this._progress.setValue(0);
         this._player.setUrl(args.url);
-        Ti.API.error(args);
+        Ti.API.error(args.url);
         this._title.setText(args.title);
-        this._duration.setText(args.duration);
+        this._subtitle.setText(args.subtitle);
+        this._duration.setText(args.duration.toHHMMSS());
         this._view.add(this._equalizer);
-        return;
+
         this._player.start();
     },
     stopPlayer : function(args) {

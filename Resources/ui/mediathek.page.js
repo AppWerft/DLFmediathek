@@ -213,9 +213,10 @@ module.exports = function(_args) {
             var data = JSON.parse(_e.itemId);
             console.log(data);
             Player.startPlayer({
-                url : data.url,
+                url : data.url+ '?_='+Math.random(),
                 duration: data.duration,
-                title : data.title + ': ' + data.subtitle
+                subtitle: data.subtitle,
+                title : data.title 
             });
             /*Ti.App.fireEvent('app:play', {
              item : JSON.parse(_e.itemId)

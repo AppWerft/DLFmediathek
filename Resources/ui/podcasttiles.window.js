@@ -8,12 +8,10 @@ var Model = require('model/stations'),
 module.exports = function() {
     var self = Ti.UI.createWindow();
     self.addEventListener('focus', function() {
-        Ti.App.fireEvent('app:tab', {
+         Ti.App.fireEvent('app:tab', {
             subtitle : 'Podcast-Archiv'
         });
-    });
-    self.addEventListener('focus', function() {
-        if (self.children) return;
+        self.removeAllChildren();
         var pages = [];
         for (var ndx = 0; ndx < stations.length; ndx++) {
             var podcasts = require('model/' + stations[ndx]);
