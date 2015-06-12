@@ -4,41 +4,46 @@ var Model = require('model/stations'),
     FlipModule = require('de.manumaticx.androidflip');
 
 module.exports = function() {
-    var self = Ti.UI.createWindow();
-    self.addEventListener('focus', function() {
-        Ti.App.fireEvent('app:station', {
-            station : Ti.App.Properties.getString('LAST_STATION')
-        });
-        Ti.App.fireEvent('app:tab', {
-            subtitle : 'Tagesübersicht',
-            title : (Ti.App.Properties.getString('LAST_STATION') != 'drk') ? 'Deutschlandfunk' : 'DeutschlandRadio Kultur',
-            icon : 'drk'
-        });
-        if (self.childrens && self.childrens.length)
-            return;
-        var pages = [];
-        ['dlf', 'drk'].forEach(function(station) {
-            pages.push(require('ui/dayplan.page')(station));
-        });
-        self.FlipViewCollection = FlipModule.createFlipView({
-            orientation : FlipModule.ORIENTATION_HORIZONTAL,
-            overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
-            views : pages,
-            top : 0,
-            currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0) % 2,
-            height : Ti.UI.FILL
-        });
-        self.add(self.FlipViewCollection);
-        self.FlipViewCollection.addEventListener('flipped', function(_e) {
-            Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
-            Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
-            Ti.App.fireEvent('app:station', {
-                station : pages[_e.index].station
-            });
-            //    self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
-        });
+	var self = Ti.UI.createWindow({
+		backgroundColor : 'gray'
+	});
+	
+	self.addEventListener('focus', function() {
+		//self.removeAllChildren();
+		Ti.App.fireEvent('app:station', {
+			station : Ti.App.Properties.getString('LAST_STATION')
+		});
+		Ti.App.fireEvent('app:tab', {
+			subtitle : 'Tagesübersicht',
+			title : (Ti.App.Properties.getString('LAST_STATION') != 'drk') ? 'Deutschlandfunk' : 'DeutschlandRadio Kultur',
+			icon : 'drk'
+		});
+		var pages = [];
+		['dlf', 'drk'].forEach(function(station) {
+			console.log('Info: ~~~~~~~~~~~~ dayplan start ' + station);
+			pages.push(require('ui/dayplan.page')(station));
+		});
+		
+		self.FlipViewCollection = FlipModule.createFlipView({
+			orientation : FlipModule.ORIENTATION_HORIZONTAL,
+			overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
+			views : pages,
+			top : 0,
+			currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0) % 2,
+			height : Ti.UI.FILL
+		});
+		self.add(self.FlipViewCollection);
+		self.FlipViewCollection.addEventListener('flipped', function(_e) {
+			console.log('FLIPPED');
+			Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
+			Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
+			Ti.App.fireEvent('app:station', {
+				station : pages[_e.index].station
+			});
+			//    self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
+		});
 
-    });
-    return self;
+	});
+	return self;
 };
 

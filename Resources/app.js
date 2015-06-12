@@ -3,6 +3,7 @@
      var Moment = require('vendor/moment');
     var self = Ti.UI.createTabGroup({
         fullscreen : true,
+        swipeable:false,
         exitOnClose : true,
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
         tabs : [Ti.UI.createTab({
@@ -21,9 +22,9 @@
     });
     self.addEventListener('open', require('ui/main.menu'));
     ['podcasttiles', 'dayplan'].forEach(function(win, ndx) {
-        setTimeout(function() {
+        //setTimeout(function() {
             self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
-        }, ndx * 500);
+        //}, ndx * 700);
     });
     setInterval(function() {
         var today = Moment().format('YYYYMMDD');

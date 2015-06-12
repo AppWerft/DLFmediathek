@@ -32,6 +32,7 @@ module.exports = function(_event) {
     АктйонБар.setTitle(Model[laststation].name);
     АктйонБар.setSubtitle('Mediathek');
     АктйонБар.setFont("Aller");
+    АктйонБар.setBackgroundColor('#444444');
     АктйонБар.subtitleColor = "#ccc";
     _event.source.addEventListener('focus', function(_e) {
         АктйонБар.setSubtitle(subtitles[_e.index]);

@@ -3,8 +3,10 @@ var Model = require('model/stations'),
     Moment = require('vendor/moment');
 
 module.exports = function(station) {
-    if (!station)
+    if (!station) {
+    	console.log('Warning: no station parameter');
         return;
+    }    
     var items = [];
     function updateListFunc(_RSSitems) {
         var length = _RSSitems.items.length;
@@ -69,9 +71,10 @@ module.exports = function(station) {
 
         });
         self.sections[0].setItems(items);
+        console.log(items	);
         //  self.list.scrollToItem(0, ndx);
     }
-
+	console.log(Model[station].color);
     var self = Ti.UI.createListView({
         height : Ti.UI.FILL,
         station : station,

@@ -14,6 +14,7 @@ module.exports = function(_args) {
             АктйонБар.title = self.title;
             АктйонБар.subtitle = self.subtitle;
             АктйонБар.titleFont = "ScalaSansBold";
+             АктйонБар.setBackgroundColor('#444444');
             АктйонБар.subtitleColor = "#ccc";
             var activity = _event.source.getActivity();
             if (activity) {

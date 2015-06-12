@@ -86,7 +86,7 @@ Module.prototype = {
                     station : _args.station
                 })
             });
-            return;
+          return;
         }
         // no => retreiving
         var xhr = Ti.Network.createHTTPClient({
@@ -102,6 +102,7 @@ Module.prototype = {
                         station : _args.station
                     })
                 };
+               
                 // back to caller
                 _args.done && _args.done(result);
                 // persist

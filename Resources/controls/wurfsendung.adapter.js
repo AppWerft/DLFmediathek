@@ -1,12 +1,18 @@
 var Player = Ti.Media.createAudioPlayer();
+var done;
 module.exports = function() {
-    var url = 'http://wurfsendung.dradio.de/wurf/index.php/de/Home/PlayTrack/TrackId/';
-    var ndx = '' + Math.round((Math.random() * 777777777) % 2000);
-    if (Player && Player.isPlaying()) {
-        Player.stop();
-        Player.release();
-    }
-    Player.setUrl(url + ndx);
-    Player.play();
-    return ndx;
+
+	var args = arguments[0] || {};
+	done = args.done;
+	if (Player) {
+		Player.stop();
+		Player.release();
+		console.log('Info: player stopped and released');
+	}
+	var ndx = Math.round((Math.random() * 777777777) % 2100);
+	Player.setUrl('http://wurfsendung.dradio.de/wurf/index.php/de/Home/PlayTrack/TrackId/' + ndx);
+	Player.play();
+	setTimeout(done, 1000);
+	console.log('Info: player started');
+	return ndx;
 };
