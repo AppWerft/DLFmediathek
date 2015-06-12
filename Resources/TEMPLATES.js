@@ -14,7 +14,7 @@ exports.schema = {
             color : '#777',
             font : {
                 fontSize : 22,
-               
+
                 fontFamily : 'Aller'
             },
         }
@@ -115,10 +115,10 @@ exports.podcastlist = {
             type : 'Ti.UI.Label',
             bindId : 'title',
             properties : {
-                top : 5,
+                top : 0,
                 font : {
                     fontSize : 22,
-                    fontFamily : 'Aller-Bold'
+                    fontFamily : 'Aller Bold'
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -222,7 +222,7 @@ exports.klangkunst = {
                 top : 5,
                 font : {
                     fontSize : 20,
-                    fontFamily : 'Aller-Bold'
+                    fontFamily : 'Aller Bold'
                 },
                 left : 0,
                 height : Ti.UI.SIZE,
@@ -336,7 +336,7 @@ exports.mediathek = {
                 touchEnabled : false,
                 font : {
                     fontSize : 20,
-                    fontFamily : 'Aller-Bold'
+                    fontFamily : 'Aller Bold'
                 },
                 color : '#555'
             }
@@ -674,6 +674,133 @@ exports.mypodcasts = {
                     fontSize : 14,
                     fontFamily : 'Aller'
                 },
+            }
+        }]
+    }]
+};
+
+exports.search = {
+    properties : {
+        height : Ti.UI.SIZE,
+        backgroundColor : 'white',
+    },
+    childTemplates : [{
+        type : 'Ti.UI.ImageView',
+        bindId : 'image',
+        properties : {
+            left : 0,
+            touchEnabled : false,
+            top : 0,
+            width : 70,
+            height : 70
+        }
+    }, {
+        type : 'Ti.UI.ImageView',
+        bindId : 'fav',
+        properties : {
+            opacity : 0.5,
+            left : 5,
+            top : 32,
+            visible : false,
+            bottom : 5,
+            bubbleParent : true,
+            image : '/images/favadd.png',
+            width : 30,
+            height : 30
+        }
+    }, {
+        type : 'Ti.UI.ImageView',
+        bindId : 'share',
+        properties : {
+            opacity : 0.5,
+            left : 35,
+            top : 35,
+            visible : false,
+            bottom : 5,
+            bubbleParent : true,
+            image : '/images/share.png',
+            width : 27,
+            height : 27
+        }
+    }, {
+        type : 'Ti.UI.View',
+        bindId : 'playtrigger',
+        properties : {
+            width : Ti.UI.FILL,
+            layout : 'vertical',
+            left : 85,
+            top : 0,
+            right : 15,bottom:10
+        },
+        childTemplates : [{
+            type : 'Ti.UI.Label',
+            bindId : 'title',
+            properties : {
+                left : 0,
+                top : 5,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 20,
+                    fontFamily : 'Aller Bold'
+                },
+                color : '#333'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'author',
+            properties : {
+                left : 0,
+                top : 10,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 12,
+                    fontFamily : 'Aller'
+                },
+                color : '#333'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'duration',
+            properties : {
+                left : 0,
+                top : 0,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 12,
+                    fontFamily : 'Aller'
+                },
+                color : '#333'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'pubdate',
+            properties : {
+                left : 0,
+                top : 0,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 12,
+                    fontFamily : 'Aller'
+                },
+                color : '#333'
+            }
+        }, {
+            type : 'Ti.UI.Label',
+            bindId : 'sendung',
+            properties : {
+                left : 0,
+                top : 0,
+                height : Ti.UI.SIZE,
+                touchEnabled : false,
+                font : {
+                    fontSize : 18,
+                    fontFamily : 'Aller Bold'
+                },
+                color : '#333'
             }
         }]
     }]

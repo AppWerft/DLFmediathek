@@ -153,7 +153,7 @@ Player.prototype = {
         this._view.setVisible(true);
         this._progress.setMax(args.sec);
         this._progress.setValue(0);
-        this._player.setUrl(args.url);
+        this._player.setUrl(args.url+ '?_='+Math.random());
         Ti.API.error(args.url);
         this._title.setText(args.title);
         this._duration.setText(args.duration);

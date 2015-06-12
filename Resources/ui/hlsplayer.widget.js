@@ -14,7 +14,7 @@ String.prototype.toHHMMSS = function() {
     if (seconds < 10) {
         seconds = "0" + seconds;
     }
-    var time = (hours) ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
+    var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
     return time;
 };
 
@@ -95,7 +95,7 @@ Player.prototype = {
         });
         this._view.add(this._container);
         this._progress = Ti.UI.createProgressBar({
-            bottom : 20,
+            bottom : 120,
             left : 80,
             right : 10,
             height : 30,
@@ -104,12 +104,13 @@ Player.prototype = {
             max : 100
         });
         this._duration = Ti.UI.createLabel({
-            bottom : 105,
+            bottom : 102,
             bubbleParent : false,
             touchEnabled : false,
             font : {
                 fontSize : 12
             },
+            color:this.color,
             right : 10,
         });
         this._title = Ti.UI.createLabel({
@@ -153,7 +154,7 @@ Player.prototype = {
         });
         this._spinner = Ti.UI.createActivityIndicator({
             style : Ti.UI.ActivityIndicatorStyle.BIG,
-            bottom : -102,
+            bottom : 102,
             left : -3,
             transform : Ti.UI.create2DMatrix({
                 scale : 0.8

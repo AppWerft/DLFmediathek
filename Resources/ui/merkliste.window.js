@@ -58,7 +58,18 @@ module.exports = function(station) {
         bubbleParent : false,
         right : 10
     });
+    var downloadtrigger = Ti.UI.createImageView({
+        image : '/images/downloadicon.png',
+        width : 32,
+        height : 32,
+        opacity : 0.7,
+        bubbleParent : false,
+        right : 50
+    });
+    
     self.head.add(playtrigger);
+    self.head.add(downloadtrigger);
+    
     self.list = Ti.UI.createListView({
         top : 50,
         templates : {
@@ -178,6 +189,7 @@ module.exports = function(station) {
         switch (_e.description) {
         case 'playing':
             equalizer.show();
+            downloadtrigger.hide();
             equalizer.setUrl('/images/equalizer.gif');
             playtrigger.setImage('/images/pauseicon.png');
             break;
@@ -187,6 +199,7 @@ module.exports = function(station) {
             break;
         default:
             equalizer.hide();
+             downloadtrigger.show();
         }
     });
     self.Player.addEventListener('progress', function(_e) {

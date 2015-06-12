@@ -1,5 +1,6 @@
 ! function() {
-    var Moment = require('vendor/moment');
+
+     var Moment = require('vendor/moment');
     var self = Ti.UI.createTabGroup({
         fullscreen : true,
         exitOnClose : true,
@@ -12,14 +13,14 @@
         }), Ti.UI.createTab({
             title : 'Tagesplan',
         })/*, Ti.UI.createTab({
-            title : 'Hörerkarte',
-            leftmenu : true
-        }), Ti.UI.createTab({
-            title : 'Klangkunst',
-        })*/]
+         title : 'Hörerkarte',
+         leftmenu : true
+         }), Ti.UI.createTab({
+         title : 'Klangkunst',
+         })*/]
     });
     self.addEventListener('open', require('ui/main.menu'));
-    ['podcasttiles','dayplan'].forEach(function(win, ndx) {
+    ['podcasttiles', 'dayplan'].forEach(function(win, ndx) {
         setTimeout(function() {
             self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
         }, ndx * 500);
@@ -36,14 +37,14 @@
     self.setActiveTab(0);
     var tools = require('bencoding.android.tools');
     require('vendor/cronservice.trigger')();
-   /* self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
-        _e.cancelBubble = true;
-        var intent = Ti.Android.createIntent({
-            action : Ti.Android.ACTION_MAIN,
-            flags : Ti.Android.FLAG_ACTIVITY_NEW_TASK
-        });
-        intent.addCategory(Ti.Android.CATEGORY_HOME);
-        Ti.Android.currentActivity.startActivity(intent);
-        return false;
-    });*/
+    /* self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
+     _e.cancelBubble = true;
+     var intent = Ti.Android.createIntent({
+     action : Ti.Android.ACTION_MAIN,
+     flags : Ti.Android.FLAG_ACTIVITY_NEW_TASK
+     });
+     intent.addCategory(Ti.Android.CATEGORY_HOME);
+     Ti.Android.currentActivity.startActivity(intent);
+     return false;
+     });*/
 }();
