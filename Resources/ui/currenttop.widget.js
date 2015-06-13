@@ -23,7 +23,7 @@ var Module = function() {
         text : '',
         font : {
             fontSize : 20,
-            fontFamily : 'Aller-Bold'
+            fontFamily : 'Aller Bold'
         },
         right : 50
     });

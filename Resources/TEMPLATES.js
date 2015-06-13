@@ -48,7 +48,7 @@ exports.schema = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontFamily : 'Aller-Bold'
+                    fontFamily : 'Aller Bold'
                 },
                 left : 0,
                 width : Ti.UI.FILL,
@@ -462,7 +462,7 @@ exports.merkliste = {
                 touchEnabled : false,
                 font : {
                     fontSize : 18,
-                    fontFamily : 'Aller-Bold'
+                    fontFamily : 'Aller Bold'
                 },
                 color : '#555'
             }
@@ -641,7 +641,7 @@ exports.mypodcasts = {
                 top : 5,
                 font : {
                     fontSize : 22,
-                    fontFamily : 'Aller-Bold    '
+                    fontFamily : 'Aller Bold    '
                 },
                 left : 0,
                 width : Ti.UI.FILL,

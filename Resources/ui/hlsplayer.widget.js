@@ -123,7 +123,7 @@ Player.prototype = {
             font : {
                 fontSize : 20,
                 fontWeight : 'bold',
-                fontFamily : 'Aller-Bold'
+                fontFamily : 'Aller Bold'
             },
             left : 10,
         });
@@ -139,7 +139,7 @@ Player.prototype = {
             height : 20,
             font : {
                 fontSize : 16,
-                fontFamily : 'Aller-Bold'
+                fontFamily : 'Aller Bold'
             },
             left : 10,
             right : 15
