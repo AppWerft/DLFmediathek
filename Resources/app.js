@@ -5,6 +5,7 @@
         fullscreen : true,
         swipeable:false,
         exitOnClose : true,
+        smoothScrollOnTabClick : true,
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
         tabs : [Ti.UI.createTab({
             title : 'Mediathek',

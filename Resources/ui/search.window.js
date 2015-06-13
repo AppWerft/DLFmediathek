@@ -16,13 +16,14 @@ module.exports = function() {
 				'search' : require('TEMPLATES').search,
 			},
 			defaultItemTemplate : 'search',
+			backgroundColor : '#8CB5C0',
 			sections : [Ti.UI.createListSection({})]
 		});
 		self.container = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 			view : self.list,
 			height : Ti.UI.FILL,
 			width : Ti.UI.FILL,
-			backgroundColor : '#fff',
+			backgroundColor : '#8CB5C0',
 			refreshing : true
 		});
 		self.container.addEventListener('refreshing', function() {
@@ -81,15 +82,14 @@ module.exports = function() {
 						message : 'Suche ergab leider keine Treffer.\nAls kleiner, gutgemeinter Trost kommt jetzt eine Wurfsendung …'
 					}).show();
 					self.removeAllChildren();
-					var trigger = Ti.UI.createImageView({
+					self.add(Ti.UI.createImageView({
 						image : '/images/wurfsendung.png',
 						bottom : 0,
 						width : Ti.UI.FILL,
 						height : 'auto'
-					});
-					self.container.view = trigger;
-					trigger.addEventListener('singletap', function() {
-						self.container.setRefreshing(true);
+					}));
+					self.children[0].addEventListener('singletap', function() {
+						self.container.setRefreshing(false);
 						var ndx = require('controls/wurfsendung.adapter')({
 							done : function() {
 								self.container.setRefreshing(false);

@@ -9,7 +9,7 @@ module.exports = function() {
 		Player.release();
 		console.log('Info: player stopped and released');
 	}
-	var ndx = Math.round((Math.random() * 777777777) % 2100);
+	var ndx = Math.round((Math.random() * 777777777) % 2500);
 	Player.setUrl('http://wurfsendung.dradio.de/wurf/index.php/de/Home/PlayTrack/TrackId/' + ndx);
 	Player.play();
 	setTimeout(done, 1000);
