@@ -26,20 +26,28 @@ module.exports = function(_args) {
 		url : _args.url,
 		done : function(_feeditems) {
 			_feeditems.items.forEach(function(item) {
-				var res = /<img src="(.*?)" /gmi.exec(item.description);
-				var image = (res) ? res[1] : null;
+				var res = /<img src="(.*?)"\s.*?\/>(.*?)</gmi.exec(item.description);
+				var image = (res) ? res[1] : item.channelimage;
+				var height = (res) ? 65 : 90;
+				var description = (res) ? res[2] : null;
+				if (res) console.log(res);
 				items.push({
 					pubdate : {
 						text : Moment(item.pubDate).format('LLL')
 					},
 					image : {
 						image : image,
-						height : (image != null) ? 70 : 90,
+						height : height,
 						defaultImage : '/images/' + _args.station + '.png'
 					},
 					title : {
 						text : item.title,
 						color : _args.color
+					},
+					description : {
+						text : description,
+						color : 'gray',
+						height : (description) ? Ti.UI.SIZE:0
 					},
 					duration : {
 						text : (item.duration) ? 'Dauer: ' + item.duration : '',

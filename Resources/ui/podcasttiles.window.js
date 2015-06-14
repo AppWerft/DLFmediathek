@@ -11,7 +11,7 @@ module.exports = function() {
          Ti.App.fireEvent('app:tab', {
             subtitle : 'Podcast-Archiv'
         });
-        self.removeAllChildren();
+        //self.removeAllChildren();
         var pages = [];
         for (var ndx = 0; ndx < stations.length; ndx++) {
             var podcasts = require('model/' + stations[ndx]);

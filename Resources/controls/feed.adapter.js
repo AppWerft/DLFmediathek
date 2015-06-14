@@ -65,15 +65,17 @@ Module.prototype = {
 	},
 	getAllFavedFeeds : function() {
 		var link = Ti.Database.open(DB);
-		var res = link.execute('SELECT * FROM feeds WHERE faved=1 ORDER BY lastBuildDate DESC');
+		var res = link.execute('SELECT feeds.*, (SELECT MAX(DATE(pubDate)) FROM items WHERE feeds.url=items.channelurl) AS lastpubdate, (SELECT COUNT(*) FROM items WHERE feeds.url=items.channelurl) AS total FROM feeds WHERE feeds.faved=1 ORDER BY lastpubdate DESC');
 		var feeds = [];
 		while (res.isValidRow()) {
-			var count = res.getFieldCount();
-			var feed = {};
-			for (var i = 0; i < count; i++) {
-				feed[res.getFieldName(i)] = res.field(i);
-			}
-			feeds.push(feed);
+			feeds.push({
+				description : res.getFieldByName('description'),
+				title : res.getFieldByName('title'),
+				image : res.getFieldByName('image'),
+				lastpubdate : res.getFieldByName('lastpubdate'),
+				total : res.getFieldByName('total'),
+				url : res.getFieldByName('url')
+			});
 			res.next();
 		}
 		res.close();
@@ -101,7 +103,7 @@ Module.prototype = {
 	// get feed with all items
 	getFeed : function(_args) {
 		var link = Ti.Database.open(DB);
-		var rows = link.execute('SELECT * FROM items WHERE channelurl=? ORDER BY pubDate DESC', _args.url);
+		var rows = link.execute('SELECT items.*,(SELECT image FROM feeds WHERE feeds.url=items.channelurl) AS channelimage FROM items WHERE items.channelurl=? ORDER BY items.pubDate DESC', _args.url);
 		var items = [];
 		if (rows.getRowCount() > 0) {
 			while (rows.isValidRow()) {
@@ -116,6 +118,7 @@ Module.prototype = {
 					author : rows.getFieldByName('author'),
 					duration : rows.getFieldByName('duration'),
 					channelurl : rows.getFieldByName('channelurl'),
+					channelimage : rows.getFieldByName('channelimage'),
 				});
 				rows.next();
 			}
@@ -197,23 +200,39 @@ Module.prototype = {
 				channel.title, //
 				channel.description, //
 				channel.category, //
-				_args.station, channel.pubDate, //
-				channel.lastBuildDate, //
+				_args.station, //
+				Moment(channel.pubDate).toISOString(), //
+				Moment(channel.lastBuildDate).toISOString(), //
 				channel.image.url, //
 				faved);
 				channel.item.sort(function(a, b) {
 					return parseInt(a.timestamp) > parseInt(b.timestamp);
 				});
 				channel.item.forEach(function(item) {
-					link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', _args.url, item.title, item.link, item.description, item.guid, //
-					item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], item.pubDate, 0);
+					link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
+					_args.url, //
+					item.title, //
+					item.link, //
+					item.description, //
+					item.guid, //
+					item.enclosure.url, //
+					item.enclosure.length, //
+					item.enclosure.type, //
+					item['itunes:author'], //
+					item['itunes:duration'], //
+					Moment(item.pubDate).toISOString(), //
+					0 //watched
+					);
+					console.log(Moment(item.pubDate).toISOString() + '   ' + item.title);
 				});
+				
 				link.close();
 				channel.item.faved = that.isFaved(_args.url);
 				var result = {
 					ok : true,
 					items : channel.item
 				};
+				console.log(_args.url);
 				_args.done(result);
 			}
 		});

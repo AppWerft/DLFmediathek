@@ -14,6 +14,7 @@ module.exports = function(_args) {
     }
     setTimeout(function() {
         var xhr = Ti.Network.createHTTPClient({
+        	timeout : 30000,
             onload : function() {
                 var obj = new XMLTools(this.responseXML).toObject();
                 if (obj.item && toType(obj.item) != 'array') {
@@ -71,10 +72,10 @@ module.exports = function(_args) {
                 }
                 Ti.App.Properties.setString(url, JSON.stringify(result));
                 _args.onload(result);
-
             }
         });
         xhr.open('GET', url);
+        xhr.setRequestHeader('User-Agent','Das%20DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0');
         console.log(url);
         xhr.send();
     }, 100 + 1000 * Math.random());
