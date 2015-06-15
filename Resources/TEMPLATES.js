@@ -99,12 +99,20 @@ exports.podcastlist = {
 		properties : {
 			left : 0,
 			top : 0,
-			touchEnabled : false,
+			touchEnabled : true,
 			width : 90,
 			height : 90
 		}
 	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'copyright',
+		properties : {
+			visible : false,
+			touchEnabled : false,
+		}
+	},{
 		type : 'Ti.UI.View',
+		bindId: 'playstarter',
 		properties : {
 			width : Ti.UI.FILL,
 			layout : 'vertical',
@@ -816,6 +824,122 @@ exports.search = {
 					fontFamily : 'Aller Bold'
 				},
 				color : '#333'
+			}
+		}]
+	}]
+};
+
+
+
+exports.recents = {
+	properties : {
+		height : Ti.UI.SIZE,
+		backgroundColor : 'white',
+	},
+	childTemplates : [{
+		type : 'Ti.UI.ImageView',
+		bindId : 'image',
+		properties : {
+			left : 0,
+			touchEnabled : false,
+			top : 0,
+			width : 70,
+			height : 70
+		}
+	}, {
+		type : 'Ti.UI.View',
+		bindId : 'playtrigger',
+		properties : {
+			width : Ti.UI.FILL,
+			layout : 'vertical',
+			left : 85,
+			top : 0,
+			right : 15,
+			bottom : 10
+		},
+		childTemplates : [{
+			type : 'Ti.UI.Label',
+			bindId : 'title',
+			properties : {
+				left : 0,
+				top : 5,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 20,
+					fontFamily : 'Aller Bold'
+				},
+				color : '#333'
+			}
+		}, {
+			type : 'Ti.UI.Label',
+			bindId : 'author',
+			properties : {
+				left : 0,
+				top : 10,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 12,
+					fontFamily : 'Aller'
+				},
+				color : '#333'
+			}
+		}, {
+			type : 'Ti.UI.Label',
+			bindId : 'duration',
+			properties : {
+				left : 0,
+				top : 0,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 12,
+					fontFamily : 'Aller'
+				},
+				color : '#333'
+			}
+		}, {
+			type : 'Ti.UI.Label',
+			bindId : 'pubdate',
+			properties : {
+				left : 0,
+				top : 0,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 12,
+					fontFamily : 'Aller'
+				},
+				color : '#333'
+			}
+		},  {
+			type : 'Ti.UI.Label',
+			bindId : 'lastaccess',
+			properties : {
+				left : 0,
+				top : 0,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 12,
+					fontFamily : 'Aller'
+				},
+				color : '#333'
+			}
+		},{
+			type : 'Ti.UI.Label',
+			bindId : 'sendung',
+			properties : {
+				left : 0,
+				top : 5,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 14,
+					fontFamily : 'Aller Bold'
+				},
+				color : '#555'
 			}
 		}]
 	}]

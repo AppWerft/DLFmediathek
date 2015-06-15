@@ -92,7 +92,7 @@ module.exports = function(station) {
         }
         if (dataItems.length) {
             var item = JSON.parse(dataItems[0].properties.itemId);
-            var url = item.url + '?_=' + Math.random();
+            var url = item.url;
             // url = '/kkj.mp3';
             console.log('Info: player started with: ' + url);
             /*self.Player = Ti.Media.createAudioPlayer({

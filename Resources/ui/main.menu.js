@@ -115,6 +115,17 @@ module.exports = function(_event) {
             }).addEventListener("click", function(_e) {
                 require('ui/mypodcasts.window')().open();
             });
+            
+            _menuevent.menu.add({
+                title : 'Letztgehört …',
+                itemId : '16',
+                icon : Ti.App.Android.R.drawable.ic_action_fav,
+                showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+            }).addEventListener("click", function(_e) {
+                require('ui/recents.window')().open();
+            });
+            
+            
             /*
             _menuevent.menu.add({
             title : 'Hörerkarte',

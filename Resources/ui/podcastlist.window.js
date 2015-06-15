@@ -26,28 +26,34 @@ module.exports = function(_args) {
 		url : _args.url,
 		done : function(_feeditems) {
 			_feeditems.items.forEach(function(item) {
-				var res = /<img src="(.*?)"\s.*?\/>(.*?)</gmi.exec(item.description);
+				var res = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
 				var image = (res) ? res[1] : item.channelimage;
 				var height = (res) ? 65 : 90;
-				var description = (res) ? res[2] : null;
-				if (res) console.log(res);
+				var description = (res) ? res[3] : null;
+				var copyright = (res) ? res[2] : null;
+
+				if (res)
+					console.log(res);
 				items.push({
 					pubdate : {
-						text : Moment(item.pubDate).format('LLL')
+						text : Moment(item.pubDate).format('LLL') + ' Uhr'
 					},
 					image : {
 						image : image,
 						height : height,
 						defaultImage : '/images/' + _args.station + '.png'
 					},
+					copyright : {
+						text : copyright
+					},
 					title : {
-						text : item.title,
+						text : item.title.replace(/\(podcast\)/gi,'').replace(/(\d\d\.\d\d\.\d\d\d\d)/gi,''),
 						color : _args.color
 					},
 					description : {
 						text : description,
 						color : 'gray',
-						height : (description) ? Ti.UI.SIZE:0
+						height : (description) ? Ti.UI.SIZE : 0
 					},
 					duration : {
 						text : (item.duration) ? 'Dauer: ' + item.duration : '',
@@ -70,21 +76,29 @@ module.exports = function(_args) {
 	self.add(self.list);
 	self.add(self.AudioPlayerView);
 	self.list.addEventListener('itemclick', function(_e) {
-		var item = JSON.parse(_e.itemId);
-		console.log(item);
-		if (!item.duration)
-			item.duration = item['itunes:duration'];
-		if (!item.enclosure_url)
-			item.enclosure_url = item.enclosure.url;
 
-		if (item.duration) {
-			var sec = parseInt(item.duration.split(':')[0]) * 60 + parseInt(item.duration.split(':')[1]);
-			Player.startPlayer({
-				url : item.enclosure_url,
-				title : item.title,
-				sec : sec,
-				duration : item.duration
-			});
+		if (_e.bindId && _e.bindId == 'image') {
+			var item = _e.section.getItemAt(_e.itemIndex);
+			if (item.copyright.text != null)
+				Ti.UI.createNotification({
+					duration:3000,
+					message : item.copyright.text.replace(/&quot;/g,'"')
+				}).show();
+		} else {
+			var item = JSON.parse(_e.itemId);
+			if (!item.duration)
+				item.duration = item['itunes:duration'];
+			if (!item.enclosure_url)
+				item.enclosure_url = item.enclosure.url;
+			if (item.duration) {
+				var sec = parseInt(item.duration.split(':')[0]) * 60 + parseInt(item.duration.split(':')[1]);
+				Player.startPlayer({
+					url : item.enclosure_url,
+					title : item.title,
+					sec : sec,
+					duration : item.duration
+				});
+			}
 		}
 	});
 	self.addEventListener('close', function() {

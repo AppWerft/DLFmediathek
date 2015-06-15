@@ -209,14 +209,16 @@ module.exports = function(_args) {
 
         } else if (_e.bindId && _e.bindId == 'playtrigger') {
             self.add(self.PlayerView);
-            
             var data = JSON.parse(_e.itemId);
-            console.log(data);
             Player.startPlayer({
-                url : data.url+ '?_='+Math.random(),
+                url : data.url,
                 duration: data.duration,
                 subtitle: data.subtitle,
-                title : data.title 
+                title : data.title, 
+                author : data.author,
+                station : data.station,
+                pubdate : data.pubdate 
+                
             });
             /*Ti.App.fireEvent('app:play', {
              item : JSON.parse(_e.itemId)
