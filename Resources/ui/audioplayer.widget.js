@@ -6,7 +6,6 @@ String.prototype.toHHMMSS = function() {
 	var hours = Math.floor(sec_num / 3600);
 	var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
 	var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
 	if (hours < 10) {
 		hours = "0" + hours;
 	}
@@ -27,9 +26,10 @@ var Player = function() {
 	});
 	var that = this;
 	this._player.addEventListener('progress', function(_e) {
-		that._progress.setValue(_e.progress / 1000);
-		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + that.duration);
-		that._Recents.setProgress(Math.round(_e.progress / 1000));
+		console.log(_e.progress);
+	//	that._progress.setValue(_e.progress / 1000);
+	//	that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + that.duration);
+	//	that._Recents.setProgress(Math.round(_e.progress / 1000));
 	});
 	this._player.addEventListener('complete', function(_e) {
 		Ti.API.error(_e.error);
@@ -66,7 +66,8 @@ var Player = function() {
 				opacity : 1,
 				duration : 700
 			});
-			that._control.image = '/images/pause.png';
+			console.log('PLAYING');
+			//that._control.setImage('/images/pause.png');
 			break;
 		}
 	});
@@ -175,34 +176,36 @@ Player.prototype = {
 			this.stopPlayer();
 			return;
 		}
-		console.log(args);
+		this.duration = args.duration;
 		this._Recents = new RecentsModule({
 			url : args.url,
 			title : args.title,
 			duration : args.duration,
-			station : args.station,
 			sendung : args.sendung,
-			author: args.author,
+			author : args.author,
 			image : args.image,
 			station : args.station,
 			pubdate : args.pubdate
 		});
-		//args.duration && (this.duration = args.duration.toHHMMSS());
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
-		this._progress.setMax(args.sec);
+		this._progress.setMax(('' + args.duration).toHHMMSS());
 		this._progress.setValue(0);
 		this._player.setUrl(args.url + '?_=' + Math.random());
 		var progress = this._Recents.getProgress() * 1000;
+		console.log(progress);
 		progress && Ti.UI.createNotification({
 			duration : 2000,
-			message : 'Setzte Wiedergabe am Zeitpunkt ' + (''+progress).toHHMMSS() + ' fort.'
+			message : 'Setzte Wiedergabe am Zeitpunkt ' + ('' + progress).toHHMMSS() + ' fort.'
 		}).show();
 		this._player.setTime(progress);
-		Ti.API.error(args.url);
+		console.log('201');
 		this._title.setText(args.title);
-		this._duration.setText(args.duration);
-		this._view.add(this._equalizer);
+		console.log('203  ' + args.duration);
+		//this._duration.setText(('' + args.duration).toHHMMSS());
+		//this._view.add(this._equalizer);
+		console.log('205');
+		console.log('STARTPlayer');
 		this._player.start();
 	},
 	stopPlayer : function(args) {

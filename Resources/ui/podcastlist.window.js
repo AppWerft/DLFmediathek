@@ -3,12 +3,32 @@ var Model = require('model/stations'),
     Moment = require('vendor/moment'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
+String.prototype.toHHMMSS = function() {
+	var sec_num = parseInt(this, 10);
+	// don't forget the second param
+	var hours = Math.floor(sec_num / 3600);
+	var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+	var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+	if (hours < 10) {
+		hours = "0" + hours;
+	}
+	if (minutes < 10) {
+		minutes = "0" + minutes;
+	}
+	if (seconds < 10) {
+		seconds = "0" + seconds;
+	}
+	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
+	return time;
+};
+
 module.exports = function(_args) {
 	var self = Ti.UI.createWindow({
 		fullscreen : true,
 		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
 	});
-	var Player = require('ui/audioplayer.widget').createPlayer();
+	var Player = require('ui/hlsplayer.widget').createPlayer();
 	self.AudioPlayerView = Player.createView({
 		color : _args.color
 	});
@@ -31,12 +51,9 @@ module.exports = function(_args) {
 				var height = (res) ? 65 : 90;
 				var description = (res) ? res[3] : null;
 				var copyright = (res) ? res[2] : null;
-
-				if (res)
-					console.log(res);
 				items.push({
 					pubdate : {
-						text : Moment(item.pubDate).format('LLL') + ' Uhr'
+						text : Moment(item.pubdate).format('LLL') + ' Uhr'
 					},
 					image : {
 						image : image,
@@ -47,7 +64,7 @@ module.exports = function(_args) {
 						text : copyright
 					},
 					title : {
-						text : item.title.replace(/\(podcast\)/gi,'').replace(/(\d\d\.\d\d\.\d\d\d\d)/gi,''),
+						text : item.title,
 						color : _args.color
 					},
 					description : {
@@ -56,7 +73,7 @@ module.exports = function(_args) {
 						height : (description) ? Ti.UI.SIZE : 0
 					},
 					duration : {
-						text : (item.duration) ? 'Dauer: ' + item.duration : '',
+						text : (item.duration) ? 'Dauer: ' + (''+item.duration).toHHMMSS() : '',
 						height : (item.duration) ? Ti.UI.SIZE : 0,
 
 					},
@@ -74,9 +91,8 @@ module.exports = function(_args) {
 		}
 	});
 	self.add(self.list);
-	self.add(self.AudioPlayerView);
+	
 	self.list.addEventListener('itemclick', function(_e) {
-
 		if (_e.bindId && _e.bindId == 'image') {
 			var item = _e.section.getItemAt(_e.itemIndex);
 			if (item.copyright.text != null)
@@ -86,17 +102,15 @@ module.exports = function(_args) {
 				}).show();
 		} else {
 			var item = JSON.parse(_e.itemId);
-			if (!item.duration)
-				item.duration = item['itunes:duration'];
-			if (!item.enclosure_url)
-				item.enclosure_url = item.enclosure.url;
-			if (item.duration) {
-				var sec = parseInt(item.duration.split(':')[0]) * 60 + parseInt(item.duration.split(':')[1]);
+			self.add(self.AudioPlayerView);
+			if (item.duration && item.pubdate) {
 				Player.startPlayer({
-					url : item.enclosure_url,
+					url : item.url,
 					title : item.title,
-					sec : sec,
-					duration : item.duration
+					station : item.station,
+					pubdate : item.pubdate,
+					duration : item.duration,
+					sendung : item.podcast
 				});
 			}
 		}

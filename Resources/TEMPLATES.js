@@ -927,6 +927,20 @@ exports.recents = {
 				},
 				color : '#333'
 			}
+		},  {
+			type : 'Ti.UI.Label',
+			bindId : 'progress',
+			properties : {
+				left : 0,
+				top : 0,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 12,
+					fontFamily : 'Aller'
+				},
+				color : '#333'
+			}
 		},{
 			type : 'Ti.UI.Label',
 			bindId : 'sendung',
@@ -936,7 +950,7 @@ exports.recents = {
 				height : Ti.UI.SIZE,
 				touchEnabled : false,
 				font : {
-					fontSize : 14,
+					fontSize : 16,
 					fontFamily : 'Aller Bold'
 				},
 				color : '#555'

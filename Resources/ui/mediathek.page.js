@@ -213,8 +213,8 @@ module.exports = function(_args) {
             Player.startPlayer({
                 url : data.url,
                 duration: data.duration,
-                subtitle: data.subtitle,
-                title : data.title, 
+                title: data.subtitle,
+                sendung : data.title, 
                 author : data.author,
                 station : data.station,
                 pubdate : data.pubdate 

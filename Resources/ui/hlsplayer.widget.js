@@ -28,9 +28,8 @@ var Player = function() {
 	var that = this;
 	this._player.addEventListener('progress', function(_e) {
 		that._progress.setValue(_e.progress / 1000);
-		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + that.duration);
-		that._Recents.setProgress(Math.round(_e.progress / 1000));
-
+		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.duration).toHHMMSS());
+		that._Recents.setProgress(Math.round(_e.progress / 1000),that.url);
 	});
 	this._player.addEventListener('complete', function(_e) {
 		Ti.API.error(_e.error);
@@ -38,7 +37,7 @@ var Player = function() {
 		that._player.release();
 		that._view.setVisible(false);
 	});
-	
+
 	this._player.addEventListener('complete', function(_e) {
 		that._Recents.setComplete();
 	});
@@ -67,7 +66,6 @@ var Player = function() {
 			that._control.image = '/images/play.png';
 			break;
 		case 'playing':
-
 			that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._spinner.hide();
 			that._equalizer.animate({
@@ -127,7 +125,7 @@ Player.prototype = {
 			bubbleParent : false,
 			touchEnabled : false,
 			color : this.color,
-			height : 36,
+			height : 32,
 			height : Ti.UI.SIZE,
 			font : {
 				fontSize : 20,
@@ -214,20 +212,19 @@ Player.prototype = {
 			this.stopPlayer();
 			return;
 		}
-		console.log('AAAAAAAAAAAAAAAAAAAAA');
-		console.log(args);
+		this.url = args.url;
+		this.duration = args.duration;
 		this._Recents = new RecentsModule({
 			url : args.url,
-			title : args.subtitle,
+			title : args.title,
 			duration : args.duration,
 			author : args.author,
-			sendung : args.title,
+			sendung : args.sendung,
 			image : '/images/' + args.station + '.png',
 			station : args.station,
 			pubdate : args.pubdate
 		});
-
-		args.duration && (this.duration = args.duration.toHHMMSS());
+		//	args.duration && (this.duration = (''+args.duration).toHHMMSS());
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
 		var that = this;
@@ -243,17 +240,17 @@ Player.prototype = {
 		this._progress.setMax(args.duration);
 		this._progress.setValue(0);
 		this._player.setUrl(args.url + '?_=' + Math.random());
-		var progress = this._Recents.getProgress() * 1000;
+		var progress = this._Recents.getProgress(args.url);
 		progress && Ti.UI.createNotification({
 			duration : 2000,
-			message : 'Setzte Wiedergabe am Zeitpunkt ' + (''+progress).toHHMMSS() + ' fort.'
+			message : 'Setzte Wiedergabe am Zeitpunkt ' + ('' + progress).toHHMMSS() + ' fort.'
 		}).show();
-		this._player.setTime(progress);
+		this._player.setTime(progress*1000);
 
 		Ti.API.error(args.url);
 		this._title.setText(args.title);
 		this._subtitle.setText(args.subtitle);
-		this._duration.setText(args.duration.toHHMMSS());
+		this._duration.setText(('' + args.duration).toHHMMSS());
 		this._view.add(this._equalizer);
 
 		this._player.start();

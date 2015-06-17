@@ -2,15 +2,22 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/podcast-andruck.1311.de.podcast.xml",
     "img" : {
         "alt" : "Andruck",
-        "src" : "/images/podcasts/andruck.jpg"
+        "src" : "http://a4.mzstatic.com/eu/r30/Music/v4/e6/0f/f6/e60ff6d7-9409-9cea-b603-2d6fbcc0f619/cover170x170.jpeg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-studiozeit-aus-kultur-und-sozialwissenschaften.1149.de.podcast.xml",
     "img" : {
         "alt" : "Aus Kultur- und Sozialiwssenschaften",
-        "src" : "/images/podcasts/kulturwissenschaft.jpg"
+        "src" : "http://a1.mzstatic.com/eu/r30/Music4/v4/a2/12/39/a212392e-a6cb-6c3e-99db-c51ee02c4b53/cover170x170.jpeg"
     }
 }, {
+    "href" : "http://www.deutschlandfunk.de/podcast-aus-religion-und-gesellschaft.2342.de.podcast.xml",
+    "img" : {
+        "alt" : "Aus Religion und Gesellschaft",
+        "src" : "http://a2.mzstatic.com/eu/r30/Music7/v4/0d/eb/12/0deb120f-35e7-ac4e-5f3d-6e257d7acf33/cover170x170.jpeg"
+    }
+}, 
+{
     "href" : "http://www.deutschlandfunk.de/podcast-buecher-fuer-junge-leser.1203.de.podcast.xml",
     "img" : {
         "alt" : "Bücher für junge Leser",
@@ -20,13 +27,13 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/podcast-buechermarkt.701.de.podcast.xml",
     "img" : {
         "alt" : "Büchermarkt",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/a/adf15aa00050edbec0db27186bb950e4v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://a3.mzstatic.com/eu/r30/Music4/v4/bf/64/df/bf64dfb3-6b00-be52-62dc-f5457fd9761f/cover170x170.jpeg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-campus-karriere.681.de.podcast.xml",
     "img" : {
         "alt" : "Campus und Karriere",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/0/0af7c3d06003d5074e393013cb639d7cv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://a3.mzstatic.com/eu/r30/Music4/v4/b5/fc/dd/b5fcdd95-d23d-e7e4-bbcd-bb2f0bad809f/cover170x170.jpeg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-campus-karriere.1801.de.podcast.xml",
@@ -56,15 +63,23 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/podcast-das-feature.1248.de.podcast.xml",
     "img" : {
         "alt" : "Das Feature",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/8/82963e9a9281c386eded2216682b8855v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://a3.mzstatic.com/eu/r30/Music5/v4/77/b1/f5/77b1f5ab-f3e6-7a9b-bc2b-f01a36c45ddc/cover170x170.jpeg"
     }
-}, {
+},  {
+    "href" : "http://www.deutschlandfunk.de/podcast-koran-erklaert.2397.de.podcast.xml",
+    "img" : {
+        "alt" : "Koran erklärt",
+        "src" : "http://a3.mzstatic.com/eu/r30/Music5/v4/89/49/f1/8949f1a7-c34b-ccc6-c92c-a0baf532c87b/cover170x170.jpeg"
+    }
+},{
     "href" : "http://www.deutschlandfunk.de/das-kulturgespraech-podcast.2274.de.podcast.xml",
     "img" : {
         "alt" : "Das Kulturgespräch",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/e/ef4457e780335d1c8a1d81ba2f6b12eav1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
-}, {
+}, 
+
+{
     "href" : "http://www.deutschlandfunk.de/podcast-das-war-der-tag.803.de.podcast.xml",
     "img" : {
         "alt" : "Das war der Tag Beiträge",
@@ -177,7 +192,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "Forschung aktuell – Sendung",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/3/319ffbaf6d19a2f43f321d0087a6d4cev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://a2.mzstatic.com/eu/r30/Music4/v4/4c/cb/f1/4ccbf1b8-70cc-6cb8-dd0a-d5a4dc7cf206/cover170x170.jpeg"
             }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-freistil.2257.de.podcast.xml",

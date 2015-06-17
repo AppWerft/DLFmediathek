@@ -3,6 +3,8 @@ var Model = require('model/stations'),
     Moment = require('vendor/moment'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
+
+
 String.prototype.toHHMMSS = function() {
 	var sec_num = parseInt(this, 10);
 	// don't forget the second param
@@ -28,7 +30,7 @@ module.exports = function() {
 		fullscreen : true,
 		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
 	});
-	var Player = require('ui/audioplayer.widget').createPlayer();
+	var Player = require('ui/hlsplayer.widget').createPlayer();
 	self.AudioPlayerView = Player.createView({
 		color : 'gray'
 	});
@@ -48,22 +50,30 @@ module.exports = function() {
 			title : {
 				text : item.title,
 			},
+			image : {
+				image : item.image,
+			},
 			sendung : {
 				text : item.sendung,
+				height : (item.sendung) ? Ti.UI.SIZE : 0,
+				color : (item.sendung && item.station) ? Model[item.station].color : '#555'
 			},
 			author : {
 				text : 'Autor: ' + item.author,
 				height : (item.author) ? Ti.UI.SIZE : 0,
 			},
+			progress : {
+				text : 'schon gehört: ' + Math.floor(item.progress * 100) + '%',
+			},
 			duration : {
-				text : (item.duration) ? 'Dauer: ' + (''+item.duration).toHHMMSS() : '',
+				text : (item.duration) ? 'Dauer: ' + ('' + item.duration).toHHMMSS() : '',
 				height : (item.duration) ? Ti.UI.SIZE : 0,
 			},
 			pubdate : {
-				text : (item.pubdate) ? 'Sendezeit: ' + Moment(item.pubdate).format('DD.MM.YYYY HH:mm') + ' Uhr' : '',
+				text : (item.pubdate) ? 'Sendezeit : ' + require('vendor/smartDate')(item.pubdate) : ''
 			},
 			lastaccess : {
-				text : (item.lastaccess) ? 'Letzte Hörzeit: ' + Moment(item.lastacccess).format('DD.MM.YYYY HH:mm') + ' Uhr' : '',
+				text : (item.lastaccess) ? 'Hörzeit : ' + require('vendor/smartDate')(item.lastacccess) : ''
 			},
 			properties : {
 				itemId : JSON.stringify(item)

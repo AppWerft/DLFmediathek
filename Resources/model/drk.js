@@ -40,7 +40,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "das blaue sofa",
-        "src" : "/images/podcasts/drk7.jpg",
+        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/c/c40d4eac26716e347befcba4be857a97v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
 
         "title" : "das blaue sofa"
     }
