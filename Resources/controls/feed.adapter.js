@@ -35,21 +35,17 @@ Module.prototype = {
 		var that = this;
 		var total = 0;
 		var stations = ['dlf', 'drk', 'drw'];
-		console.log(stations);
-		console.log('START MIRRORRING');
 		var ndx = 0;
 		function loadfeeds() {
 			var station = stations[ndx];
-			console.log(station);
 			var feeds = require('model/' + station);
-			console.log(feeds);
 			function loadfeed() {
 				var feed = feeds.shift();
 				if (feed) {
 					total++;
 					that.loadFeed({
 						url : feed.href,
-						station: station,
+						station : station,
 						done : loadfeed
 					});
 				} else {
@@ -63,11 +59,13 @@ Module.prototype = {
 					}
 				}
 			}
+
 			loadfeed();
 		}
+
 		loadfeeds();
 	},
-	
+
 	getAllFavedFeeds : function() {
 		var link = Ti.Database.open(DB);
 		var res = link.execute('SELECT feeds.*, (SELECT MAX(DATE(pubDate)) FROM items WHERE feeds.url=items.channelurl) AS lastpubdate, (SELECT COUNT(*) FROM items WHERE feeds.url=items.channelurl) AS total FROM feeds WHERE feeds.faved=1 ORDER BY lastpubdate DESC');
@@ -108,21 +106,24 @@ Module.prototype = {
 	// get feed with all items
 	getFeed : function(_args) {
 		var link = Ti.Database.open(DB);
-		var rows = link.execute('SELECT items.* ,(SELECT title FROM feeds WHERE feeds.url=items.channelurl) AS podcast,(SELECT image FROM feeds WHERE feeds.url=items.channelurl) AS channelimage,(SELECT station FROM feeds WHERE feeds.url=items.channelurl) AS station FROM items WHERE items.channelurl=? ORDER BY items.pubDate DESC', _args.url);
+		var rows = link.execute('SELECT items.* ,'//
+		+ '(SELECT title FROM feeds WHERE feeds.url=items.channelurl) AS podcast,'//
+		+ '(SELECT image FROM feeds WHERE feeds.url=items.channelurl) AS channelimage,'//
+		+ '(SELECT station FROM feeds WHERE feeds.url=items.channelurl) AS station FROM items '//
+		+ ' WHERE items.channelurl=? ORDER BY items.pubDate DESC', _args.url);
 		var items = [];
 		if (rows.getRowCount() > 0) {
 			while (rows.isValidRow()) {
 				var parts = rows.getFieldByName('duration').split(':');
 				var item = {
 					pubdate : rows.getFieldByName('pubdate'),
-					title : rows.getFieldByName('title').replace(/\(podcast\)/gi,'').replace(/(\d\d\.\d\d\.\d\d\d\d)/gi,''),
+					title : rows.getFieldByName('title').replace(/\(podcast\)/gi, '').replace(/(\d\d\.\d\d\.\d\d\d\d)/gi, ''),
 					description : rows.getFieldByName('description'),
-					url :  rows.getFieldByName('enclosure_url'),
+					url : rows.getFieldByName('enclosure_url'),
 					podcast : rows.getFieldByName('podcast'),
 					author : rows.getFieldByName('author'),
-					duration : parseInt(parts[0]*60) + parseInt(parts[1]),
+					duration : parseInt(parts[0] * 60) + parseInt(parts[1]),
 					station : rows.getFieldByName('station'),
-				//	channelurl : rows.getFieldByName('channelurl'),
 					channelimage : rows.getFieldByName('channelimage'),
 				};
 				items.push(item);
@@ -168,7 +169,7 @@ Module.prototype = {
 					_args.url, item.title, item.link, item.description, item.guid, //
 					item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], Moment(item.pubDate).toISOString, 0);
 				});
-			
+
 				link.close();
 				channel.item.faved = that.isFaved(_args.url);
 				var result = {
@@ -231,14 +232,13 @@ Module.prototype = {
 					0 //watched
 					);
 				});
-			//	console.log(Moment(channel.item.pubDate).toISOString());
+				//	console.log(Moment(channel.item.pubDate).toISOString());
 				link.close();
 				channel.item.faved = that.isFaved(_args.url);
 				var result = {
 					ok : true,
 					items : channel.item
 				};
-				console.log(_args.url);
 				_args.done(result);
 			}
 		});

@@ -1,12 +1,12 @@
 ! function() {
-
+/*
 	var Podcasts = new (require('controls/feed.adapter'))();
 	console.log('START APP DRMediatek');
 	Podcasts.mirrorAllFeeds({
 		done : function(_args) {
 		}
 	});
-
+*/
 	var Moment = require('vendor/moment');
 	var self = Ti.UI.createTabGroup({
 		fullscreen : true,
@@ -16,10 +16,13 @@
 		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
 		tabs : [Ti.UI.createTab({
 			title : 'Mediathek',
+			ndx :0,
 			window : require('ui/mediathek.window')()
 		}), Ti.UI.createTab({
 			title : 'Podcasts',
+			ndx:1,
 		}), Ti.UI.createTab({
+			ndx:2,
 			title : 'Tagesplan',
 		})/*, Ti.UI.createTab({
 		 title : 'Hörerkarte',

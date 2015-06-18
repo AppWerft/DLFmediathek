@@ -11,19 +11,22 @@ var Player = Ti.Media.createAudioPlayer({
 // viewing
 
 var searchView = Ti.UI.Android.createSearchView({
-	hintText : "Suche in Mediathek"
+	hintText : "Suche"
 });
 
 var searchMenu;
 
 searchView.addEventListener('submit', function(_e) {
 	require('ui/search.window')({
-		needle : _e.source.value
+		needle : _e.source.value,
+		where : searchView.where
 	}).open();
 	searchMenu.collapseActionView();
 });
 
 module.exports = function(_event) {
+	searchView.where = _event.source.activeTab.ndx;
+		
 	var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;

@@ -1,9 +1,64 @@
 var Model = require('model/stations'),
     Moment = require('vendor/moment'),
-    SearchInMediathek = require('controls/search.adapter'),
+    Search = require('controls/search.adapter'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function() {
+
+	function setDataintoSection(_res) {
+		console.log(_res);
+		var total = _res.items.length;
+		self.container.setRefreshing(false);
+		if (total > 0) {
+			Ti.UI.createNotification({
+				message : 'Suche nach ' + args.needle + ' ergab „' + total + '“ Treffer.'
+			}).show();
+			var items = [];
+			_res.items.forEach(function(item) {
+				items.push({
+					properties : {
+						itemId : JSON.stringify(item),
+					},
+					image : {
+						image : item.image
+					},
+					title : {
+						text : item.title
+					},
+					sendung : {
+						text : item.sendung,
+						color : item.color
+					},
+					pubdate : {
+						text : 'Sendedatum: ' + item.pubdate + ' Uhr'
+					},
+					duration : {
+						text : 'Dauer: ' + item.duration
+					},
+					author : {
+						text : 'Autor: ' + item.author
+					}
+				});
+			});
+			self.list.sections[_res.section].setItems(items);
+
+		} else {
+			АктйонБар.setSubtitle('Wurfsendung');
+			Ti.UI.createNotification({
+				duration : 5000,
+				message : 'Suche ergab leider keine Treffer.\nAls kleiner, gutgemeinter Trost kommt jetzt eine Wurfsendung …'
+			}).show();
+			self.removeAllChildren();
+			self.add(Ti.UI.createImageView({
+				image : '/images/wurfsendung.png',
+				bottom : 0,
+				width : Ti.UI.FILL,
+				height : 'auto'
+			}));
+		}
+
+	};
+
 	var args = arguments[0] || {};
 	var color = 'silver';
 	var self = Ti.UI.createWindow({
@@ -17,7 +72,11 @@ module.exports = function() {
 			},
 			defaultItemTemplate : 'search',
 			backgroundColor : '#8CB5C0',
-			sections : [Ti.UI.createListSection({})]
+			sections : [Ti.UI.createListSection({
+				headerTitle : 'Treffer in Mediathek'
+			}), Ti.UI.createListSection({
+				headerTitle : 'Treffer in Podcasts'
+			})]
 		});
 		self.container = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 			view : self.list,
@@ -38,68 +97,18 @@ module.exports = function() {
 			duration : 3000,
 			message : 'Lieber Gebührenzahler,\ndas dauert jetzt leider etwas länger. Es wird im Bestand der letzten fünf Jahre gesucht.'
 		}).show();
-		SearchInMediathek({
+
+		Search({
+			where : 'mediathek',
+			section : 0,
 			needle : args.needle,
-			done : function(_items) {
-				var total = _items.length;
-				self.container.setRefreshing(false);
-				if (total > 0) {
-					Ti.UI.createNotification({
-						message : 'Suche nach ' + args.needle + ' ergab „' + total + '“ Treffer.'
-					}).show();
-					var items = [];
-					_items.forEach(function(item) {
-						items.push({
-							properties : {
-								itemId : JSON.stringify(item),
-							},
-							image : {
-								image : item.image
-							},
-							title : {
-								text : item.title
-							},
-							sendung : {
-								text : item.sendung,
-								color : item.color
-							},
-							pubdate : {
-								text : 'Sendedatum: ' + item.pubdate + ' Uhr'
-							},
-							duration : {
-								text : 'Dauer: ' + item.duration
-							},
-							author : {
-								text : 'Autor: ' + item.author
-							}
-						});
-					});
-					self.list.sections[0].setItems(items);
-				} else {
-					АктйонБар.setSubtitle('Wurfsendung');
-					Ti.UI.createNotification({
-						duration : 5000,
-						message : 'Suche ergab leider keine Treffer.\nAls kleiner, gutgemeinter Trost kommt jetzt eine Wurfsendung …'
-					}).show();
-					self.removeAllChildren();
-					self.add(Ti.UI.createImageView({
-						image : '/images/wurfsendung.png',
-						bottom : 0,
-						width : Ti.UI.FILL,
-						height : 'auto'
-					}));
-					self.children[0].addEventListener('singletap', function() {
-						self.container.setRefreshing(false);
-						var ndx = require('controls/wurfsendung.adapter')({
-							done : function() {
-								self.container.setRefreshing(false);
-							}
-						});
-						АктйонБар.setSubtitle('Wurfsendung №' + ndx);
-					});
-					//                    self.close();
-				}
-			}
+			done : setDataintoSection
+		});
+		Search({
+			where : 'podcast',
+			section : 1,
+			needle : args.needle,
+			done : setDataintoSection
 		});
 		self.list.addEventListener('itemclick', function(_e) {
 			var item = JSON.parse(_e.itemId);
@@ -118,7 +127,7 @@ module.exports = function() {
 
 	});
 	self.addEventListener('open', function(_event) {
-		АктйонБар.setTitle('DLR Mediathek');
+		АктйонБар.setTitle('DRadio Suche');
 		АктйонБар.setSubtitle('Suche nach „' + args.needle + '“');
 		АктйонБар.setFont("Aller");
 		АктйонБар.setBackgroundColor('#444444');
