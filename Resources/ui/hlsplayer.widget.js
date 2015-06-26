@@ -29,7 +29,7 @@ var Player = function() {
 	this._player.addEventListener('progress', function(_e) {
 		that._progress.setValue(_e.progress / 1000);
 		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.duration).toHHMMSS());
-		that._Recents.setProgress(Math.round(_e.progress / 1000),that.url);
+		that._Recents.setProgress(Math.round(_e.progress / 1000), that._player.url);
 	});
 	this._player.addEventListener('complete', function(_e) {
 		Ti.API.error(_e.error);
@@ -55,9 +55,12 @@ var Player = function() {
 			break;
 		case 'stopping':
 			that._equalizer.opacity = 0;
-			that._control.image = '/images/leer.png';
+			that._player.release();
+			//that._player = null;
+			that._view.hide();
 			break;
 		case 'starting':
+			//
 			that._control.image = '/images/leer.png';
 			break;
 		case 'paused':
@@ -68,11 +71,18 @@ var Player = function() {
 		case 'playing':
 			that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._spinner.hide();
+			that.progress = that._Recents.getProgress(that.url);
+			Ti.API.error('progress=' + that.progress);
+			that._player.setTime(that.progress * 1000);
 			that._equalizer.animate({
 				opacity : 1,
 				duration : 700
 			});
 			that._control.image = '/images/pause.png';
+			that.progress && Ti.UI.createNotification({
+				duration : 2000,
+				message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
+			}).show();
 			break;
 		}
 	});
@@ -224,7 +234,7 @@ Player.prototype = {
 			station : args.station,
 			pubdate : args.pubdate
 		});
-		//	args.duration && (this.duration = (''+args.duration).toHHMMSS());
+		//		//	args.duration && (this.duration = (''+args.duration).toHHMMSS());
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
 		var that = this;
@@ -239,21 +249,13 @@ Player.prototype = {
 		this._spinner.show();
 		this._progress.setMax(args.duration);
 		this._progress.setValue(0);
-		this._player.setUrl(args.url + '?_=' + Math.random());
-		var progress = this._Recents.getProgress(args.url);
-		progress && Ti.UI.createNotification({
-			duration : 2000,
-			message : 'Setzte Wiedergabe am Zeitpunkt ' + ('' + progress).toHHMMSS() + ' fort.'
-		}).show();
-		this._player.setTime(progress*1000);
-
-		Ti.API.error(args.url);
+		this._player.setUrl(this.url + '?_=' + Math.random());
 		this._title.setText(args.title);
 		this._subtitle.setText(args.subtitle);
 		this._duration.setText(('' + args.duration).toHHMMSS());
 		this._view.add(this._equalizer);
 
-		this._player.start();
+		that._player.start();
 	},
 	stopPlayer : function(args) {
 		if (this._player.isPlaying() || this._player.isPaused()) {
@@ -261,7 +263,7 @@ Player.prototype = {
 			this._player.stop();
 			this._player.release();
 		}
-		this._view.setVisible(false);
+		
 	}
 };
 

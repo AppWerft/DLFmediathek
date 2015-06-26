@@ -26,13 +26,13 @@ searchView.addEventListener('submit', function(_e) {
 
 module.exports = function(_event) {
 	searchView.where = _event.source.activeTab.ndx;
-		
 	var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+	console.log(laststation);
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;
 	});
 	var currentStationName = laststation;
-	АктйонБар.setTitle(Model[laststation].name);
+	Model[laststation] && АктйонБар.setTitle(Model[laststation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
 	АктйонБар.setBackgroundColor('#444444');

@@ -41,7 +41,6 @@ module.exports = function() {
 				});
 			});
 			self.list.sections[_res.section].setItems(items);
-
 		} else {
 			АктйонБар.setSubtitle('Wurfsendung');
 			Ti.UI.createNotification({
@@ -56,9 +55,7 @@ module.exports = function() {
 				height : 'auto'
 			}));
 		}
-
 	};
-
 	var args = arguments[0] || {};
 	var color = 'silver';
 	var self = Ti.UI.createWindow({

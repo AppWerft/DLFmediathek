@@ -76,8 +76,15 @@ module.exports = function() {
 				duration : parseInt(parts[0] * 60) + parseInt(parts[1]),
 				station : res.getFieldByName('station'),
 				color : Model[res.getFieldByName('station')].color,
-				channelimage : res.getFieldByName('channelimage')
+				image : res.getFieldByName('channelimage')
 			};
+			var match = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
+			if (match) {
+				item.image = match[1];
+				item.desription =match[3];
+				item.copyright = match[2];
+			} else
+				description = undefined;
 			items.push(item);
 			res.next();
 		}
