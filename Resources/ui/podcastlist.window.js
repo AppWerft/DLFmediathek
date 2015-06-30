@@ -106,11 +106,11 @@ module.exports = function(_args) {
 			if (item.duration && item.pubdate) {
 				Player.startPlayer({
 					url : item.url,
-					title : item.title,
+					subtitle : item.title,
 					station : item.station,
 					pubdate : item.pubdate,
 					duration : item.duration,
-					sendung : item.podcast
+					title : item.podcast
 				});
 			}
 		}

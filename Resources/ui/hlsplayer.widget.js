@@ -29,7 +29,10 @@ var Player = function() {
 	this._player.addEventListener('progress', function(_e) {
 		that._progress.setValue(_e.progress / 1000);
 		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.duration).toHHMMSS());
-		that._Recents.setProgress(Math.round(_e.progress / 1000), that._player.url);
+		that._Recents.setProgress({
+			progress : _e.progress,
+			url : that._url
+		});
 	});
 	this._player.addEventListener('complete', function(_e) {
 		Ti.API.error(_e.error);
@@ -71,9 +74,6 @@ var Player = function() {
 		case 'playing':
 			that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._spinner.hide();
-			that.progress = that._Recents.getProgress(that.url);
-			Ti.API.error('progress=' + that.progress);
-			that._player.setTime(that.progress * 1000);
 			that._equalizer.animate({
 				opacity : 1,
 				duration : 700
@@ -135,17 +135,17 @@ Player.prototype = {
 			bubbleParent : false,
 			touchEnabled : false,
 			color : this.color,
-			height : 32,
-			height : Ti.UI.SIZE,
+			ellipsize : true,
+			height : 25,
 			font : {
-				fontSize : 20,
+				fontSize : 18,
 				fontWeight : 'bold',
 				fontFamily : 'Aller Bold'
 			},
 			left : 10,
 		});
 		this._subtitle = Ti.UI.createLabel({
-			top : 40,
+			top : 36,
 			bubbleParent : false,
 			touchEnabled : false,
 			color : '#555',
@@ -155,7 +155,7 @@ Player.prototype = {
 			ellipsize : true,
 			height : 20,
 			font : {
-				fontSize : 16,
+				fontSize : 14,
 				fontFamily : 'Aller Bold'
 			},
 			left : 10,
@@ -179,11 +179,10 @@ Player.prototype = {
 			height : Ti.UI.SIZE,
 			width : Ti.UI.SIZE
 		});
-
 		this._equalizer = Ti.UI.createWebView({
 			borderRadius : 1,
-			width : 200,
-			height : 33,
+			width : 250,
+			height : 40,
 			bubbleParent : false,
 			touchEnabled : false,
 			scalesPageToFit : true,
@@ -199,7 +198,6 @@ Player.prototype = {
 		this._container.add(this._subtitle);
 		this._container.add(this._control);
 		this._container.add(this._spinner);
-
 		var that = this;
 		this._control.addEventListener('click', function() {
 			if (that._player.isPlaying()) {
@@ -217,24 +215,14 @@ Player.prototype = {
 	startPlayer : function(args) {
 		if (Ti.Network.online != true) {
 			Ti.UI.createNotification({
-				message : 'Bitte Internetverbindung prüfen'
+				message : 'Bitte Internetverbindung prüfen.\nSo geht das auch auch lizenzrechtlichen Gründen leider nicht.'
 			}).show();
 			this.stopPlayer();
 			return;
 		}
 		this.url = args.url;
 		this.duration = args.duration;
-		this._Recents = new RecentsModule({
-			url : args.url,
-			title : args.title,
-			duration : args.duration,
-			author : args.author,
-			sendung : args.sendung,
-			image : '/images/' + args.station + '.png',
-			station : args.station,
-			pubdate : args.pubdate
-		});
-		//		//	args.duration && (this.duration = (''+args.duration).toHHMMSS());
+
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
 		var that = this;
@@ -249,13 +237,31 @@ Player.prototype = {
 		this._spinner.show();
 		this._progress.setMax(args.duration);
 		this._progress.setValue(0);
-		this._player.setUrl(this.url + '?_=' + Math.random());
+
 		this._title.setText(args.title);
 		this._subtitle.setText(args.subtitle);
 		this._duration.setText(('' + args.duration).toHHMMSS());
 		this._view.add(this._equalizer);
-
-		that._player.start();
+		this._Recents = new RecentsModule({
+			url : args.url,
+			title : args.title,
+			subtitle : args.subtitle,
+			duration : args.duration,
+			author : args.author,
+			image : '/images/' + args.station + '.png',
+			station : args.station,
+			pubdate : args.pubdate
+		});
+		that.progress = that._Recents.getProgress(that.url);
+		// and finnally we start:
+		console.log(this._player);
+		this._player.release();
+		this._player.setUrl(this.url + '?appwerftmediathek=' + Math.random());
+		
+		setTimeout(function() {
+			that._player.setTime(that.progress * 1000);
+			that._player.start();
+		}, 50);
 	},
 	stopPlayer : function(args) {
 		if (this._player.isPlaying() || this._player.isPaused()) {
@@ -263,7 +269,6 @@ Player.prototype = {
 			this._player.stop();
 			this._player.release();
 		}
-		
 	}
 };
 

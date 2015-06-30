@@ -48,15 +48,15 @@ module.exports = function() {
 		console.log(item);
 		return {
 			title : {
-				text : item.title,
+				text : item.subtitle,
 			},
 			image : {
 				image : item.image,
 			},
 			sendung : {
-				text : item.sendung,
-				height : (item.sendung) ? Ti.UI.SIZE : 0,
-				color : (item.sendung && item.station) ? Model[item.station].color : '#555'
+				text : item.title,
+				height : (item.title) ? Ti.UI.SIZE : 0,
+				color : (item.title && item.station) ? Model[item.station].color : '#555'
 			},
 			author : {
 				text : 'Autor: ' + item.author,
@@ -97,12 +97,12 @@ module.exports = function() {
 				Player.startPlayer({
 					url : item.url,
 					title : item.title,
+					subtitle: item.subtitle,
 					duration : item.duration
 				});
 			}
 		}
 	});
-
 	self.addEventListener('close', function() {
 		Player.stopPlayer();
 	});

@@ -11,17 +11,18 @@ link.close();
 
 var Module = function() {
 	var args = arguments[0] || {};
-	console.log(args);
 	if (args.url && args.pubdate) {
 		this.url = args.url;
 		args.progress = this.getProgress(this.url);
 		var link = Ti.Database.open(DB);
+		console.log('################################################');
+		console.log(args);
 		link.execute('INSERT OR REPLACE INTO recents VALUES (?,?,?,?,?,?,?,?,?,?)', //
 		this.url, //
 		args.image, //
 		args.station, //
+		args.subtitle, //
 		args.title, //
-		args.sendung, //
 		args.duration, //
 		args.progress || 0, //
 		Moment().toISOString(), // lastaccess
@@ -34,11 +35,14 @@ var Module = function() {
 
 Module.prototype = {
 	/* will called from UI and calls background service */
-	setProgress : function(_progress,_url) {
+	setProgress : function(_args) {
 		var link = Ti.Database.open(DB);
-		Ti.API.error('set progress' + '  ' + _progress + '   ' + Moment().toISOString() + '   '+ _url);
-		link.execute('UPDATE recents SET progress=?,lastaccess=? WHERE url=?', _progress, Moment().toISOString(), _url ||this.url);
+		link.execute('UPDATE recents SET progress=?,lastaccess=? WHERE url=?', //
+		Math.floor(_args.progress / 1000), //
+		Moment().toISOString(), //
+		_args.url || this.url);
 		link.close();
+		console.log(_args);
 	},
 	setComplete : function(_progress) {
 		var link = Ti.Database.open(DB);
@@ -53,10 +57,10 @@ Module.prototype = {
 			var station = res.getFieldByName('station');
 			recents.push({
 				url : res.getFieldByName('url'),
-				title : res.getFieldByName('title'),
 				image : '/images/' + station + '.png',
-				sendung : res.getFieldByName('sendung'),
 				station : station,
+				title : res.getFieldByName('sendung'),
+				subtitle : res.getFieldByName('title'),
 				duration : res.getFieldByName('duration'),
 				progress : res.getFieldByName('progress') / res.getFieldByName('duration'),
 				lastaccess : res.getFieldByName('lastaccess'),
@@ -73,7 +77,7 @@ Module.prototype = {
 	},
 	getProgress : function(_url) {
 		var link = Ti.Database.open(DB);
-		
+
 		var res = link.execute('SELECT progress FROM recents  WHERE url=?', this.url || _url);
 		var progress = 0;
 		if (res.isValidRow()) {

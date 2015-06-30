@@ -210,11 +210,12 @@ module.exports = function(_args) {
         } else if (_e.bindId && _e.bindId == 'playtrigger') {
             self.add(self.PlayerView);
             var data = JSON.parse(_e.itemId);
+            console.log(data);
             Player.startPlayer({
                 url : data.url,
                 duration: data.duration,
-                title: data.subtitle,
-                sendung : data.title, 
+                title: data.title,
+                subtitle : data.subtitle, 
                 author : data.author,
                 station : data.station,
                 pubdate : data.pubdate 

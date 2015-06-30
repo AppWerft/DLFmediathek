@@ -74,7 +74,6 @@ module.exports = function(station) {
         console.log(items	);
         //  self.list.scrollToItem(0, ndx);
     }
-	console.log(Model[station].color);
     var self = Ti.UI.createListView({
         height : Ti.UI.FILL,
         station : station,
