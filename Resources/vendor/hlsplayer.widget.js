@@ -19,83 +19,12 @@ String.prototype.toHHMMSS = function() {
 	return time;
 };
 
-var Player = function() {
-	var that = this;
-	// the player can read HLS too
-	this._player = Ti.Media.createVideoPlayer({
-		visible : false, // audio only
-		volume : 1
-	});
-	this._interval;// reference handler for cronjob
-	// cronjob himselfs
-	this._cronFunc = function() {
-		// getting from player
-		that._currentplaybacktime = that._player.getCurrentPlaybackTime();
-		// setting progressbar
-		that._progress.setValue(that._currentplaybacktime / 1000);
-		// setting text
-		that._duration.setText(('' + that._currentplaybacktime / 1000).toHHMMSS() + ' / ' + ('' + that.duration).toHHMMSS());
-		// persist to DB
-		that._Recents.setProgress({
-			progress : _e.progress,
-			url : that._url
-		});
-	};
+var HLSPlayer = function() {
 
-	this._player.addEventListener('progress', function(_e) {
-		//obsolete, works only with audioPLayer
-	});
-	this._player.addEventListener('complete', function(_e) {
-
-		Ti.API.error(_e.error);
-		Ti.API.error('completed code = ' + _e.code);
-		that._player.release();
-		that._view.setVisible(false);
-		if (_e.raison == Tis.Media.VIDEO_FINISH_REASON_PLAYBACK_ENDED)
-			that._Recents.setComplete();
-	});
-
-	this._player.addEventListener('playbackstate', function(_e) {
-		console.log(_e);
-		switch (_e.state) {
-		case Ti.Media.VIDEO_PLAYBACK_STATE_STOPPED:
-			that._equalizer.opacity = 0;
-			if (that._interval)
-				clearInterval(that._cronFunc, 1000);
-			that._control.image = '/images/play.png';
-			that._equalizer.opacity = 0;
-			that._player.release();
-			//that._player = null;
-			that._view.hide();
-			break;
-
-		case Ti.Media.VIDEO_PLAYBACK_STATE_PAUSED:
-			that._subtitle.ellipsize = false;
-			that._equalizer.opacity = 0;
-			that._control.image = '/images/play.png';
-			break;
-		case Ti.Media.VIDEO_PLAYBACK_STATE_PLAYING:
-			that._interval = setInterval(that._cronFunc, 1000);
-			that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
-			that._spinner.hide();
-			that.progress = that._Recents.getProgress(that.url);
-			Ti.API.error('progress=' + that.progress);
-			that._player.setCurrentPlaybackTime(that.progress * 1000);
-			that._equalizer.animate({
-				opacity : 1,
-				duration : 700
-			});
-			that._control.image = '/images/pause.png';
-			that.progress && Ti.UI.createNotification({
-				duration : 2000,
-				message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
-			}).show();
-			break;
-		}
-	});
 	return this;
 };
-Player.prototype = {
+
+HLSPlayer.prototype = {
 	createView : function(args) {
 		this.color = (args.color) ? args.color : 'black', this._view = Ti.UI.createView({
 			visible : false
@@ -105,6 +34,7 @@ Player.prototype = {
 			touchEnabled : false,
 			backgroundColor : this.color
 		}));
+
 		this._view.add(Ti.UI.createView({
 			opacity : 0.5,
 			touchEnabled : false,
@@ -145,7 +75,7 @@ Player.prototype = {
 			ellipsize : true,
 			height : 32,
 			font : {
-				fontSize :18,
+				fontSize : 18,
 				fontWeight : 'bold',
 				fontFamily : 'Aller Bold'
 			},
@@ -240,6 +170,79 @@ Player.prototype = {
 			station : args.station,
 			pubdate : args.pubdate
 		});
+		var that = this;
+		this._player = Ti.Media.createVideoPlayer({
+			visible : false, // audio only
+			width : 1,
+			height : 1,
+			autoplay : false,
+			mediaControlStyle : Ti.Media.VIDEO_CONTROL_HIDDEN,
+			volume : 1
+		});
+		this._view.add(this._player);
+		this._interval = null;
+		// reference handler for cronjob
+		// cronjob himselfs
+		this._cronFunc = function() {
+			// getting from player
+			if (that._player.playing) {
+				var progress = that._player.getCurrentPlaybackTime();
+				// setting progressbar
+				that._progress.setValue(progress / 1000);
+				// setting text
+				that._duration.setText(('' + progress / 1000).toHHMMSS() + ' / ' + ('' + that.duration).toHHMMSS());
+				// persist to DB
+				that._Recents.setProgress({
+					progress : progress,
+					url : that.url
+				});
+			}
+		};
+
+		this._player.addEventListener('progress', function(_e) {
+			//obsolete, works only with audioPLayer
+		});
+		this._player.addEventListener('complete', function(_e) {
+			Ti.API.error('completed code = ' + _e.code);
+			//that._player.release();
+			that._view.setVisible(false);
+			console.log(_e.reason);
+			if (_e.raison == Ti.Media.VIDEO_FINISH_REASON_PLAYBACK_ENDED)
+				that._Recents.setComplete();
+		});
+
+		this._player.addEventListener('playbackstate', function(_e) {
+			switch (_e.playbackState) {
+			case Ti.Media.VIDEO_PLAYBACK_STATE_STOPPED:
+				that._equalizer.opacity = 0;
+				if (that._interval)
+					clearInterval(that._interval, 1000);
+				that._control.image = '/images/play.png';
+				that._equalizer.opacity = 0;
+				//that._player.release();
+				//that._player = null;
+				that._view.hide();
+				break;
+			case Ti.Media.VIDEO_PLAYBACK_STATE_PAUSED:
+				that._subtitle.ellipsize = false;
+				that._equalizer.opacity = 0;
+				that._control.image = '/images/play.png';
+				break;
+			case Ti.Media.VIDEO_PLAYBACK_STATE_PLAYING:
+				that._interval = setInterval(that._cronFunc, 1000);
+				that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+				that._spinner.hide();
+				that.progress = that._Recents.getProgress(that.url);
+				Ti.API.error('progress=' + that.progress);
+				that._player.setCurrentPlaybackTime(that.progress * 1000);
+				that._equalizer.animate({
+					opacity : 1,
+					duration : 700
+				});
+				that._control.image = '/images/pause.png';
+				break;
+			}
+		});
 		//		//	args.duration && (this.duration = (''+args.duration).toHHMMSS());
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
@@ -255,24 +258,47 @@ Player.prototype = {
 		this._spinner.show();
 		this._progress.setMax(args.duration);
 		this._progress.setValue(0);
-		this._player.setUrl(this.url + '?_=' + Math.random());
 		this._title.setText(args.title);
 		this._subtitle.setText(args.subtitle);
 		this._duration.setText(('' + args.duration).toHHMMSS());
 		this._view.add(this._equalizer);
-		console.log('Info: try to start with ' + this.url);
-		that._player.start();
+		var progress = this._Recents.getProgress(this.url);
+		if (progress > 0) {
+			var dialog = Ti.UI.createAlertDialog({
+				buttonNames : ['Neuhören', 'Weiterhören'],
+				message : 'Der Beitrag wurde schon einmal angefangen zu hören – allerdings nicht bis zum Ende.\n',
+				title : ' Wiederaufsetzung'
+			});
+			dialog.addEventListener('click', function(e) {
+				switch (e.index) {
+				case 1:
+					that._player.setInitialPlaybackTime(0);
+					that._player.setUrl(that.url + '?_=' + Math.random());
+					that._player.start();
+					break;
+				case 0:
+					that._player.setInitialPlaybackTime(progress * 1000);
+					that._player.setUrl(that.url + '?_=' + Math.random());
+					that._player.start();
+					break;
+				}	
+			});
+			dialog.show();
+		} else {
+			that._player.setUrl(this.url + '?_=' + Math.random());
+			that._player.start();
+		}
 	},
 	stopPlayer : function(args) {
 		if (this._player.playing || this._player.paused) {
 			Ti.API.error('Info: try 2 stop player - was playing or paused');
 			this._player.stop();
 			this._player.release();
+			this._player = null;
 		}
-
 	}
 };
 
 exports.createPlayer = function() {
-	return new Player();
+	return new HLSPlayer();
 };

@@ -7,9 +7,11 @@ var Player = Ti.Media.createAudioPlayer({
     stations = require('model/stations'),
     currentRadio = Ti.App.Properties.getString('LAST_STATION', 'dlf'),
 // listening
-    currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
-// viewing
-
+    currentStation = Ti.App.Properties.getString('LAST_STATION');
+if (currentStation)
+	currentStation = 'dlf',
+	// viewing
+	console.log(currentStation);
 var searchView = Ti.UI.Android.createSearchView({
 	hintText : "Suche"
 });
@@ -84,6 +86,8 @@ module.exports = function(_event) {
 				icon : Ti.App.Android.R.drawable.ic_action_play,
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", function() {
+				console.log(stations);
+				console.log(currentStation);
 				var url = stations[currentStation].stream;
 				if (Player.isPlaying()) {
 					Player.stop();

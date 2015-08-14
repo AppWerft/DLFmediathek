@@ -20,7 +20,9 @@ String.prototype.toHHMMSS = function() {
 	return time;
 };
 
-var AudioPlayer = function() {
+var AudioPlayer = function(options) {
+	this.options = options;
+	console.log(this.options);
 	this._player = Ti.Media.createAudioPlayer({
 		allowBackground : true,
 		volume : 1
@@ -28,10 +30,10 @@ var AudioPlayer = function() {
 	var that = this;
 	this._player.addEventListener('progress', function(_e) {
 		that._progress.setValue(_e.progress / 1000);
-		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.duration).toHHMMSS());
+		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.options.duration).toHHMMSS());
 		that._Recents.setProgress({
 			progress : _e.progress,
-			url : that._url
+			url : that.options.url
 		});
 	});
 	this._player.addEventListener('complete', function(_e) {
@@ -90,12 +92,14 @@ var AudioPlayer = function() {
 			break;
 		}
 	});
-	return this;
+	this.createView();
+	this.startPlayer();
+	return this._view;;
 };
 
 AudioPlayer.prototype = {
 	createView : function(args) {
-		this.color = (args.color) ? args.color : 'black', this._view = Ti.UI.createView({
+		this.color = (this.options.color) ? this.options.color : 'black', this._view = Ti.UI.createView({
 			visible : false
 		});
 		this._view.add(Ti.UI.createView({
@@ -217,7 +221,7 @@ AudioPlayer.prototype = {
 		});
 		return this._view;
 	},
-	startPlayer : function(args) {
+	startPlayer : function() {
 		if (Ti.Network.online != true) {
 			Ti.UI.createNotification({
 				message : 'Bitte Internetverbindung prüfen.\nSo geht das auch auch lizenzrechtlichen Gründen leider nicht.'
@@ -225,8 +229,6 @@ AudioPlayer.prototype = {
 			this.stopPlayer();
 			return;
 		}
-		this.url = args.url;
-		this.duration = args.duration;
 
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
@@ -240,43 +242,47 @@ AudioPlayer.prototype = {
 			});
 		});
 		this._spinner.show();
-		this._progress.setMax(args.duration);
+		this._progress.setMax(this.options.duration);
 		this._progress.setValue(0);
 
-		this._title.setText(args.title);
-		this._subtitle.setText(args.subtitle);
-		this._duration.setText(('' + args.duration).toHHMMSS());
+		this._title.setText(this.options.title);
+		this._subtitle.setText(this.options.subtitle);
+		this._duration.setText(('' + this.options.duration).toHHMMSS());
 		this._view.add(this._equalizer);
 		this._Recents = new RecentsModule({
-			url : args.url,
-			title : args.title,
-			subtitle : args.subtitle,
-			duration : args.duration,
-			author : args.author,
-			image : '/images/' + args.station + '.png',
-			station : args.station,
-			pubdate : args.pubdate
+			url : this.options.url,
+			title : this.options.title,
+			subtitle : this.options.subtitle,
+			duration : this.options.duration,
+			author : this.options.author,
+			image : '/images/' + this.options.station + '.png',
+			station : this.options.station,
+			pubdate : this.options.pubdate
 		});
-		that.progress = that._Recents.getProgress(that.url);
+		that.progress = that._Recents.getProgress(that.options.url);
 		// and finnally we start:
 		console.log(this._player);
 		this._player.release();
-		this._player.setUrl(this.url + '?appwerftmediathek=' + Math.random());
+		this._player.setUrl(this.options.url + '?appwerftmediathek=' + Math.random());
 		
 		setTimeout(function() {
 			that._player.setTime(that.progress * 1000);
 			that._player.start();
 		}, 50);
 	},
-	stopPlayer : function(args) {
+	stopPlayer : function() {
 		if (this._player.isPlaying() || this._player.isPaused()) {
 			Ti.API.error('Info: try 2 stop player - was playing or paused');
 			this._player.stop();
 			this._player.release();
 		}
+		if (this._view.oncomplete && typeof this._view.oncomplete == 'function') {
+			this._view.oncomplete();
+		}
+//		this.options.oncomplete && oncomplete();
 	}
 };
 
-exports.createPlayer = function() {
-	return new AudioPlayer();
+exports.createAndStartPlayer = function(options) {
+	return new AudioPlayer(options);
 };

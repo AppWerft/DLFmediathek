@@ -1,16 +1,12 @@
 var FlipModule = require('de.manumaticx.androidflip'),
     stations = ['dlf', 'drk', 'drw'],
-    Geo = new (require('controls/cloud.adapter'))(),
     Model = require('model/stations');
 
 module.exports = function() {
     //http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
     Ti.Media.createSound();
     var self = Ti.UI.createWindow();
-    var Player = require('ui/audioplayer.widget').createPlayer();
-   
-    // self.addEventListener('open', require('ui/main.menu'));
-
+//    var Player = require('ui/audioplayer.widget').createPlayer();
     var pages = [];
     for (var station in Model) {
         pages.push(require('ui/mediathek.page')({
@@ -43,7 +39,6 @@ module.exports = function() {
             else
                 page.hideCurrent([_e.index]);
         });
-        Geo.savePosition(stations[_e.index]);
     });
     self.add(self.FlipViewCollection);
     self.addEventListener('focus', function() {

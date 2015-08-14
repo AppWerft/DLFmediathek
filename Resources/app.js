@@ -1,12 +1,4 @@
 ! function() {
-/*
-	var Podcasts = new (require('controls/feed.adapter'))();
-	console.log('START APP DRMediatek');
-	Podcasts.mirrorAllFeeds({
-		done : function(_args) {
-		}
-	});
-*/
 	var Moment = require('vendor/moment');
 	var self = Ti.UI.createTabGroup({
 		fullscreen : true,
@@ -16,26 +8,22 @@
 		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
 		tabs : [Ti.UI.createTab({
 			title : 'Mediathek',
-			ndx :0,
+			ndx : 0,
 			window : require('ui/mediathek.window')()
 		}), Ti.UI.createTab({
 			title : 'Podcasts',
-			ndx:1,
+			ndx : 1,
 		}), Ti.UI.createTab({
-			ndx:2,
+			ndx : 2,
 			title : 'Tagesplan',
-		})/*, Ti.UI.createTab({
-		 title : 'Hörerkarte',
-		 leftmenu : true
-		 }), Ti.UI.createTab({
-		 title : 'Klangkunst',
-		 })*/]
+		})]
 	});
 	self.addEventListener('open', require('ui/main.menu'));
+
 	['podcasttiles', 'dayplan'].forEach(function(win, ndx) {
-		//setTimeout(function() {
-		self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
-		//}, ndx * 700);
+		setTimeout(function() {
+			self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
+		}, ndx * 700);
 	});
 	setInterval(function() {
 		var today = Moment().format('YYYYMMDD');
@@ -49,15 +37,4 @@
 	self.setActiveTab(0);
 	var tools = require('bencoding.android.tools');
 	require('vendor/cronservice.trigger')();
-	/* self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
-	 _e.cancelBubble = true;
-	 var intent = Ti.Android.createIntent({
-	 action : Ti.Android.ACTION_MAIN,
-	 flags : Ti.Android.FLAG_ACTIVITY_NEW_TASK
-	 });
-	 intent.addCategory(Ti.Android.CATEGORY_HOME);
-	 Ti.Android.currentActivity.startActivity(intent);
-	 return false;
-	 });*/
-
 }();
