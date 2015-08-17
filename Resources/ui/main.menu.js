@@ -1,3 +1,9 @@
+const RECENT = 0,
+    MYFAVS = 1,
+    MYPODS = 2,
+    MYPLAYLIST=3,
+    PLAY =4;
+
 var Player = Ti.Media.createAudioPlayer({
 	allowBackground : true,
 	volume : 1
@@ -9,9 +15,8 @@ var Player = Ti.Media.createAudioPlayer({
 // listening
     currentStation = Ti.App.Properties.getString('LAST_STATION');
 if (currentStation)
-	currentStation = 'dlf',
-	// viewing
-	console.log(currentStation);
+	currentStation = 'dlf';
+
 var searchView = Ti.UI.Android.createSearchView({
 	hintText : "Suche"
 });
@@ -29,7 +34,6 @@ searchView.addEventListener('submit', function(_e) {
 module.exports = function(_event) {
 	searchView.where = _event.source.activeTab.ndx;
 	var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
-	console.log(laststation);
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;
 	});
@@ -41,25 +45,14 @@ module.exports = function(_event) {
 	АктйонБар.subtitleColor = "#ccc";
 	_event.source.addEventListener('focus', function(_e) {
 		АктйонБар.setSubtitle(subtitles[_e.index]);
-		//console.log('tabndx='+_e.index);
-		/*
-		 if (_e.index==3 || _e.index == undefined) {
-		 АктйонБар.setHomeAsUpIcon("/images/menu.png");
-		 activity.actionBar.setDisplayHomeAsUp(true);
-		 activity.actionBar.onHomeIconItemSelected = function() {
-		 Ti.App.fireEvent('app:togglemapmenu');
-		 }
-		 } else {
-		 activity.actionBar.setDisplayHomeAsUp(false);
-		 activity.actionBar.onHomeIconItemSelected = function() {}
-		 }*/
 	});
 	var activity = _event.source.getActivity();
 	if (activity) {
 		activity.actionBar.logo = '/images/' + laststation + '.png';
+		activity.onPrepareOptionsMenu = function() {
+		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
 			_menuevent.menu.clear();
-
 			searchMenu = _menuevent.menu.add({
 				title : 'Search',
 				visible : false,
@@ -82,7 +75,7 @@ module.exports = function(_event) {
 			});
 			_menuevent.menu.add({
 				title : 'RadioStart',
-				itemId : '1',
+				itemId : PLAY,
 				icon : Ti.App.Android.R.drawable.ic_action_play,
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", function() {
@@ -109,7 +102,7 @@ module.exports = function(_event) {
 			setTimeout(function() {
 				_menuevent.menu.add({
 					title : 'Meine Vormerkliste',
-					itemId : '5',
+					itemId : MYFAVS,
 					icon : Ti.App.Android.R.drawable.ic_action_fav,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
 				}).addEventListener("click", function(_e) {
@@ -117,37 +110,31 @@ module.exports = function(_event) {
 				});
 				_menuevent.menu.add({
 					title : 'Meine Podcasts',
-					itemId : '6',
+					itemId : MYPODS,
 					icon : Ti.App.Android.R.drawable.ic_action_fav,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
 				}).addEventListener("click", function(_e) {
 					require('ui/mypodcasts.window')().open();
 				});
-
 				_menuevent.menu.add({
 					title : 'Letztgehört …',
-					itemId : '16',
+					itemId : RECENT,
 					icon : Ti.App.Android.R.drawable.ic_action_fav,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
 				}).addEventListener("click", function(_e) {
 					require('ui/recents.window')().open();
 				});
+				_menuevent.menu.add({
+					title : 'Tagesübersicht',
+					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+				}).addEventListener("click", function(_e) {
+					require('ui/dayplan.window')().open();
+				});
 			}, 7000);
 
-			/*
-			_menuevent.menu.add({
-			title : 'Hörerkarte',
-			itemId : '7',
-			showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-			}).addEventListener("click", function(_e) {
-			require('ui/map.window')().open();
-			});*/
-			// end of click handling
 			/* Handling of PlayIcon*/
-			var menuitem = _menuevent.menu.findItem('1');
+			var menuitem = _menuevent.menu.findItem(PLAY);
 			Player.addEventListener('change', function(_e) {
-				console.log('state: ' + _e.state + ' ' + _e.description);
-				console.log('currentSation=' + currentStation);
 				switch (_e.state) {
 				case 1:
 					menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
@@ -159,7 +146,6 @@ module.exports = function(_event) {
 				case 5:
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					break;
-
 				};
 			});
 			activity.actionBar.displayHomeAsUp = false;

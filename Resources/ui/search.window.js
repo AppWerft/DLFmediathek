@@ -4,7 +4,6 @@ var Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function() {
-
 	function setDataintoSection(_res) {
 		console.log(_res);
 		var total = _res.items.length;
@@ -54,6 +53,8 @@ module.exports = function() {
 				width : Ti.UI.FILL,
 				height : 'auto'
 			}));
+			require('controls/wurfsendung.adapter')();
+			self.children[0].addEventListener('click', require('controls/wurfsendung.adapter'));
 		}
 	};
 	var args = arguments[0] || {};
@@ -61,7 +62,6 @@ module.exports = function() {
 	var self = Ti.UI.createWindow({
 		fullscreen : true
 	});
-	var Player = require('ui/hlsplayer.widget').createPlayer();
 	self.addEventListener('focus', function() {
 		self.list = Ti.UI.createListView({
 			templates : {
@@ -94,7 +94,6 @@ module.exports = function() {
 			duration : 3000,
 			message : 'Lieber Gebührenzahler,\ndas dauert jetzt leider etwas länger. Es wird im Bestand der letzten fünf Jahre gesucht.'
 		}).show();
-
 		Search({
 			where : 'mediathek',
 			section : 0,
@@ -109,17 +108,21 @@ module.exports = function() {
 		});
 		self.list.addEventListener('itemclick', function(_e) {
 			var item = JSON.parse(_e.itemId);
-			self.PlayerView = Player.createView({
+			Ti.Media.vibrate([10, 200, 10, 200]);
+			var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer({
 				color : item.color,
-			});
-			self.add(self.PlayerView);
-			Player.startPlayer({
 				url : item.url,
-				title : item.sendung,
-				subtitle : item.title,
+				duration : item.duration,
+				title : item.title,
+				subtitle : item.subtitle,
 				station : item.stataion,
-				duration : item.duration
+				pubdate : data.pubdate
 			});
+			self.add(PlayerOverlay);
+			PlayerOverlay.oncomplete = function() {
+				self.remove(PlayerOverlay);
+				PlayerOverlay = null;
+			};
 		});
 
 	});
@@ -128,7 +131,6 @@ module.exports = function() {
 		АктйонБар.setSubtitle('Suche nach „' + args.needle + '“');
 		АктйонБар.setFont("Aller");
 		АктйонБар.setBackgroundColor('#444444');
-
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function(_menuevent) {

@@ -1,8 +1,8 @@
 var Player = Ti.Media.createAudioPlayer();
 var done;
-module.exports = function() {
+module.exports = function(onstarted) {
 	var args = arguments[0] || {};
-	done = args.done;
+
 	if (Player) {
 		Player.stop();
 		Player.release();
@@ -13,6 +13,7 @@ module.exports = function() {
 	console.log(url);
 	Player.setUrl(url);
 	Player.play();
-	setTimeout(done, 1000);
+	if (done && typeof done == 'function')
+		setTimeout(done, 1000);
 	return ndx;
 };

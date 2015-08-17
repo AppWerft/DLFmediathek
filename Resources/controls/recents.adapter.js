@@ -15,8 +15,6 @@ var Module = function() {
 		this.url = args.url;
 		args.progress = this.getProgress(this.url);
 		var link = Ti.Database.open(DB);
-		console.log('################################################');
-		console.log(args);
 		link.execute('INSERT OR REPLACE INTO recents VALUES (?,?,?,?,?,?,?,?,?,?)', //
 		this.url, //
 		args.image, //

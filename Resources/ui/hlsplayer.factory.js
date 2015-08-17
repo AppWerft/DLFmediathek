@@ -22,7 +22,7 @@ String.prototype.toHHMMSS = function() {
 
 var AudioPlayer = function(options) {
 	this.options = options;
-	console.log(this.options);
+	this.createView();
 	this._player = Ti.Media.createAudioPlayer({
 		allowBackground : true,
 		volume : 1
@@ -92,7 +92,6 @@ var AudioPlayer = function(options) {
 			break;
 		}
 	});
-	this.createView();
 	this.startPlayer();
 	return this._view;;
 };
@@ -229,7 +228,6 @@ AudioPlayer.prototype = {
 			this.stopPlayer();
 			return;
 		}
-
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
 		var that = this;
@@ -259,16 +257,14 @@ AudioPlayer.prototype = {
 			station : this.options.station,
 			pubdate : this.options.pubdate
 		});
-		that.progress = that._Recents.getProgress(that.options.url);
-		// and finnally we start:
-		console.log(this._player);
-		this._player.release();
-		this._player.setUrl(this.options.url + '?appwerftmediathek=' + Math.random());
-		
+		this.progress = this._Recents.getProgress(that.options.url);
+		// and finally we (re)start:
+//		this._player.release();
+		this._player.setUrl(this.options.url);
 		setTimeout(function() {
 			that._player.setTime(that.progress * 1000);
 			that._player.start();
-		}, 50);
+		}, 250);
 	},
 	stopPlayer : function() {
 		if (this._player.isPlaying() || this._player.isPaused()) {

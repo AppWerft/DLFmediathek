@@ -1,6 +1,6 @@
 var Favs = new (require('controls/favorites.adapter'))(),
     Model = require('model/stations');
-RSS = new (require('controls/rss.adapter'))();
+CurrentTransmission = new (require('controls/rss.adapter'))();
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
@@ -30,6 +30,7 @@ module.exports = function(_args) {
 		});
 		self.add(self.calendarView);
 	}, 3000);
+
 	var TopBoxWidget = new (require('ui/currenttop.widget'))();
 	self.topBox = TopBoxWidget.createView({
 		height : HEIGHT_OF_TOPBOX,
@@ -66,14 +67,14 @@ module.exports = function(_args) {
 		setTimeout(function() {
 			self.bottomView.setRefreshing(false);
 		}, 5000);
-		self.updatePodcasts();
+		self.updateMediathekList();
 	});
 	self.add(self.bottomView);
 	var dataItems = [];
 	var lastPubDate = null;
 	var currentMediathekHash = null;
 	self.updateCurrentinTopBox = function(_forced) {
-		var currentItem = RSS.getCurrentOnAir({
+		var currentItem = CurrentTransmission.getCurrentOnAir({
 			station : _args.station
 		});
 		if (currentItem) {
@@ -95,7 +96,7 @@ module.exports = function(_args) {
 		self.bottomView.setTop(7);
 		self.topBox.setTop(-HEIGHT_OF_TOPBOX);
 	};
-	self.updatePodcasts = function() {
+	self.updateMediathekList = function() {
 		self.bottomView.setRefreshing(true);
 		setTimeout(function() {
 			self.bottomView.setRefreshing(false);
@@ -180,9 +181,9 @@ module.exports = function(_args) {
 			}
 		});
 	};
-	self.updatePodcasts();
+	self.updateMediathekList();
 	if (self.date.isSame(Moment().startOf('day')))
-		self.cron = setInterval(self.updatePodcasts, 300000);
+		self.cron = setInterval(self.updateMediathekList, 300000);
 	else
 		clearInterval(self.cron);
 
@@ -206,7 +207,7 @@ module.exports = function(_args) {
 
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			var data = JSON.parse(_e.itemId);
-			Ti.Media.vibrate([10,200,10,200]);
+			Ti.Media.vibrate([10, 200, 10, 200]);
 			var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer({
 				color : _args.color,
 				url : data.url,
@@ -228,5 +229,6 @@ module.exports = function(_args) {
 	Ti.App.addEventListener('app:state', function(_payload) {
 		activityworking = _payload.state;
 	});
+
 	return self;
 };
