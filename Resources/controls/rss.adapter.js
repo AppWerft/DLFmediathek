@@ -17,7 +17,7 @@ var Module = function() {
 		}).show();
 		['dlf', 'drk'].forEach(function(station) {
 			var url = Model[station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-			Ti.App.Properties.removeProperty(url);
+			Ti.App.Properties.removeProperty("DAYPLAN#" + station);
 		});
 	});
 
@@ -37,8 +37,8 @@ Module.prototype = {
 	},
 	_updateTimestamps : function(_args) {
 		var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-		if (Ti.App.Properties.hasProperty(url)) {
-			var items = JSON.parse(Ti.App.Properties.getString(url));
+		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station)) {
+			var items = JSON.parse(Ti.App.Properties.getString("DAYPLAN#" + _args.station));
 			var length = items.length;
 			var ndx = 0;
 			for ( i = 0; i < length; i++) {
@@ -68,19 +68,29 @@ Module.prototype = {
 			return [];
 	},
 	getCurrentOnAir : function(_args) {
+		this.getRSS(_args);
+		// test if new one (daychange)
 		var currentonair = null;
 		var items = this._updateTimestamps(_args);
 		items.forEach(function(item) {
 			if (item.isonair == true)
 				currentonair = item;
 		});
+		// test if right day:
 		return currentonair;
 	},
 	getRSS : function(_args) {
 		var that = this;
+		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station)) {
+			var items = JSON.parse(Ti.App.Properties.getString("DAYPLAN#" + _args.station));
+			var res = items[0].guid.match(/schema\-([\d]\-[\d]\-[\d]\))\-/g);
+			if (res && res !== Moment().format('YYYY-MM-DD')) {
+				// force new:
+				Ti.App.Properties.removeProperty("DAYPLAN#" + _args.station);
+			}
+		}
 		// still present?
-		var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-		if (Ti.App.Properties.hasProperty(url) && _args.done) {
+		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station) && _args.done) {
 			_args.done({
 				ok : true,
 				items : that._updateTimestamps({
@@ -90,36 +100,38 @@ Module.prototype = {
 			return;
 		}
 		// no => retreiving
-		var xhr = Ti.Network.createHTTPClient({
-			onload : function() {
-				var channel = new XMLTools(this.responseXML).toObject().channel;
-				if (channel.item && toType(channel.item) != 'array') {
-					channel.item = [channel.item];
-				}
-				Ti.App.Properties.setString(url, JSON.stringify(channel.item));
-				var result = {
-					ok : true,
-					items : that._updateTimestamps({
-						station : _args.station
-					})
-				};
-
-				// back to caller
-				_args.done && _args.done(result);
-				// persist
-				try {
-					if (that.rss && that.rss.isIndexOf(url) == -1) {
-						that.rss.push({
-							url : url,
-							current : null
-						});
+		var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+		if (Model[_args.station].rss) {
+			var xhr = Ti.Network.createHTTPClient({
+				onload : function() {
+					var channel = new XMLTools(this.responseXML).toObject().channel;
+					if (channel.item && toType(channel.item) != 'array') {
+						channel.item = [channel.item];
 					}
-				} catch(E) {
+					Ti.App.Properties.setString("DAYPLAN#" + _args.station, JSON.stringify(channel.item));
+					var result = {
+						ok : true,
+						items : that._updateTimestamps({
+							station : _args.station
+						})
+					};
+					// back to caller
+					_args.done && _args.done(result);
+					// persist
+					try {
+						if (that.rss && that.rss.isIndexOf(url) == -1) {
+							that.rss.push({
+								url : url,
+								current : null
+							});
+						}
+					} catch(E) {
+					}
 				}
-			}
-		});
-		xhr.open('GET', url);
-		xhr.send();
+			});
+			xhr.open('GET', url);
+			xhr.send();
+		}
 	}, // standard methods for event/observer pattern
 	fireEvent : function(_event, _payload) {
 		if (this.eventhandlers[_event]) {

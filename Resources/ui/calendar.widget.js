@@ -51,7 +51,7 @@ module.exports = function(args) {
                 if (!e.cancel) {
                     parent.date = Moment(e.value).startOf('day');
                     self.children[0].setText(Moment(parent.date).format('LL'));
-                    parent.updatePodcasts();
+                    parent.updateMediathekList()		;
                 }
             }
         });
@@ -67,7 +67,7 @@ module.exports = function(args) {
             }
         }
         _e.source.children[0].setText(Moment(parent.date).format('LL'));
-        parent.updatePodcasts();
+        parent.updateMediathekList();
     });
     return self;
 };

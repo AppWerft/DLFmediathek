@@ -1,8 +1,8 @@
 const RECENT = 0,
     MYFAVS = 1,
     MYPODS = 2,
-    MYPLAYLIST=3,
-    PLAY =4;
+    MYPLAYLIST = 3,
+    PLAY = 4;
 
 var Player = Ti.Media.createAudioPlayer({
 	allowBackground : true,
@@ -11,11 +11,8 @@ var Player = Ti.Media.createAudioPlayer({
     Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras'),
     stations = require('model/stations'),
-    currentRadio = Ti.App.Properties.getString('LAST_STATION', 'dlf'),
-// listening
-    currentStation = Ti.App.Properties.getString('LAST_STATION');
-if (currentStation)
-	currentStation = 'dlf';
+    currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf'),
+    lifeRadio = null;
 
 var searchView = Ti.UI.Android.createSearchView({
 	hintText : "Suche"
@@ -33,22 +30,20 @@ searchView.addEventListener('submit', function(_e) {
 
 module.exports = function(_event) {
 	searchView.where = _event.source.activeTab.ndx;
-	var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;
 	});
-	var currentStationName = laststation;
-	Model[laststation] && АктйонБар.setTitle(Model[laststation].name);
+	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
 	АктйонБар.setBackgroundColor('#444444');
 	АктйонБар.subtitleColor = "#ccc";
 	_event.source.addEventListener('focus', function(_e) {
-		АктйонБар.setSubtitle(subtitles[_e.index]);
+		//	АктйонБар.setSubtitle(subtitles[_e.index]);
 	});
 	var activity = _event.source.getActivity();
 	if (activity) {
-		activity.actionBar.logo = '/images/' + laststation + '.png';
+		activity.actionBar.logo = '/images/' + currentStation + '.png';
 		activity.onPrepareOptionsMenu = function() {
 		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
@@ -62,7 +57,7 @@ module.exports = function(_event) {
 			});
 			setTimeout(function() {
 				searchMenu.setVisible(true);
-			}, 10000);
+			}, 5000);
 			// changing a searchview
 			АктйонБар.setSearchView({
 				searchView : searchView,
@@ -76,15 +71,16 @@ module.exports = function(_event) {
 			_menuevent.menu.add({
 				title : 'RadioStart',
 				itemId : PLAY,
-				icon : Ti.App.Android.R.drawable.ic_action_play,
+				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", function() {
-				console.log(stations);
-				console.log(currentStation);
+
+				/* Handling of PlayIcon*/
 				var url = stations[currentStation].stream;
 				if (Player.isPlaying()) {
 					Player.stop();
 					Player.release();
+					lifeRadio = false;
 					return;
 				}
 				require('controls/resolveplaylist')({
@@ -132,43 +128,55 @@ module.exports = function(_event) {
 				});
 			}, 7000);
 
-			/* Handling of PlayIcon*/
+			/* Handling of Playerevents */
 			var menuitem = _menuevent.menu.findItem(PLAY);
 			Player.addEventListener('change', function(_e) {
+				АктйонБар.setSubtitle('');
 				switch (_e.state) {
 				case 1:
 					menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
 					break;
 				case 3:
+					АктйонБар.setSubtitle('LinearRadio');
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
+					lifeRadio = true;
 					break;
 				case 4:
 				case 5:
+					АктйонБар.setSubtitle('Mediathek');
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					break;
 				};
 			});
 			activity.actionBar.displayHomeAsUp = false;
+
+			/*
+			 *
+			 * Users has swiped the flipboard
+			 *
+			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
+				console.log('======================\nInfo: Users has swiped to ' + _e.station);
 				currentStation = _e.station;
-				switch (currentStation) {
-				case 'dlf':
-					АктйонБар.setTitle('Deutschlandfunk');
-					if (!Player.isPlaying())
-						menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_play_dlf);
-					break;
-				case 'drk':
-					АктйонБар.setTitle('DRadio Kultur');
-					if (!Player.isPlaying())
-						menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_play_drk);
-					break;
-				case 'drw':
-					АктйонБар.setTitle('DRadio Wissen');
-					if (!Player.isPlaying())
-						menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_play_drw);
-					break;
+				menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+				activity.actionBar.logo = '/images/' + currentStation + '.png';
+				АктйонБар.setTitle(Model[currentStation].name);
+				if (Player.isPlaying()) {
+					Player.stop();
+					require('controls/resolveplaylist')({
+						playlist : stations[currentStation].stream,
+						onload : function(_url) {
+							Ti.UI.createNotification({
+								message : 'Wir hören jetzt das laufende „' + stations[currentStation].name + '“.'
+							}).show();
+							Player.release();
+							Player.setUrl(_url + '?_=' + Math.random());
+							Player.start();
+						}
+					});
+				} else {
+					console.log('Info: silent swiping');
 				}
-				activity.actionBar.logo = '/images/' + _e.station + '.png';
 			});
 			Ti.App.addEventListener('app:stop', function(_event) {
 				if (Player.isPlaying()) {
@@ -177,23 +185,10 @@ module.exports = function(_event) {
 				}
 			});
 			Ti.App.addEventListener('app:play', function(_event) {
-				/*
-				 var self = Ti.UI.createAlertDialog({
-				 message : _event.item.subtitle,
-				 ok : 'Beitrag anhören',
-				 title : _event.item.title
-				 });
-				 self.show();
-				 self.addEventListener('click', function(_e) {
-				 if (_e.index < 0)
-				 return;
-				 if (Player.isPlaying()) {
-				 Player.stop();
-				 }
-				 Player.release();
-				 Player.setUrl(_event.item.url);
-				 Player.start();
-				 });*/
+				if (Player.isPlaying()) {
+					Player.stop();
+					Player.release();
+				}
 			});
 		};
 		activity && activity.invalidateOptionsMenu();

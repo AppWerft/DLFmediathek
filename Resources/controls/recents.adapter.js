@@ -40,8 +40,6 @@ Module.prototype = {
 		Moment().toISOString(), //
 		_args.url || this.url);
 		link.close();
-		console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
-		console.log(_args);
 	},
 	setComplete : function(_progress) {
 		var link = Ti.Database.open(DB);

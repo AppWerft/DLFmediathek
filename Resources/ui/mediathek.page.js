@@ -221,7 +221,7 @@ module.exports = function(_args) {
 			self.add(PlayerOverlay);
 			PlayerOverlay.oncomplete = function() {
 				self.remove(PlayerOverlay);
-				PlayerOverlay = null;
+//				PlayerOverlay = null;
 			};
 		}
 	});

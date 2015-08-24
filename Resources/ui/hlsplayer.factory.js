@@ -22,6 +22,18 @@ String.prototype.toHHMMSS = function() {
 
 var AudioPlayer = function(options) {
 	this.options = options;
+	this._Recents = new RecentsModule({
+		url : this.options.url,
+		title : this.options.title,
+		subtitle : this.options.subtitle,
+		duration : this.options.duration,
+		author : this.options.author,
+		image : '/images/' + this.options.station + '.png',
+		station : this.options.station,
+		pubdate : this.options.pubdate
+	});
+	this.progress = this._Recents.getProgress(this.options.url);
+
 	this.createView();
 	this._player = Ti.Media.createAudioPlayer({
 		allowBackground : true,
@@ -78,6 +90,30 @@ var AudioPlayer = function(options) {
 			that._control.image = '/images/play.png';
 			break;
 		case 'playing':
+			/* */
+			if (that.progress > 10) {
+				var dialog = Ti.UI.createAlertDialog({
+					cancel : 1,
+					buttonNames : ['Neustart', 'Weiter'],
+					message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
+					title : 'Weiter hören'
+				});
+				dialog.addEventListener('click', function(e) {
+					if (e.index != 0) {
+						that._player.playing && that._player.setTime(that.progress * 1000);
+						that.progress && Ti.UI.createNotification({
+							duration : 2000,
+							message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
+						}).show();
+						return;
+					}
+				});
+				dialog.show();
+			} else {
+
+			}
+
+			/* */
 			that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._spinner.hide();
 			that._equalizer.animate({
@@ -85,15 +121,13 @@ var AudioPlayer = function(options) {
 				duration : 700
 			});
 			that._control.image = '/images/pause.png';
-			that.progress && Ti.UI.createNotification({
-				duration : 2000,
-				message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
-			}).show();
+
 			break;
 		}
 	});
 	this.startPlayer();
-	return this._view;;
+	return this._view;
+	;
 };
 
 AudioPlayer.prototype = {
@@ -242,40 +276,25 @@ AudioPlayer.prototype = {
 		this._spinner.show();
 		this._progress.setMax(this.options.duration);
 		this._progress.setValue(0);
-
 		this._title.setText(this.options.title);
 		this._subtitle.setText(this.options.subtitle);
 		this._duration.setText(('' + this.options.duration).toHHMMSS());
 		this._view.add(this._equalizer);
-		this._Recents = new RecentsModule({
-			url : this.options.url,
-			title : this.options.title,
-			subtitle : this.options.subtitle,
-			duration : this.options.duration,
-			author : this.options.author,
-			image : '/images/' + this.options.station + '.png',
-			station : this.options.station,
-			pubdate : this.options.pubdate
-		});
-		this.progress = this._Recents.getProgress(that.options.url);
-		// and finally we (re)start:
-//		this._player.release();
-		this._player.setUrl(this.options.url);
-		setTimeout(function() {
-			that._player.setTime(that.progress * 1000);
-			that._player.start();
-		}, 250);
+		this._player.setUrl(this.options.url + '?_=' + Math.random());
+		that._player.start();
 	},
 	stopPlayer : function() {
 		if (this._player.isPlaying() || this._player.isPaused()) {
 			Ti.API.error('Info: try 2 stop player - was playing or paused');
 			this._player.stop();
 			this._player.release();
+			Ti.API.error('Info: stopped and released');
 		}
+
 		if (this._view.oncomplete && typeof this._view.oncomplete == 'function') {
+			console.log('onCompleted called');
 			this._view.oncomplete();
 		}
-//		this.options.oncomplete && oncomplete();
 	}
 };
 
