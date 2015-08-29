@@ -11,9 +11,12 @@ var Player = Ti.Media.createAudioPlayer({
     Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras'),
     stations = require('model/stations'),
-    currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf'),
+    currentStation = Ti.App.Properties.getString('LAST_STATION','dlf'),
     lifeRadio = null;
 
+if (currentStation == undefined || currentStation.length != 3) currentStation='dlf';
+
+console.log('CS=' + currentStation);
 var searchView = Ti.UI.Android.createSearchView({
 	hintText : "Suche"
 });
@@ -33,6 +36,7 @@ module.exports = function(_event) {
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;
 	});
+	console.log('===================\nStation: ' + currentStation);
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
@@ -48,28 +52,8 @@ module.exports = function(_event) {
 		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
 			_menuevent.menu.clear();
-			searchMenu = _menuevent.menu.add({
-				title : 'Search',
-				visible : false,
-				actionView : searchView,
-				icon : (Ti.Android.R.drawable.ic_menu_search ? Ti.Android.R.drawable.ic_menu_search : "my_search.png"),
-				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM | Ti.Android.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
-			});
-			setTimeout(function() {
-				searchMenu.setVisible(true);
-			}, 5000);
-			// changing a searchview
-			АктйонБар.setSearchView({
-				searchView : searchView,
-				backgroundColor : '#777',
-				textColor : "white",
-				hintColor : "silver",
-				line : "/images/my_textfield_activated_holo_light.9.png",
-				cancelIcon : "/images/cancel.png",
-				searchIcon : "/images/search.png"
-			});
-			_menuevent.menu.add({
-				title : 'RadioStart',
+				_menuevent.menu.add({
+				title : 'Start live Radio',
 				itemId : PLAY,
 				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
@@ -95,6 +79,27 @@ module.exports = function(_event) {
 					}
 				});
 			});
+			searchMenu = _menuevent.menu.add({
+				title : 'S U C H E ',
+				visible : false,
+				actionView : searchView,
+				icon : (Ti.Android.R.drawable.ic_menu_search ? Ti.Android.R.drawable.ic_menu_search : "my_search.png"),
+				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM | Ti.Android.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
+			});
+			setTimeout(function() {
+				searchMenu.setVisible(true);
+			}, 5000);
+			// changing a searchview
+			АктйонБар.setSearchView({
+				searchView : searchView,
+				backgroundColor : '#777',
+				textColor : "white",
+				hintColor : "silver",
+				line : "/images/my_textfield_activated_holo_light.9.png",
+				cancelIcon : "/images/cancel.png",
+				searchIcon : "/images/search.png"
+			});
+		
 			setTimeout(function() {
 				_menuevent.menu.add({
 					title : 'Meine Vormerkliste',
@@ -156,8 +161,8 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				console.log('======================\nInfo: Users has swiped to ' + _e.station);
 				currentStation = _e.station;
+				Ti.App.Properties.setString('LAST_STATION', currentStation);
 				menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				activity.actionBar.logo = '/images/' + currentStation + '.png';
 				АктйонБар.setTitle(Model[currentStation].name);

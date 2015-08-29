@@ -9,14 +9,14 @@ var toType = function(obj) {
 
 var Module = function() {
 	this.eventhandlers = {};
-	this.rss = {};
+	this.dayplan = {};
 	var that = this;
 	Ti.App.addEventListener('daychanged', function() {
 		Ti.UI.createNotification({
 			message : 'Tageswechsel:\nSendeplan wird neu geholt.'
 		}).show();
 		['dlf', 'drk'].forEach(function(station) {
-			var url = Model[station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+			var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
 			Ti.App.Properties.removeProperty("DAYPLAN#" + station);
 		});
 	});
@@ -27,16 +27,16 @@ var Module = function() {
 Module.prototype = {
 	sanitizeHTML : function(foo) {
 		var bar = ( typeof foo == 'string')//
-		? foo.replace(/[\s]+<p>[\s]+/gm, '').replace(/[\s]+<\/p>[\s]+/gm, '').replace(/[\n]+/gm, '<br/>▻ ') : undefined;
+		? foo.replace(/[\s]+<p>[\s]+/gm, '').replace(/[\s]+<\/p>[\s]+/gm, '').replace(/[\n]+/gm, '<br/>⊃ ') : undefined;
 		if (bar != undefined) {
-			bar = bar.replace('▻ Moderation', 'Moderation');
-			bar = bar.replace('▻ Von', 'von ');
-			bar = bar.replace('▻ Am Mikrofon', 'am Mikrofon');
+			bar = bar.replace('⊃ Moderation', 'Moderation');
+			bar = bar.replace('⊃ Von', 'von ');
+			bar = bar.replace('⊃ Am Mikrofon', 'am Mikrofon');
 		}
 		return bar;
 	},
 	_updateTimestamps : function(_args) {
-		var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+		var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
 		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station)) {
 			var items = JSON.parse(Ti.App.Properties.getString("DAYPLAN#" + _args.station));
 			var length = items.length;
@@ -100,8 +100,8 @@ Module.prototype = {
 			return;
 		}
 		// no => retreiving
-		var url = Model[_args.station].rss + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-		if (Model[_args.station].rss) {
+		var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+		if (Model[_args.station].dayplan) {
 			var xhr = Ti.Network.createHTTPClient({
 				onload : function() {
 					var channel = new XMLTools(this.responseXML).toObject().channel;
@@ -119,8 +119,8 @@ Module.prototype = {
 					_args.done && _args.done(result);
 					// persist
 					try {
-						if (that.rss && that.rss.isIndexOf(url) == -1) {
-							that.rss.push({
+						if (that.dayplan && that.dayplan.isIndexOf(url) == -1) {
+							that.dayplan.push({
 								url : url,
 								current : null
 							});

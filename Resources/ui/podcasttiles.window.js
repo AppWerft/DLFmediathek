@@ -75,6 +75,7 @@ module.exports = function() {
 				'tiles' : tiles3template,
 			},
 			defaultItemTemplate : 'tiles',
+			station : stations[ndx].name,
 			sections : [Ti.UI.createListSection({})]
 		});
 		pages[ndx].addEventListener('itemclick', function(_e) {
@@ -131,22 +132,17 @@ module.exports = function() {
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
-		currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0),
+		currentPage : 0,
 		height : Ti.UI.FILL,
 		width : Ti.UI.FILL
 	});
-	if (Ti.App.Properties.getInt('LAST_STATION_NDX', 0) == 0) {
-		Ti.App.fireEvent('app:station', {
-			station : pages[0].name
-		});
-	}
+
 	self.FlipViewCollection.addEventListener('flipped', function(_e) {
-		Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
-		Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
+		console.log(_e);
 		Ti.App.fireEvent('app:station', {
-			station : pages[_e.index].name
+			station : stations[_e.source.currentPage],
+			page : 'Podcasts'
 		});
-		//Geo.savePosition(stations[_e.index]);
 	});
 	self.add(self.FlipViewCollection);
 

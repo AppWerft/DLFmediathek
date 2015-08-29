@@ -11,9 +11,9 @@ module.exports = function() {
         pages.push(require('ui/mediathek.page')({
             station : station,
             color : Model[station].color,
-            podcasts : Model[station].podcasts,
-            live : Model[station].live,
-            stream : Model[station].stream,
+            mediathek : Model[station].mediathek,
+        //    live : Model[station].live,
+        //    stream : Model[station].stream,
         }));
     };
     var currentPage = Ti.App.Properties.getInt('LAST_STATION_NDX', 0);
@@ -26,10 +26,9 @@ module.exports = function() {
     });
     self.FlipViewCollection.addEventListener('flipped', function(_e) {
     	console.log('Info: Mediathek flipped');
-        Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
-        Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
         Ti.App.fireEvent('app:station', {
-            station : pages[_e.index].station
+            station : pages[_e.index].station,
+            page : 'mediathek'
         });
         pages.forEach(function(page, ndx) {
             if (ndx == _e.index)

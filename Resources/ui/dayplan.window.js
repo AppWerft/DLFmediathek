@@ -20,7 +20,6 @@ module.exports = function() {
 		});
 		var pages = [];
 		['dlf', 'drk'].forEach(function(station) {
-			console.log('Info: ~~~~~~~~~~~~ dayplan start ' + station);
 			pages.push(require('ui/dayplan.page')(station));
 		});
 		
@@ -33,15 +32,6 @@ module.exports = function() {
 			height : Ti.UI.FILL
 		});
 		self.add(self.FlipViewCollection);
-		self.FlipViewCollection.addEventListener('flipped', function(_e) {
-			console.log('FLIPPED');
-			Ti.App.Properties.setString('LAST_STATION', pages[_e.index].station);
-			Ti.App.Properties.setInt('LAST_STATION_NDX', _e.index);
-			Ti.App.fireEvent('app:station', {
-				station : pages[_e.index].station
-			});
-			//    self.headstation.setImage('/images/' + pages[_e.index].station + '.png');
-		});
 
 	});
 	return self;

@@ -14,9 +14,9 @@ module.exports = function(_args) {
 		date : Moment().startOf('day'),
 		itemId : {
 			name : _args.station,
-			podcasts : _args.podcasts,
-			live : _args.live,
-			stream : _args.stream
+			mediathek : _args.mediathek,
+			//	live : _args.live,
+			//	stream : _args.stream
 		},
 	});
 
@@ -74,21 +74,28 @@ module.exports = function(_args) {
 	var lastPubDate = null;
 	var currentMediathekHash = null;
 	self.updateCurrentinTopBox = function(_forced) {
-		var currentItem = CurrentTransmission.getCurrentOnAir({
-			station : _args.station
-		});
-		if (currentItem) {
-			lastPubDate = currentItem.pubDate;
+		if (_args.station == 'drw') {
+			TopBoxWidget.addBanner();
+			// ratio = 40/11
 			self.topBox.setTop(8);
-			self.bottomView.setTop(HEIGHT_OF_TOPBOX);
-			TopBoxWidget.setProgress(currentItem.progress);
-			TopBoxWidget.setPubDate(currentItem.pubDate);
-			TopBoxWidget.setTitle(currentItem.title);
-			TopBoxWidget.setDescription(currentItem.description);
-			self.bottomView.animate({
-				top : HEIGHT_OF_TOPBOX,
-				duration : 700
+			self.bottomView.setTop(HEIGHT_OF_TOPBOX * .66);
+		} else {
+			var currentItem = CurrentTransmission.getCurrentOnAir({
+				station : _args.station
 			});
+			if (currentItem) {
+				lastPubDate = currentItem.pubDate;
+				self.topBox.setTop(8);
+				self.bottomView.setTop(HEIGHT_OF_TOPBOX);
+				TopBoxWidget.setProgress(currentItem.progress);
+				TopBoxWidget.setPubDate(currentItem.pubDate);
+				TopBoxWidget.setTitle(currentItem.title);
+				TopBoxWidget.setDescription(currentItem.description);
+				self.bottomView.animate({
+					top : HEIGHT_OF_TOPBOX,
+					duration : 700
+				});
+			}
 		}
 	};
 	/* hiding of todays display */
@@ -105,7 +112,7 @@ module.exports = function(_args) {
 			return;
 		}
 		require('controls/rpc.adapter')({
-			url : _args.podcasts,
+			url : _args.mediathek,
 			nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
 			date : self.date.format('DD.MM.YYYY'),
 			onload : function(_res) {
@@ -158,7 +165,7 @@ module.exports = function(_args) {
 						items : dataitems
 					}));
 				});
-				if (self.date.isSame(Moment().startOf('day')))
+				if (self.date.isSame(Moment().startOf('day')) && _args.station != 'drw	')
 					self.updateCurrentinTopBox();
 				self.bottomList.setMarker({
 					sectionIndex : 5,
@@ -221,11 +228,12 @@ module.exports = function(_args) {
 			self.add(PlayerOverlay);
 			PlayerOverlay.oncomplete = function() {
 				self.remove(PlayerOverlay);
-//				PlayerOverlay = null;
+				//				PlayerOverlay = null;
 			};
 		}
 	});
-	setInterval(self.updateCurrentinTopBox, 5000);
+	if (_args.station != 'drw')
+		setInterval(self.updateCurrentinTopBox, 5000);
 	Ti.App.addEventListener('app:state', function(_payload) {
 		activityworking = _payload.state;
 	});
