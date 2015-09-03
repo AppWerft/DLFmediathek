@@ -33,101 +33,92 @@ var AudioPlayer = function(options) {
 		pubdate : this.options.pubdate
 	});
 	this.progress = this._Recents.getProgress(this.options.url);
-
 	this.createView();
-	this._player = Ti.Media.createAudioPlayer({
-		allowBackground : true,
-		volume : 1
-	});
 	var that = this;
-	this._player.addEventListener('progress', function(_e) {
-		that._progress.setValue(_e.progress / 1000);
-		that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.options.duration).toHHMMSS());
-		that._Recents.setProgress({
-			progress : _e.progress,
-			url : that.options.url
+	setTimeout(function() {
+		that._player = Ti.Media.createAudioPlayer({
+			allowBackground : true,
+			volume : 1
 		});
-	});
-	this._player.addEventListener('complete', function(_e) {
-		Ti.API.error(_e.error);
-		Ti.API.error('completed code = ' + _e.code);
-		that._player.release();
-		that._view.setVisible(false);
-	});
-
-	this._player.addEventListener('complete', function(_e) {
-		that._Recents.setComplete();
-	});
-
-	this._player.addEventListener('change', function(_e) {
-		Ti.API.error(_e.state + '    ' + _e.description);
-		switch (_e.description) {
-		case 'initialized':
-			that._control.image = '/images/stop.png';
-			Ti.Media.vibrate();
-			break;
-		case 'stopped':
-			that._equalizer.opacity = 0;
-			that._control.image = '/images/play.png';
-			break;
-		case 'stopping':
-			that._equalizer.opacity = 0;
-			if (that._interval)
-				clearInterval(that._interval, 1000);
-			that._control.image = '/images/play.png';
-			that._equalizer.opacity = 0;
-			that._player.release();
-			//that._player = null;
-			that._view.hide();
-			break;
-		case 'starting':
-			//
-			that._control.image = '/images/leer.png';
-			break;
-		case 'paused':
-			that._subtitle.ellipsize = false;
-			that._equalizer.opacity = 0;
-			that._control.image = '/images/play.png';
-			break;
-		case 'playing':
-			/* */
-			if (that.progress > 10) {
-				var dialog = Ti.UI.createAlertDialog({
-					cancel : 1,
-					buttonNames : ['Neustart', 'Weiter'],
-					message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
-					title : 'Weiter hören'
-				});
-				dialog.addEventListener('click', function(e) {
-					if (e.index != 0) {
-						that._player.playing && that._player.setTime(that.progress * 1000);
-						that.progress && Ti.UI.createNotification({
-							duration : 2000,
-							message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
-						}).show();
-						return;
-					}
-				});
-				dialog.show();
-			} else {
-
-			}
-
-			/* */
-			that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
-			that._spinner.hide();
-			that._equalizer.animate({
-				opacity : 1,
-				duration : 700
+		that._player.addEventListener('progress', function(_e) {
+			that._progress.setValue(_e.progress / 1000);
+			that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.options.duration).toHHMMSS());
+			that._Recents.setProgress({
+				progress : _e.progress,
+				url : that.options.url
 			});
-			that._control.image = '/images/pause.png';
-
-			break;
-		}
-	});
-	this.startPlayer();
+		});
+		that._player.addEventListener('complete', function(_e) {
+			Ti.API.error(_e.error);
+			Ti.API.error('completed code = ' + _e.code);
+			that._player.release();
+			that._view.setVisible(false);
+		});
+		that._player.addEventListener('complete', function(_e) {
+			that._Recents.setComplete();
+		});
+		that._player.addEventListener('change', function(_e) {
+			Ti.API.error(_e.state + '    ' + _e.description);
+			switch (_e.description) {
+			case 'initialized':
+				that._control.image = '/images/stop.png';
+				Ti.Media.vibrate();
+				break;
+			case 'stopped':
+				that._equalizer.opacity = 0;
+				that._control.image = '/images/play.png';
+				break;
+			case 'stopping':
+				that._equalizer.opacity = 0;
+				if (that._interval)
+					clearInterval(that._interval, 1000);
+				that._control.image = '/images/play.png';
+				that._equalizer.opacity = 0;
+				that._player.release();
+				that._view.hide();
+				break;
+			case 'starting':
+				that._control.image = '/images/leer.png';
+				break;
+			case 'paused':
+				that._subtitle.ellipsize = false;
+				that._equalizer.opacity = 0;
+				that._control.image = '/images/play.png';
+				break;
+			case 'playing':
+				if (that.progress > 10) {
+					var dialog = Ti.UI.createAlertDialog({
+						cancel : 1,
+						buttonNames : ['Neustart', 'Weiter'],
+						message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
+						title : 'Weiter hören'
+					});
+					dialog.addEventListener('click', function(e) {
+						if (e.index != 0) {
+							that._player.playing && that._player.setTime(that.progress * 1000);
+							that.progress && Ti.UI.createNotification({
+								duration : 2000,
+								message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
+							}).show();
+							return;
+						}
+					});
+					dialog.show();
+				} else {
+				}
+				that._subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+				that._spinner.hide();
+				that._equalizer.animate({
+					opacity : 1,
+					duration : 700
+				});
+				that._control.image = '/images/pause.png';
+				break;
+			}
+		});
+		that.startPlayer();
+	}, 500);
 	return this._view;
-	;
 };
 
 AudioPlayer.prototype = {

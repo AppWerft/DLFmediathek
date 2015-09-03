@@ -193,8 +193,14 @@ module.exports = function(_args) {
 		self.cron = setInterval(self.updateMediathekList, 300000);
 	else
 		clearInterval(self.cron);
-
+	var locked = false;
 	self.bottomList.addEventListener('itemclick', function(_e) {
+		if (locked == true)
+			return;
+		locked = true;
+		setTimeout(function() {
+			locked = false;
+		}, 700);
 		if (_e.bindId && _e.bindId == 'fav') {
 			var item = _e.section.getItemAt(_e.itemIndex);
 			var isfav = Favs.toggleFav(JSON.parse(item.properties.itemId));
@@ -214,7 +220,7 @@ module.exports = function(_args) {
 
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			var data = JSON.parse(_e.itemId);
-			Ti.Media.vibrate([10, 200, 10, 200]);
+			Ti.Media.vibrate([5, 100, 5, 100]);
 			var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer({
 				color : _args.color,
 				url : data.url,

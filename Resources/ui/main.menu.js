@@ -4,6 +4,13 @@ const RECENT = 0,
     MYPLAYLIST = 3,
     PLAY = 4;
 
+var Shoutcast = require('com.woohoo.androidaudiostreamer');
+var STOPPED = 0,
+    BUFFERING = 1,
+    PLAYING = 2,
+    STREAMERROR = 3,
+    STATUS = 0;
+
 var Player = Ti.Media.createAudioPlayer({
 	allowBackground : true,
 	volume : 1
@@ -59,24 +66,19 @@ module.exports = function(_event) {
 				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", function() {
-
 				/* Handling of PlayIcon*/
 				var url = stations[currentStation].stream;
-				if (Player.isPlaying()) {
-					Player.stop();
-					Player.release();
-					lifeRadio = false;
+				if (STATUS == PLAYING) {
+					console.log('Info: Shoutcastplayer was playing');
+					Shoutcast.stop();
 					return;
 				}
+				console.log('Info: Shoutcastplayer will start');
 				require('controls/resolveplaylist')({
 					playlist : url,
 					onload : function(_url) {
-						Ti.UI.createNotification({
-							message : 'Wir hören jetzt das laufende „' + stations[currentStation].name + '“.'
-						}).show();
-						Player.release();
-						Player.setUrl(_url + '?_=' + Math.random());
-						Player.start();
+						console.log('Info: Shoutcastplayer will play with ' + _url);
+						Shoutcast.play(_url);
 					}
 				});
 			});
@@ -100,7 +102,6 @@ module.exports = function(_event) {
 				cancelIcon : "/images/cancel.png",
 				searchIcon : "/images/search.png"
 			});
-
 			setTimeout(function() {
 				_menuevent.menu.add({
 					title : 'Meine Vormerkliste',
@@ -136,19 +137,24 @@ module.exports = function(_event) {
 
 			/* Handling of Playerevents */
 			var menuitem = _menuevent.menu.findItem(PLAY);
-			Player.addEventListener('change', function(_e) {
-				АктйонБар.setSubtitle('');
-				switch (_e.state) {
-				case 1:
+			Shoutcast.addEventListener('metadata', function(_e) {
+				Ti.UI.createNotification({
+					message : _e.title,
+					duration : 5000
+				}).show();
+				АктйонБар.setSubtitle(_e.title);
+			});
+			Shoutcast.addEventListener('change', function(_e) {
+				//console.log('PlayerStatus ' + _e.status);
+				STATUS = _e.status;
+				switch (_e.status) {
+				case BUFFERING:
 					menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
 					break;
-				case 3:
-					АктйонБар.setSubtitle('LinearRadio');
+				case PLAYING:
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
-					lifeRadio = true;
 					break;
-				case 4:
-				case 5:
+				case STOPPED:
 					АктйонБар.setSubtitle('Mediathek');
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					break;
@@ -166,10 +172,9 @@ module.exports = function(_event) {
 				menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				activity.actionBar.logo = '/images/' + currentStation + '.png';
 				АктйонБар.setTitle(Model[currentStation].name);
-				
 				Ti.App.Properties.setString('LAST_STATION', currentStation);
-				if (Player.isPlaying()) {
-					Player.stop();
+				if (STATUS == PLAYING) {
+					Shoutcast.stop();
 					setTimeout(function() {
 						require('controls/resolveplaylist')({
 							playlist : stations[currentStation].stream,
@@ -177,26 +182,23 @@ module.exports = function(_event) {
 								Ti.UI.createNotification({
 									message : 'Wir hören jetzt das laufende „' + stations[currentStation].name + '“.'
 								}).show();
-								Player.release();
-								Player.setUrl(_url + '?_=' + Math.random());
-								Player.start();
+								Shoutcast.play(_url);
+								АктйонБар.setSubtitle('Lade Radiotext …');
+
 							}
 						});
 					}, 1500);
-				} else {
-					console.log('Info: silent swiping');
 				}
 			});
 			Ti.App.addEventListener('app:stop', function(_event) {
-				if (Player.isPlaying()) {
-					Player.stop();
-					Player.release();
+				if (PLAYING) {
+					Shoutcast.stop();
 				}
 			});
 			Ti.App.addEventListener('app:play', function(_event) {
-				if (Player.isPlaying()) {
-					Player.stop();
-					Player.release();
+				if (PLAYING) {
+					Shoutcast.stop();
+
 				}
 			});
 		};
