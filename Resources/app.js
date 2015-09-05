@@ -17,7 +17,7 @@
 			ndx : 1,
 		})]
 	});
-	self.addEventListener('open', require('ui/main.menu'));
+	self.addEventListener('open', require('ui/streamer.menu'));
 
 	['podcasttiles'].forEach(function(win, ndx) {
 		setTimeout(function() {

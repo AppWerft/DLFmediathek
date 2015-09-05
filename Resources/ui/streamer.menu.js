@@ -4,6 +4,32 @@ const RECENT = 0,
     MYPLAYLIST = 3,
     PLAY = 4;
 
+var AudioStreamer = require('com.woohoo.androidaudiostreamer');
+AudioStreamer.setAllowBackground(true);
+
+var startAudioStreamer = function(m3u) {
+	AudioStreamer.stop();
+	AudioStreamer = null;
+	AudioStreamer = require('com.woohoo.androidaudiostreamer');
+	AudioStreamer.setAllowBackground(true);
+	setTimeout(function() {
+		require('controls/resolveplaylist')({
+			playlist : m3u,
+			onload : function(_icyUrl) {
+				АктйонБар.setSubtitle('Erwarte Radiotext …');
+				console.log('Info: AudioStreamerplayer will play with ' + _icyUrl);
+				AudioStreamer.play(_icyUrl + '?' + Math.random());
+			}
+		});
+	}, 2000);
+};
+
+var STOPPED = 0,
+    BUFFERING = 1,
+    PLAYING = 2,
+    STREAMERROR = 3,
+    STATUS = 0;
+
 var Player = Ti.Media.createAudioPlayer({
 	allowBackground : true,
 	volume : 1
@@ -17,7 +43,6 @@ var Player = Ti.Media.createAudioPlayer({
 if (currentStation == undefined || currentStation.length != 3)
 	currentStation = 'dlf';
 
-console.log('CS=' + currentStation);
 var searchView = Ti.UI.Android.createSearchView({
 	hintText : "Suche"
 });
@@ -37,7 +62,6 @@ module.exports = function(_event) {
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;
 	});
-	console.log('===================\nStation: ' + currentStation);
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
@@ -59,33 +83,22 @@ module.exports = function(_event) {
 				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", function() {
-
 				/* Handling of PlayIcon*/
-				var url = stations[currentStation].stream;
-				if (Player.isPlaying()) {
-					Player.stop();
-					Player.release();
-					lifeRadio = false;
+				var menuitem = _menuevent.menu.findItem(PLAY);
+				if (AudioStreamer.getStatus() == PLAYING) {
+					console.log('Info: AudioStreamerplayer was playing => nothing to do');
+					AudioStreamer.stop();
 					return;
 				}
-				require('controls/resolveplaylist')({
-					playlist : url,
-					onload : function(_url) {
-						Ti.UI.createNotification({
-							message : 'Wir hören jetzt das laufende „' + stations[currentStation].name + '“.'
-						}).show();
-						Player.release();
-						Player.setUrl(_url + '?_=' + Math.random());
-						Player.start();
-					}
-				});
+				menuitem.setVisible(false);
+				startAudioStreamer(stations[currentStation].stream);
 			});
 			searchMenu = _menuevent.menu.add({
 				title : 'S U C H E ',
 				visible : false,
 				actionView : searchView,
 				icon : (Ti.Android.R.drawable.ic_menu_search ? Ti.Android.R.drawable.ic_menu_search : "my_search.png"),
-				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM | Ti.Android.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
+				showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER | Ti.Android.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
 			});
 			setTimeout(function() {
 				searchMenu.setVisible(true);
@@ -100,7 +113,6 @@ module.exports = function(_event) {
 				cancelIcon : "/images/cancel.png",
 				searchIcon : "/images/search.png"
 			});
-
 			setTimeout(function() {
 				_menuevent.menu.add({
 					title : 'Meine Vormerkliste',
@@ -136,21 +148,38 @@ module.exports = function(_event) {
 
 			/* Handling of Playerevents */
 			var menuitem = _menuevent.menu.findItem(PLAY);
-			Player.addEventListener('change', function(_e) {
-				АктйонБар.setSubtitle('');
-				switch (_e.state) {
-				case 1:
+			AudioStreamer.addEventListener('metadata', function(_e) {
+				var message = _e.title;
+				var parts = message.split(/\s/);
+				if (parts.length > 2)
+					Ti.UI.createNotification({
+						message : message,
+						duration : 5000
+					}).show();
+				АктйонБар.setSubtitle(_e.title);
+			});
+			AudioStreamer.addEventListener('change', function(_e) {
+				//console.log('PlayerStatus ' + _e.status);
+				STATUS = _e.status;
+				switch (_e.status) {
+				case BUFFERING:
+					menuitem.setVisible(true);
 					menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
 					break;
-				case 3:
-					АктйонБар.setSubtitle('LinearRadio');
+				case PLAYING:
+					menuitem.setVisible(true);
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
-					lifeRadio = true;
 					break;
-				case 4:
-				case 5:
+				case STOPPED:
 					АктйонБар.setSubtitle('Mediathek');
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+					break;
+				case STREAMERROR:
+					АктйонБар.setSubtitle('Fehler, Internet kaputt?');
+					Ti.UI.createNotification({
+						message : 'Fehler beim Zugriff auf den AudioStreamerserver.',
+						duration : 7000
+					}).show();
 					break;
 				};
 			});
@@ -166,38 +195,20 @@ module.exports = function(_event) {
 				menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				activity.actionBar.logo = '/images/' + currentStation + '.png';
 				АктйонБар.setTitle(Model[currentStation].name);
-				
 				Ti.App.Properties.setString('LAST_STATION', currentStation);
-				if (Player.isPlaying()) {
-					Player.stop();
-					setTimeout(function() {
-						require('controls/resolveplaylist')({
-							playlist : stations[currentStation].stream,
-							onload : function(_url) {
-								Ti.UI.createNotification({
-									message : 'Wir hören jetzt das laufende „' + stations[currentStation].name + '“.'
-								}).show();
-								Player.release();
-								Player.setUrl(_url + '?_=' + Math.random());
-								Player.start();
-							}
-						});
-					}, 1500);
-				} else {
-					console.log('Info: silent swiping');
+				// only if radio is active we switch to other station:
+				if (AudioStreamer.getStatus() == PLAYING) {
+					AudioStreamer.stop();
+					console.log('Info: streamer stopped by swiping');
+					startAudioStreamer(stations[currentStation].stream);
 				}
 			});
 			Ti.App.addEventListener('app:stop', function(_event) {
-				if (Player.isPlaying()) {
-					Player.stop();
-					Player.release();
-				}
+				AudioStreamer.stop();
+
 			});
 			Ti.App.addEventListener('app:play', function(_event) {
-				if (Player.isPlaying()) {
-					Player.stop();
-					Player.release();
-				}
+				AudioStreamer.stop();
 			});
 		};
 		activity && activity.invalidateOptionsMenu();

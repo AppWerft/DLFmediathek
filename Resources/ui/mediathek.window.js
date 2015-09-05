@@ -8,7 +8,7 @@ var FlipModule = require('de.manumaticx.androidflip'),
 
 module.exports = function() {
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
-	Ti.Media.createSound();
+	
 	var self = Ti.UI.createWindow();
 	var pages = [];
 	for (var station in Model) {
@@ -16,8 +16,6 @@ module.exports = function() {
 			station : station,
 			color : Model[station].color,
 			mediathek : Model[station].mediathek,
-			//    live : Model[station].live,
-			//    stream : Model[station].stream,
 		}));
 	};
 	

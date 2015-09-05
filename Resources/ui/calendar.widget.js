@@ -5,14 +5,13 @@ module.exports = function(args) {
     var parent = args.self,
         color = args.color;
     var self = Ti.UI.createView({
-        width : 200,
-        right : -200,
+        width : 220,
+        right : -220,
         opacity : 0.9,
         top : 0,
         height : 40,
         color : 'white',
         text : 'Heute',
-       
         transform : Ti.UI.create2DMatrix({
             rotate : 90,
             anchorPoint : {
