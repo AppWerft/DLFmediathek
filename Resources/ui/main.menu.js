@@ -17,7 +17,6 @@ var Player = Ti.Media.createAudioPlayer({
 if (currentStation == undefined || currentStation.length != 3)
 	currentStation = 'dlf';
 
-console.log('CS=' + currentStation);
 var searchView = Ti.UI.Android.createSearchView({
 	hintText : "Suche"
 });
