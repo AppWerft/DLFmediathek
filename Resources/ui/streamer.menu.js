@@ -21,7 +21,7 @@ var startAudioStreamer = function(m3u) {
 				AudioStreamer.play(_icyUrl + '?' + Math.random());
 			}
 		});
-	}, 2000);
+	}, 200);
 };
 
 var STOPPED = 0,
