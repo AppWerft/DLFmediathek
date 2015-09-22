@@ -65,7 +65,6 @@ var tiles2template = {
 };
 module.exports = function() {
 	var self = Ti.UI.createWindow();
-
 	var pages = [];
 	for (var ndx = 0; ndx < stations.length; ndx++) {
 		var podcasts = require('model/' + stations[ndx]);
@@ -136,7 +135,6 @@ module.exports = function() {
 		height : Ti.UI.FILL,
 		width : Ti.UI.FILL
 	});
-
 	self.FlipViewCollection.addEventListener('flipped', function(_e) {
 		console.log(_e);
 		Ti.App.fireEvent('app:station', {
@@ -145,6 +143,5 @@ module.exports = function() {
 		});
 	});
 	self.add(self.FlipViewCollection);
-
 	return self;
 };

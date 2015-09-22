@@ -83,7 +83,11 @@ Module.prototype = {
 		var that = this;
 		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station)) {
 			var items = JSON.parse(Ti.App.Properties.getString("DAYPLAN#" + _args.station));
-			var res = items[0].guid.match(/schema\-([\d]\-[\d]\-[\d]\))\-/g);
+			if (!Array.isArray(items) || !items[0].guid || !items[0].guid.text) {
+				Ti.App.Properties.removeProperty("DAYPLAN#" + _args.station);
+				return;
+			}
+			var res = items[0].guid.text.match(/schema\-([\d]\-[\d]\-[\d]\))\-/g);
 			if (res && res !== Moment().format('YYYY-MM-DD')) {
 				// force new:
 				Ti.App.Properties.removeProperty("DAYPLAN#" + _args.station);

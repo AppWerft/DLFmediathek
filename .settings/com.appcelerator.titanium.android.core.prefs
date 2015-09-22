@@ -1,3 +1,5 @@
+android/ATTR_MINIFY=true
+android/ATTR_MINIFY.type=Boolean
 android/ATTR_PROJECT_NAME=DLRmediathek
 android/ATTR_PROJECT_NAME.type=String
 android/abi=armeabi-v7a

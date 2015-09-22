@@ -150,6 +150,10 @@ module.exports = function(_event) {
 			var menuitem = _menuevent.menu.findItem(PLAY);
 			AudioStreamer.addEventListener('metadata', function(_e) {
 				var message = _e.title;
+				Ti.App.fireEvent('radiotext', {
+					message : message
+				});
+				//console.log('PlayerStatus ' + _e.status);
 				var parts = message.split(/\s/);
 				if (parts.length > 2)
 					Ti.UI.createNotification({
@@ -159,7 +163,7 @@ module.exports = function(_event) {
 				АктйонБар.setSubtitle(_e.title);
 			});
 			AudioStreamer.addEventListener('change', function(_e) {
-				//console.log('PlayerStatus ' + _e.status);
+
 				STATUS = _e.status;
 				switch (_e.status) {
 				case BUFFERING:
@@ -171,10 +175,14 @@ module.exports = function(_event) {
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
 					break;
 				case STOPPED:
+					Ti.App.fireEvent('radiotext', {
+						message : null
+					});
 					АктйонБар.setSubtitle('Mediathek');
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					break;
 				case STREAMERROR:
+					Ti.App.fireEvent('radiotext', null);
 					АктйонБар.setSubtitle('Fehler, Internet kaputt?');
 					Ti.UI.createNotification({
 						message : 'Fehler beim Zugriff auf den AudioStreamerserver.',
@@ -191,6 +199,9 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
+				Ti.App.fireEvent('radiotext', {
+					message : null
+				});
 				currentStation = _e.station;
 				menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				activity.actionBar.logo = '/images/' + currentStation + '.png';

@@ -15,7 +15,7 @@ module.exports = function(_args) {
 	var xhr = Ti.Network.createHTTPClient({
 		timeout : 30000,
 		onerror : function(e) {
-			console.log(e);
+			console.log('ServerantwortCode: '+e.status);
 		},
 		onload : function() {
 			var start = new Date().getTime();
@@ -27,17 +27,6 @@ module.exports = function(_args) {
 			};
 			// little dirty cleaning process:
 			if (_args.date) {
-				for (var i = 0; i < entries.length; i++) {
-					delete entries[i].timestamp;
-					delete entries[i]['file_id'];
-					delete entries[i].article;
-					if (entries[i].station == '1')
-						entries[i].station = 'drw';
-					if (entries[i].station == '4')
-						entries[i].station = 'dlf';
-					if (entries[i].station == '3')
-						entries[i].station = 'drk';
-				}
 				// sorting bei sendung.name
 				var mediathek = [],
 				    lastsendung = '',
@@ -46,25 +35,25 @@ module.exports = function(_args) {
 					var item = entries[i];
 					var sub = {
 						author : ( typeof item.author == 'string') ? item.author : null,
-						start : item.datetime.split(' ')[1].substr(0, 5),
+						start : item.datetime ? item.datetime.split(' ')[1].substr(0, 5)  :'',
 						subtitle : item.title,
 						station : item.station,
 						url : item.url,
 						datetime : item.datetime,
 						pubdate : item.datetime,
 						duration : item.duration,
-						id : item.sendung.id,
-						title : item.sendung.text,
+					//	id : item.sendung.id,
+						title : item.title,
 
 					};
 					sub.isfav = Favs.isFav(sub) ? true : false;
-					if (item.sendung.text != lastsendung) {
+					if (item.sendung != lastsendung) {
 						sectionndx++;
 						mediathek[sectionndx] = {
-							name : item.sendung.text,
+							name : item.sendung,
 							subs : [sub]
 						};
-						lastsendung = item.sendung.text;
+						lastsendung = item.sendung;
 					} else {
 						mediathek[sectionndx].subs.push(sub);
 					}
@@ -76,7 +65,6 @@ module.exports = function(_args) {
 		}
 	});
 	xhr.open('GET', url);
-	console.log(url);
 	xhr.setRequestHeader('User-Agent', 'Das%20DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0');
 	xhr.send();
 

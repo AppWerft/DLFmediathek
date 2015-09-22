@@ -26,7 +26,7 @@ module.exports = function() {
 		currentPage : stations[Ti.App.Properties.getString('LAST_STATION', 'dlf')],
 		height : Ti.UI.FILL
 	});
-	self.FlipViewCollection.addEventListener('flipped', function(_e) {
+	self.onFlippedFunc = function(_e) {
 		console.log('Info: Mediathek flipped');
 		Ti.App.fireEvent('app:station', {
 			station : pages[_e.index].station,
@@ -40,9 +40,8 @@ module.exports = function() {
 			else
 				page.hideCurrent([_e.index]);
 		});
-	});
-	self.add(self.FlipViewCollection);
-	self.addEventListener('focus', function() {
+	};
+	self.onFocusFunc = function() {
 		self.FlipViewCollection.peakNext(true);
 		Ti.App.fireEvent('app:state', {
 			state : true
@@ -52,7 +51,10 @@ module.exports = function() {
 			title : Ti.App.Properties.getString('LAST_STATION'),
 			icon : 'drk'
 		});
-	});
+	};
+	self.FlipViewCollection.addEventListener('flipped', self.onFlippedFunc);
+	self.addEventListener('focus', self.onFocusFunc);
+	self.add(self.FlipViewCollection);
 	self.addEventListener('blur', function() {
 		Ti.App.fireEvent('app:state', {
 			state : false

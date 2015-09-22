@@ -38,11 +38,25 @@ var Module = function() {
 		visible : true,
 		right : 50
 	});
-
+	this._view.radiotext = Ti.UI.createLabel({
+		top : 5,
+		height : 30,
+		color : '#eee',
+		width : Ti.UI.FILL,
+		textAlign : 'left',
+		left : 10,
+		right : 50,
+		ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE,
+		horizontalWrap : false,
+		font : {
+			fontSize : 16,
+			fontFamily : 'Aller Bold'
+		}
+	});
 	this._view.description = Ti.UI.createLabel({
 		left : 10,
 		right : 50,
-		top : -20,
+		top : -40,
 		html : '',
 		bottom : 100,
 		color : '#eee'
@@ -50,7 +64,16 @@ var Module = function() {
 	this._view.add(this._view.pubdate);
 	this._view.add(this._view.title);
 	this._view.add(this._view.progress);
+	this._view.add(this._view.radiotext);
 	this._view.add(this._view.description);
+	var that = this;
+	Ti.App.addEventListener('radiotext', function(_e) {
+		if (_e.message == null) {
+			that._view.radiotext.setText('');
+		} else {
+			that._view.radiotext.setText(_e.message);
+		}
+	});
 	return this;
 };
 
@@ -65,7 +88,8 @@ Module.prototype = {
 		this._view.removeAllChildren();
 		var banner = Ti.UI.createImageView({
 			image : 'http://static.dradiowissen.de/banner/2015_early_bird.jpg',
-			top : 0,width:Ti.UI.FILL
+			top : 0,
+			width : Ti.UI.FILL
 		});
 		this._view.add(banner);
 	},

@@ -194,7 +194,8 @@ module.exports = function(_args) {
 	else
 		clearInterval(self.cron);
 	var locked = false;
-	self.bottomList.addEventListener('itemclick', function(_e) {
+	var onitemclickFunc = function(_e) {
+		var start = new Date().getTime()
 		if (locked == true)
 			return;
 		locked = true;
@@ -220,7 +221,7 @@ module.exports = function(_args) {
 
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			var data = JSON.parse(_e.itemId);
-			Ti.Media.vibrate([5, 100, 5, 100]);
+			Ti.Media.vibrate([2, 100]);
 			var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer({
 				color : _args.color,
 				url : data.url,
@@ -233,11 +234,17 @@ module.exports = function(_args) {
 			});
 			self.add(PlayerOverlay);
 			PlayerOverlay.oncomplete = function() {
-				self.remove(PlayerOverlay);
-				//				PlayerOverlay = null;
+				try {
+					self.remove(PlayerOverlay);
+					//PlayerOverlay = null;
+				} catch(E) {
+					console.log(E);
+				}
 			};
+			console.log('Info: constructTime for player: ' + (new Date().getTime() - start));
 		}
-	});
+	};
+	self.bottomList.addEventListener('itemclick', onitemclickFunc);
 	if (_args.station != 'drw')
 		setInterval(self.updateCurrentinTopBox, 5000);
 	Ti.App.addEventListener('app:state', function(_payload) {

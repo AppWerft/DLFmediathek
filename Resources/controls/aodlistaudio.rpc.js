@@ -2,39 +2,25 @@ exports.parseXMLDoc = function(xml) {
 	var entries = [];
 	var itemsNodelist = xml.getElementsByTagName("item");
 	var length = itemsNodelist.getLength();
-	if (length) {
-		console.log('Length: ' + length);
+	if (length !== 0) {
 		for (var nodelistindex = 0; nodelistindex < length; nodelistindex++) {
 			var entry = {};
 			var itemNode = itemsNodelist.item(nodelistindex);
-			if (!itemNode) {
-				console.log(itemNode);
-				break;
-			}
-			console.log(itemNode.apiName);
-			if (itemNode.hasAttributes()) {
-				var attributes = itemNode.getAttributes();
-				entry.url = attributes.getNamedItem('url').nodeValue;
-				entry.timestamp = attributes.getNamedItem('timestamp').nodeValue;
-				entry.duration = attributes.getNamedItem('duration').nodeValue;
-			}
-			if (itemNode.hasChildNodes()) {
-				var childNodes = itemNode.getChildNodes();
-				if ( length = childNodes.getLength()) {
-					for (var j = 0; j < length; j++) {
-						var item = childNodes.item(j);
-						if (item.apiName == 'Ti.XML.Element') {
-							//			console.log('KEY="' + item.getNodeName() + '"');
-							//		console.log('VAL="' + item.getTextContent() + '"');
-							entry[item.getNodeName()] = item.getTextContent();
-						}
-					}
+				var entry =  {
+					station: itemNode.getElementsByTagName('station').item(0).getTextContent().toLowerCase(),
+					title: itemNode.getElementsByTagName('title').item(0).getTextContent(),
+					author: itemNode.getElementsByTagName('author').item(0).getTextContent(),
+					sendung: itemNode.getElementsByTagName('sendung').item(0).getTextContent(),
+					datetime: itemNode.getElementsByTagName('datetime').item(0).getTextContent(),
+				};
+				if (itemNode.hasAttributes()) {
+					var attributes = itemNode.getAttributes();
+					entry.url = attributes.getNamedItem('url') ? attributes.getNamedItem('url').nodeValue : null;
+					entry.duration = attributes.getNamedItem('duration').nodeValue;
 				}
-			}
-			entries.push(entry);
+				entries.push(entry);
 		}
-
-	}
-	console.log('Lafter ' + entries.length);
+	} else
+		console.log('Warning: items are null');
 	return entries;
 };
