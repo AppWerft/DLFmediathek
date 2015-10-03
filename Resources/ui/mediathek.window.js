@@ -18,7 +18,6 @@ module.exports = function() {
 			mediathek : Model[station].mediathek,
 		}));
 	};
-	
 	self.FlipViewCollection = FlipModule.createFlipView({
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
@@ -27,17 +26,17 @@ module.exports = function() {
 		height : Ti.UI.FILL
 	});
 	self.onFlippedFunc = function(_e) {
-		console.log('Info: Mediathek flipped');
 		Ti.App.fireEvent('app:station', {
 			station : pages[_e.index].station,
 			page : 'mediathek'
 		});
 		pages.forEach(function(page, ndx) {
-			if (ndx == _e.index)
+			if (ndx == _e.index) {
 				setTimeout(function() {
 					page.updateCurrentinTopBox(true);
 				}, 1000);
-			else
+				page.updateMediathekList();
+			} else
 				page.hideCurrent([_e.index]);
 		});
 	};

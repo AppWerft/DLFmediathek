@@ -66,6 +66,9 @@ var AudioPlayer = function(options) {
 				that._view.remove(that._view.equalizer);
 				that._view.equalizer.opacity = 0;
 				that._view.control.image = '/images/play.png';
+				if (that._view && that._view.oncomplete && typeof that._view.oncomplete == 'function') {
+					that._view.oncomplete();
+				}
 				break;
 			case 'stopping':
 				that._view.equalizer.opacity = 0;
@@ -125,13 +128,13 @@ AudioPlayer.prototype = {
 		this.color = (this.options.color) ? this.options.color : 'black';
 		this._view = playerViewModule.getView();
 		var that = this;
-		/*this._control.addEventListener('click', function() {
-		 if (that._player.isPlaying()) {
-		 that._player.pause();
-		 } else if (that._player.isPaused()) {
-		 that._player.play();
-		 }
-		 });*/
+		this._view.control.addEventListener('click', function() {
+			if (that._player.isPlaying()) {
+				that._player.pause();
+			} else if (that._player.isPaused()) {
+				that._player.play();
+			}
+		});
 		this._view.addEventListener('click', function() {
 			Ti.API.error('Info: background of player clicked');
 			that.stopPlayer();
@@ -160,6 +163,8 @@ AudioPlayer.prototype = {
 		this._view.progress.setMax(this.options.duration);
 		this._view.progress.setValue(0);
 		this._view.title.setText(this.options.title);
+		this._view.title.setColor(this.options.color);
+		
 		this._view.subtitle.setText(this.options.subtitle);
 		this._view.duration.setText(('' + this.options.duration).toHHMMSS());
 		this._view.add(this._view.equalizer);
@@ -168,15 +173,10 @@ AudioPlayer.prototype = {
 	},
 	stopPlayer : function() {
 		if (this._player.isPlaying() || this._player.isPaused()) {
-			Ti.API.error('Info: try 2 stop player - was playing or paused');
 			this._player.stop();
 			this._player.release();
-			Ti.API.error('Info: stopped and released');
 		}
 
-		if (this._view && this._view.oncomplete && typeof this._view.oncomplete == 'function') {
-			this._view.oncomplete();
-		}
 	}
 };
 

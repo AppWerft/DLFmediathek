@@ -20,12 +20,11 @@ var Module = function() {
 			Ti.App.Properties.removeProperty("DAYPLAN#" + station);
 		});
 	});
-
 	return this;
 };
 
 Module.prototype = {
-	sanitizeHTML : function(foo) {
+	_sanitizeHTML : function(foo) {
 		var bar = ( typeof foo == 'string')//
 		? foo.replace(/[\s]+<p>[\s]+/gm, '').replace(/[\s]+<\/p>[\s]+/gm, '').replace(/[\n]+/gm, '<br/>⊃ ') : undefined;
 		if (bar != undefined) {
@@ -57,7 +56,7 @@ Module.prototype = {
 				item.duration_mmss = (item.duration > 3600)//
 				? Moment.unix(item.duration).format('H:mm:ss')//
 				: Moment.unix(item.duration).format('m:ss');
-				item.description = this.sanitizeHTML(item.description);
+				item.description = this._sanitizeHTML(item.description);
 				item.isonair = (Moment().isBetween(item.pubDate, item.endtime)) ? true : false;
 				item.ispast = (Moment().isBefore(item.endtime)) ? false : true;
 				if (!item.endtime.isAfter(Moment()))
@@ -68,6 +67,8 @@ Module.prototype = {
 			return [];
 	},
 	getCurrentOnAir : function(_args) {
+		if (_args.station != Ti.App.Properties.getString('LAST_STATION'))
+			return;
 		this.getRSS(_args);
 		// test if new one (daychange)
 		var currentonair = null;
@@ -81,21 +82,23 @@ Module.prototype = {
 	},
 	getRSS : function(_args) {
 		var that = this;
-		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station)) {
-			var items = JSON.parse(Ti.App.Properties.getString("DAYPLAN#" + _args.station));
+		var KEY = "DAYPLAN#" + _args.station;
+		if (Ti.App.Properties.hasProperty(KEY)) {
+			var items = JSON.parse(Ti.App.Properties.getString(KEY));
 			if (!Array.isArray(items) || !items[0].guid || !items[0].guid.text) {
-				Ti.App.Properties.removeProperty("DAYPLAN#" + _args.station);
+				console.log('Warning: we kill old DAYPLAN');
+				Ti.App.Properties.removeProperty(KEY);
 				return;
 			}
 			var res = items[0].guid.text.match(/schema\-([\d]\-[\d]\-[\d]\))\-/g);
 			if (res && res !== Moment().format('YYYY-MM-DD')) {
 				// force new:
-				Ti.App.Properties.removeProperty("DAYPLAN#" + _args.station);
+				console.log('Warning: we kill old ' + KEY);
+				Ti.App.Properties.removeProperty(KEY);
 			}
 		}
-		// still present?
-		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station) && _args.done) {
-			_args.done({
+			if (Ti.App.Properties.hasProperty(KEY)) {
+			_args.done && _args.done({
 				ok : true,
 				items : that._updateTimestamps({
 					station : _args.station
@@ -103,38 +106,40 @@ Module.prototype = {
 			});
 			return;
 		}
-		// no => retreiving
-		var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-		if (Model[_args.station].dayplan) {
-			var xhr = Ti.Network.createHTTPClient({
-				onload : function() {
-					var channel = new XMLTools(this.responseXML).toObject().channel;
-					if (channel.item && toType(channel.item) != 'array') {
-						channel.item = [channel.item];
-					}
-					Ti.App.Properties.setString("DAYPLAN#" + _args.station, JSON.stringify(channel.item));
-					var result = {
-						ok : true,
-						items : that._updateTimestamps({
-							station : _args.station
-						})
-					};
-					// back to caller
-					_args.done && _args.done(result);
-					// persist
-					try {
-						if (that.dayplan && that.dayplan.isIndexOf(url) == -1) {
-							that.dayplan.push({
-								url : url,
-								current : null
-							});
+		if (!Ti.App.Properties.hasProperty(KEY)) {
+			var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+			if (Model[_args.station].dayplan) {
+				console.log('Info: we must retrieve for dayplan :::::. ' + url);
+				var xhr = Ti.Network.createHTTPClient({
+					onload : function() {
+						var channel = new XMLTools(this.responseXML).toObject().channel;
+						if (channel.item && !Array.isArray(channel.item)) {
+							channel.item = [channel.item];
 						}
-					} catch(E) {
+						Ti.App.Properties.setString(KEY, JSON.stringify(channel.item));
+						var result = {
+							ok : true,
+							items : that._updateTimestamps({
+								station : _args.station
+							})
+						};
+						// back to caller
+						_args.done && _args.done(result);
+						// persist
+						try {
+							if (that.dayplan && that.dayplan.isIndexOf(url) == -1) {
+								that.dayplan.push({
+									url : url,
+									current : null
+								});
+							}
+						} catch(E) {
+						}
 					}
-				}
-			});
-			xhr.open('GET', url);
-			xhr.send();
+				});
+				xhr.open('GET', url);
+				xhr.send();
+			}
 		}
 	}, // standard methods for event/observer pattern
 	fireEvent : function(_event, _payload) {

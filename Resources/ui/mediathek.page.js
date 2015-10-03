@@ -60,7 +60,7 @@ module.exports = function(_args) {
 		backgroundColor : '#444'
 	});
 	self.bottomView.addEventListener('refreshing', function() {
-		if (Math.random() > 0.9)
+		if (Math.random() > 0.97)
 			Ti.UI.createNotification({
 				message : 'Sehr gut, Medienkompetenz=1!\nAber bitte nicht allzuoft hier ziehen. Empfehlung: so alle fünf Minuten – sonst leierst aus …'
 			}).show();
@@ -113,17 +113,21 @@ module.exports = function(_args) {
 		}
 		require('controls/rpc.adapter')({
 			url : _args.mediathek,
+			station : _args.station,
 			nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
 			date : self.date.format('DD.MM.YYYY'),
-			onload : function(_res) {
-				self.bottomView.setRefreshing(false);
-				if (currentMediathekHash == _res.hash)
+			onload : function(_sendungen) {
+				if (_sendungen == null)
 					return;
-				currentMediathekHash = _res.hash;
+				self.bottomView.setRefreshing(false);
+				if (currentMediathekHash == _sendungen.hash)
+					return;
+				currentMediathekHash = _sendungen.hash;
 				self.bottomList.sections = [];
-				_res.mediathek.forEach(function(sendung) {
+				_sendungen.mediathek.forEach(function(sendung) {
 					var dataitems = [];
 					sendung.subs.forEach(function(item) {
+						item.title = sendung.name;
 						dataitems.push({
 							properties : {
 								accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
@@ -156,7 +160,6 @@ module.exports = function(_args) {
 							},
 							duration : {
 								text : (item.duration) ? 'Dauer: ' + Moment().startOf('day').seconds(item.duration).format('m:ss') : '',
-
 							}
 						});
 					});
@@ -188,14 +191,14 @@ module.exports = function(_args) {
 			}
 		});
 	};
-	self.updateMediathekList();
+
 	if (self.date.isSame(Moment().startOf('day')))
 		self.cron = setInterval(self.updateMediathekList, 300000);
 	else
 		clearInterval(self.cron);
 	var locked = false;
 	var onitemclickFunc = function(_e) {
-		var start = new Date().getTime()
+		var start = new Date().getTime();
 		if (locked == true)
 			return;
 		locked = true;
@@ -209,7 +212,7 @@ module.exports = function(_args) {
 			item.fav.opacity = isfav ? 0.8 : 0.5;
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else if (_e.bindId && _e.bindId == 'share') {
-			Ti.Media.vibrate();
+			Ti.Media.vibrate(1, 0);
 			require('ui/sharing.chooser')(function(_type) {
 				require('vendor/socialshare')({
 					type : _type,
@@ -218,7 +221,6 @@ module.exports = function(_args) {
 					// image : fileToShare.nativePath,
 				});
 			});
-
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			var data = JSON.parse(_e.itemId);
 			Ti.Media.vibrate([2, 100]);
@@ -236,7 +238,7 @@ module.exports = function(_args) {
 			PlayerOverlay.oncomplete = function() {
 				try {
 					self.remove(PlayerOverlay);
-					//PlayerOverlay = null;
+					PlayerOverlay = null;
 				} catch(E) {
 					console.log(E);
 				}
@@ -250,6 +252,6 @@ module.exports = function(_args) {
 	Ti.App.addEventListener('app:state', function(_payload) {
 		activityworking = _payload.state;
 	});
-
+	self.updateMediathekList();
 	return self;
 };

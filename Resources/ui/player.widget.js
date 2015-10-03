@@ -5,7 +5,6 @@ var createView = function(args) {
 	var color = (args.color) ? args.color : 'black', self = Ti.UI.createView({
 		visible : false
 	});
-	
 	self.add(Ti.UI.createView({
 		opacity : 0.5,
 		touchEnabled : false,
@@ -44,14 +43,14 @@ var createView = function(args) {
 		right : 10,
 	});
 	self.title = Ti.UI.createLabel({
-		top : 10,
+		top : 8,
 		bubbleParent : false,
 		touchEnabled : false,
 		color : this.color,
-		ellipsize : true,
+		ellipsize : false,
 		height : 25,
 		font : {
-			fontSize : 18,
+			fontSize : 20,
 			fontWeight : 'bold',
 			fontFamily : 'Aller Bold'
 		},
@@ -93,7 +92,7 @@ var createView = function(args) {
 		url : '/images/equalizer.gif',
 		bottom : 30,
 		left : 80,
-		opacity : 1,
+		opacity : 0,
 		enableZoomControls : false
 	});
 	self.container.add(self.progress);
