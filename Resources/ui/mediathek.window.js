@@ -8,12 +8,13 @@ var FlipModule = require('de.manumaticx.androidflip'),
 
 module.exports = function() {
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
-	
+
 	var self = Ti.UI.createWindow();
 	var pages = [];
 	for (var station in Model) {
 		pages.push(require('ui/mediathek.page')({
 			station : station,
+			window : self,
 			color : Model[station].color,
 			mediathek : Model[station].mediathek,
 		}));
@@ -59,5 +60,24 @@ module.exports = function() {
 			state : false
 		});
 	});
+	self.createAndStartPlayer = function(_args) {
+		var start = new Date().getTime();
+		var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer(_args);
+		self.add(PlayerOverlay);
+		PlayerOverlay.oncomplete = function() {
+			try {
+				self.remove(PlayerOverlay);
+				PlayerOverlay = null;
+			} catch(E) {
+				console.log(E);
+			}
+		};
+		console.log('Info: constructTime for player: ' + (new Date().getTime() - start));
+	};
+
+	self.add(require('vendor/equalizer.widget').createView({
+		top : 50,
+		height : 100
+	}));
 	return self;
 };

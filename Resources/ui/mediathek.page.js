@@ -223,8 +223,8 @@ module.exports = function(_args) {
 			});
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			var data = JSON.parse(_e.itemId);
-			Ti.Media.vibrate([2, 100]);
-			var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer({
+			Ti.Media.vibrate([1, 1]);
+			_args.window.createAndStartPlayer({
 				color : _args.color,
 				url : data.url,
 				duration : data.duration,
@@ -234,16 +234,6 @@ module.exports = function(_args) {
 				station : data.station,
 				pubdate : data.pubdate
 			});
-			self.add(PlayerOverlay);
-			PlayerOverlay.oncomplete = function() {
-				try {
-					self.remove(PlayerOverlay);
-					PlayerOverlay = null;
-				} catch(E) {
-					console.log(E);
-				}
-			};
-			console.log('Info: constructTime for player: ' + (new Date().getTime() - start));
 		}
 	};
 	self.bottomList.addEventListener('itemclick', onitemclickFunc);

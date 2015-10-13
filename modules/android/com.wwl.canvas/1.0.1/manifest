@@ -1,0 +1,19 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.1
+apiversion: 2
+description: Implementation of the Android canvas
+author: WorldWise Learning
+license: MIT License
+copyright: Copyright (c) 2013 by WorldWise Learning
+
+
+# these should not be edited
+name: canvas
+moduleid: com.wwl.canvas
+guid: 16bed9a8-b9fa-4ce2-9e22-675bd4e93690
+platform: android
+minsdk: 3.5.1
+architectures: armeabi;armeabi-v7a;x86

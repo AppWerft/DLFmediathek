@@ -1,0 +1,178 @@
+<h1>Canvas.CanvasView</h1>
+<h2>Description</h2>
+<p>Gives you a canvas upon which to draw.</p>
+<p>The view emits a 'load' event when it is ready.</p>
+<p>The canvas view has several methods to immediately draw shapes, such as lines, rectangles, and points, as well as texts. </p>
+<p>Other shapes are drawn by creating a path, adding line segments, curves, or arcs, and then closing the path. Begin a new path using beginPath(). Set the starting point by calling moveTo(x,y). The closePath() method draws the line from the current endpoint to the starting point of the path. See the example for more information.</p>
+<p>Call stroke() or fill() to draw the path. Before doing so, you can specify the stroke or fill style. Colors are specified by the usual Titanium naming conventions. Apart from that, you can also set, for instance, the line width for strokes.</p>
+<p>You can add a shadow to any shape, or make any shape into a mask by designating it as the clipping region for drawing operations. </p>
+<p>The CanvasView also supports the following matrix transformations: translate, rotate, and  scale.</p>
+<p><strong>Disclaimer</strong>: We have tested this module thoroughly. But there are undoubtedly situations in which the behavior of the canvas differs from what is expected. Usually this isn't caused by a bug in this module, but by the way in which Android draws views. We welcome comments on unexpected behavior. Please shoot us an email (<a href="mailto:modules@worldwiselearning.org?subject=Android%20Canvas%20Module">modules@worldwiselearning.org</a>) and attach your code.</p>
+<h2>Properties</h2>
+<p>This view has all of the same properties as the core <a href="http://developer.appcelerator.com/apidoc/mobile/latest/Titanium.UI.View-object">Ti.UI.View</a>.</p>
+<h2>Events</h2>
+<p>This view has all of the same events as the core <a href="http://developer.appcelerator.com/apidoc/mobile/latest/Titanium.UI.View-object">Ti.UI.View</a>.</p>
+<h3>load</h3>
+<p>Fired when the canvas is ready to draw upon.</p>
+<h2>Shapes</h2>
+<h3>Methods</h3>
+<h4>drawArc(float x1, float y1, float x2, float y2, float startAngle, float endAngle)</h4>
+<p>Draws an arc in the designated area (rectangle). The arc starts at the startAngle and takes endAngle degrees. Both startAngle and endAngle are specified in degrees.</p>
+<h4>drawCircle(float x, float y, float radius)</h4>
+<p>The radius is specified in degrees.</p>
+<h4>drawLine(float startX, float startY, float stopX, float stopY)</h4>
+<h4>drawPoint(float x, float y)</h4>
+<h4>drawRect(float x, float y, float width, float height)</h4>
+<h4>drawRoundRect(float x, float y, float width, float height, float rx, float ry)</h4>
+<p>The arguments rx and ry specify the radiuses of the corners.</p>
+<h2>Colors, Styles, and Shadows</h2>
+<h3>Properties</h3>
+<h4>antiAlias[boolean]</h4>
+<h4>dither[boolean]</h4>
+<h4>fillStyle[string]</h4>
+<p>The color used to fill the drawing.</p>
+<h4>shadowBlur[float]</h4>
+<p>The blur level for shadows.</p>
+<h4>shadowColor[string]</h4>
+<p>The color to use for shadows.</p>
+<h4>shadowOffsetX</h4>
+<p>The horizontal distance of the shadow from the shape.</p>
+<h4>shadowOffsetY</h4>
+<p>The vertical distance of the shadow from the shape.</p>
+<h4>strokeStyle[string]</h4>
+<p>The color used for strokes.</p>
+<h4>strokeWidth[float]</h4>
+<p>Controls the width of the strokes -- identical to lineWidth.</p>
+<h3>Methods</h3>
+<h4>clearShadow()</h4>
+<p>When you set a shadow color or shadow blur, and a shadow offset, all subsequent drawing operations include a shadow of the current color and blur, at the specified offset. The clearShadow method is a convenient way to turn shadows off.</p>
+<h2>Line Styles</h2>
+<h3>Properties</h3>
+<h4>lineCap[string]</h4>
+<p>A string specifying the type of end cap to put on lines to  be drawn using lineTo().</p>
+<h5>values</h5>
+<ul>
+<li>"butt"    no end cap</li>
+<li>"round"   round end cap half a line width in radius</li>
+<li>"square"  square end cap half a line width thick</li>
+</ul>
+<h4>lineJoin[string]</h4>
+<p>The lineJoin property sets or returns the type of corner created, when two lines meet.</p>
+<p><strong>Note</strong>: The "miter" value is affected by the miterLimit property.</p>
+<h5>values</h5>
+<ul>
+<li>"miter"</li>
+<li>"round"</li>
+<li>"bevel"</li>
+</ul>
+<h4>lineWidth[float]</h4>
+<p>The lineWidth property sets or returns the current line width, in pixels. Identical to strokeWidth.</p>
+<h4>miterLimit[float]</h4>
+<p>The miter length is the distance between the inner corner and the outer corner where two lines meet.</p>
+<h2>Rectangles</h2>
+<h3>Methods</h3>
+<h4>clearRect(float x, float y, float width, float height)</h4>
+<p>Clears a rectangle.</p>
+<h4>fillRect(float x, float y, float width, float height)</h4>
+<p>Fills a specified rectangle in the current fill color.</p>
+<h4>strokeRect(float x, float y, float width, float height)</h4>
+<p>Draws the outlines of a rectangle in the current stroke color.</p>
+<h2>Paths</h2>
+<h3>Methods</h3>
+<h4>arc(float x1, float y1, float x2, float y2, float startAngle, float endAngle)</h4>
+<p>Draws an arc in the designated area (rectangle). The arc starts at the startAngle and takes endAngle degrees. Both startAngle and endAngle are in degrees. The arc is drawn clockwise unless you provide a negative value for the endAngle.</p>
+<h4>arcTo(float x1, float y1, float x2, float y2, float startAngle, float endAngle)</h4>
+<p>Draws an arc in the designated area (rectangle). The arc starts at the startAngle and takes endAngle degrees. Both startAngle and endAngle are in degrees. The arc is connected to the other points in the path. The arc is drawn clockwise unless you provide a negative value for the endAngle.</p>
+<h4>begin()</h4>
+<p>Start queuing up operations (like filling a rectangle, drawing aline, etc). Removes all paths.</p>
+<h4>beginPath()</h4>
+<p>Starts a new path.</p>
+<h4>bezierCurveTo(float cp1x, float cp1y, float cp2x, float cp2y, float x, float y)</h4>
+<p>Adds a Bezier curve from the current point on the path to the specified end point, using the two specified control points.</p>
+<h4>clip()</h4>
+<p>Constrains the clipping region of the canvas to the current path.
+Once a region is clipped, all future drawing will be limited to the clipped region (no access to other regions on the canvas). You can however save the current canvas region using the save() method before using the clip() method, and restore it (with the restore() method) any time in the future.</p>
+<h4>closePath()</h4>
+<p>Creates a line from the endpoint of the current path to the beginning point of the current subpath, creating a closed shape.</p>
+<h4>fill()</h4>
+<p>Fills the current path using the current fill color.</p>
+<h4>lineTo(float x, float y)</h4>
+<p>Adds a line segment to the current path, from the current endpoint to the specified new endpoint.</p>
+<h4>moveTo(float x, float y)</h4>
+<p>Moves the current endpoint of the current path without adding a line segment to the path, creating a new subpath.</p>
+<h4>quadraticCurveTo(float cpx, float cpy, float x, float y)</h4>
+<p>Adds a Bezier curve with a single control point to the current path.</p>
+<h4>stroke()</h4>
+<p>Draws the outline of the current path using the current stroke style and line width.</p>
+<h2>Transformations</h2>
+<h3>Methods</h3>
+<h4>rotate(float degrees)</h4>
+<p>The rotate() method rotates the canvas.</p>
+<h4>scale(float width, float height)</h4>
+<p>Scales the canvas bigger or smaller.</p>
+<ul>
+<li>width: Scales the width of the current drawing (1=100%, 0.5=50%, 2=200%, etc.)</li>
+<li>height: Scales the height of the current drawing (1=100%, 0.5=50%, 2=200%, etc.)</li>
+</ul>
+<h4>translate(float x, float y)</h4>
+<p>The translate() method remaps the (0,0) position on the canvas.</p>
+<h2>Text</h2>
+<h3>Properties</h3>
+<h4>strikeThruText[boolean]</h4>
+<h4>textAlign[string]</h4>
+<p>A string that specifies whether text is left-justified, right-justified, or centered.</p>
+<h6>values</h6>
+<ul>
+<li>center</li>
+<li>left</li>
+<li>right </li>
+</ul>
+<h4>textScaleX[float]</h4>
+<h4>textSize[float]</h4>
+<h4>textSkewX[float]</h4>
+<h4>textStyle</h4>
+<h5>values</h5>
+<ul>
+<li>normal</li>
+<li>italic</li>
+<li>bold</li>
+<li>bolditalic</li>
+</ul>
+<h4>typeface[string]</h4>
+<p>At this moment, custom fonts aren't supported. Built-in fonts are:</p>
+<ul>
+<li>normal</li>
+<li>sans</li>
+<li>serif</li>
+<li>monospace</li>
+</ul>
+<h4>underlineText[boolean]</h4>
+<h3>Methods</h3>
+<h4>drawText(string text, float x, float y)</h4>
+<p>Draws a line of text in outline at the specified x,y.</p>
+<h4>fillText(string text, float x, float y)</h4>
+<h4>strokeText(string text, float x, float )</h4>
+<p>Identical to drawText.</p>
+<h4>drawTextOnPath(text, hOffset, vOffset)</h4>
+<p>Draws text on the current path.</p>
+<h4>fillTextOnPath(text, hOffset, vOffset)</h4>
+<h2>Image Drawing</h2>
+<h3>Methods</h3>
+<h4>drawImage(Object image, float x, float y, float width, float height)</h4>
+<p>Draws the specified image with its upper-left corner at the specified point on the canvas. The image is scaled to thebuilt specified width and height.</p>
+<h2>Compositing</h2>
+<h3>Properties</h3>
+<h4>alpha[float]</h4>
+<p>The current alpha or transparency value of the drawing: a number between 0.0 (fully transparent) and 1.0 (no transparancy). Identical to globalAlpha.</p>
+<h4>globalAlpha[float]</h4>
+<p>The current alpha or transparency value of the drawing: a number between 0.0 (fully transparent) and 1.0 (no transparancy). Identical to alpha.</p>
+<h2>Other</h2>
+<h3>Methods</h3>
+<h4>clear()</h4>
+<p>Clears the canvas.</p>
+<h4>CanvasView getContext()</h4>
+<p>Returns the canvas view.</p>
+<h4>restore()</h4>
+<p>Returns previously saved canvas state and attributes.</p>
+<h4>save()</h4>
+<p>Saves the state of the current canvas.</p>
