@@ -1,6 +1,4 @@
 ! function() {
-	
-	
 	//require('controls/earlybird.adapter')();
 	var Moment = require('vendor/moment');
 	//require('controls/wurfsendung.import')(240);

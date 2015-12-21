@@ -28,10 +28,6 @@ module.exports = function(_args) {
 		fullscreen : true,
 		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
 	});
-	var Player = require('ui/hlsplayer.widget').createPlayer();
-	self.AudioPlayerView = Player.createView({
-		color : _args.color
-	});
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
 		backgroundColor : _args.station,
@@ -102,22 +98,21 @@ module.exports = function(_args) {
 				}).show();
 		} else {
 			var item = JSON.parse(_e.itemId);
-			self.add(self.AudioPlayerView);
-			if (item.duration && item.pubdate) {
-				Player.startPlayer({
-					url : item.url,
-					subtitle : item.title,
-					station : item.station,
-					pubdate : item.pubdate,
-					duration : item.duration,
-					title : item.podcast
-				});
-			}
+			self.createAndStartPlayer(item);
 		}
 	});
-	self.addEventListener('close', function() {
-		Player.stopPlayer();
-	});
+	self.createAndStartPlayer = function(_args) {
+		var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer(_args);
+		self.add(PlayerOverlay);
+		PlayerOverlay.oncomplete = function() {
+			try {
+				self.remove(PlayerOverlay);
+				PlayerOverlay = null;
+			} catch(E) {
+				console.log(E);
+			}
+		};
+	};
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
 		АктйонБар.subtitle = _args.title;

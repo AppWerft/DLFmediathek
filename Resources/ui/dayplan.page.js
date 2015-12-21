@@ -40,7 +40,6 @@ module.exports = function(station) {
                 item.link = null;
             if (item.ispast)
                 return;
-            item.description = RSS.sanitizeHTML(item.description);
             items.push({
                 properties : {
                     accessoryType : (item.link) ? Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
@@ -71,7 +70,6 @@ module.exports = function(station) {
 
         });
         self.sections[0].setItems(items);
-        console.log(items	);
         //  self.list.scrollToItem(0, ndx);
     }
     var self = Ti.UI.createListView({
@@ -118,7 +116,6 @@ module.exports = function(station) {
             });
             win.container.setRefreshing(true);
             win.container.view.addEventListener('load', function() {
-                console.log(win.container.view);
                 win.container.setRefreshing(false);
             });
             win.add(win.container);

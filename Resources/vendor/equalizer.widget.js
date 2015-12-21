@@ -1,6 +1,11 @@
 var Canvas = require('com.wwl.canvas');
 
+var LDF = Ti.Platform.displayCaps.logicalDensityFactor || 1;
+var COLS = 12;
+
 var Widget = function(args) {
+	var width = args.width ? args.width * LDF : Ti.Platform.displayCaps.platformWidth,
+	    height = args.height ? args.height * LDF : Ti.Platform.displayCaps.platformHeight;
 	var canvas = Canvas.createCanvasView({
 		width : args.width ? args.width : Ti.UI.FILL,
 		height : args.height ? args.height : Ti.UI.FILL,
@@ -8,31 +13,28 @@ var Widget = function(args) {
 		top : args.top ? args.top : undefined,
 		right : args.right ? args.right : undefined,
 		bottom : args.bottom ? args.bottom : undefined,
-		
 		backgroundColor : args.backgroundColor ? args.backgroundColor : 'transparent',
-		
-		
-
+		antiAlias : true,
+		//borderColor : 'orange',
+		//borderWidth : LDF/2
 	});
 	function paint() {
-		canvas.clear();
+		//canvas.clear();
 		canvas.beginPath();
-		canvas.moveTo(170, 80);
-		canvas.bezierCurveTo(130, 100, 130, 150, 230, 150);
-		canvas.bezierCurveTo(250, 180, 320, 180, 340, 150);
-		canvas.bezierCurveTo(420, 150, 420, 120, 390, 100);
-		canvas.bezierCurveTo(430, 40, 370, 30, 340, 50);
-		canvas.bezierCurveTo(320, 5, 250, 20, 250, 50);
-		canvas.bezierCurveTo(200, 5, 150, 20, 170, 80);
-		canvas.closePath();
-		canvas.lineWidth = 5;
-		canvas.fillStyle = '#8ED6FF';
-		canvas.fill();
-		canvas.strokeStyle = 'blue';
-		canvas.stroke();
-		setTimeout(paint, 50);
+		canvas.fillStyle = 'gray';
+		for (var i = 0; i < COLS.length; i++) {
+			var x = i * width / COLS;
+			var y = Math.random() * height;
+			console.log('x='+x);
+			console.log('y='+y);
+			
+			canvas.moveTo(x, height / 2);
+			canvas.fillRect(x, height / 2, width / COLS, Math.random() * height);
+		}
+		setTimeout(paint, 5);
 	}
 	canvas.addEventListener('load', function() {
+		console.log('Info: canvas loaded');
 		setTimeout(paint, 50);
 	});
 	return canvas;

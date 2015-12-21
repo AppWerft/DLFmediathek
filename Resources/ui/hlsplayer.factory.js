@@ -8,16 +8,15 @@ String.prototype.toHHMMSS = function() {
 	var hours = Math.floor(sec_num / 3600);
 	var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
 	var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-	if (hours < 10) {
+	if (hours < 10) 
 		hours = "0" + hours;
-	}
-	if (minutes < 10) {
+	
+	if (minutes < 10) 
 		minutes = "0" + minutes;
-	}
-	if (seconds < 10) {
+	
+	if (seconds < 10) 
 		seconds = "0" + seconds;
-	}
+	
 	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
 	return time;
 };
@@ -60,7 +59,7 @@ var AudioPlayer = function(options) {
 			switch (_e.description) {
 			case 'initialized':
 				that._view.control.image = '/images/stop.png';
-				Ti.Media.vibrate();
+				Ti.Media.vibrate([1,0]);
 				break;
 			case 'stopped':
 				that._view.remove(that._view.equalizer);
@@ -108,10 +107,9 @@ var AudioPlayer = function(options) {
 				} else {
 				}
 				that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
-
 				that._view.equalizer.animate({
 					opacity : 1,
-					duration : 700
+					duration : 2000
 				});
 				that._view.control.image = '/images/pause.png';
 				break;
@@ -144,7 +142,7 @@ AudioPlayer.prototype = {
 	startPlayer : function() {
 		if (Ti.Network.online != true) {
 			Ti.UI.createNotification({
-				message : 'Bitte Internetverbindung prüfen.\nAuch auch lizenzrechtlichen Gründen dürfen Mediathekstücke nicht offline gemacht werden.'
+				message : 'Bitte Internetverbindung prüfen.\n\n Mediathekinhalte dürfen leider aus lizenzrechtlichen Gründen nicht offline zur Verfügung gestellt werden.'
 			}).show();
 			this.stopPlayer();
 			return;
@@ -164,7 +162,6 @@ AudioPlayer.prototype = {
 		this._view.progress.setValue(0);
 		this._view.title.setText(this.options.title);
 		this._view.title.setColor(this.options.color);
-		
 		this._view.subtitle.setText(this.options.subtitle);
 		this._view.duration.setText(('' + this.options.duration).toHHMMSS());
 		this._view.add(this._view.equalizer);

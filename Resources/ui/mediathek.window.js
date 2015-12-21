@@ -75,9 +75,9 @@ module.exports = function() {
 		console.log('Info: constructTime for player: ' + (new Date().getTime() - start));
 	};
 
-	self.add(require('vendor/equalizer.widget').createView({
-		top : 50,
-		height : 100
-	}));
+	/*self.add(require('vendor/equalizer.widget').createView({
+		bottom : 10,
+		height : 120
+	}));*/
 	return self;
 };
