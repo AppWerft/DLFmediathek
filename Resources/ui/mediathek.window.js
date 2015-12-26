@@ -8,8 +8,50 @@ var FlipModule = require('de.manumaticx.androidflip'),
 
 module.exports = function() {
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
-
+	var locked = false;
 	var self = Ti.UI.createWindow();
+	self.onitemclickFunc = function(_e) {
+		var start = new Date().getTime();
+		if (locked == true)
+			return;
+		locked = true;
+		setTimeout(function() {
+			locked = false;
+		}, 700);
+		if (_e.bindId && _e.bindId == 'fav') {
+			var item = _e.section.getItemAt(_e.itemIndex);
+			var isfav = Favs.toggleFav(JSON.parse(item.properties.itemId));
+			item.fav.image = isfav ? '/images/fav.png' : '/images/favadd.png';
+			item.fav.opacity = isfav ? 0.8 : 0.5;
+			_e.section.updateItemAt(_e.itemIndex, item);
+		} else if (_e.bindId && _e.bindId == 'share') {
+			Ti.Media.vibrate(1, 0);
+			require('ui/sharing.chooser')(function(_type) {
+				require('vendor/socialshare')({
+					type : _type,
+					message : 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“ auf ' + Model[_args.station].name,
+					url : JSON.parse(_e.itemId).url,
+					// image : fileToShare.nativePath,
+				});
+			});
+		} else if (_e.bindId && _e.bindId == 'playtrigger') {
+			var data = JSON.parse(_e.itemId);
+			Ti.Media.vibrate([1, 1]);
+			var start = new Date().getTime();
+			require('ui/audioplayer.window').createAndStartPlayer({
+				color : '#000',
+				url : data.url,
+				duration : data.duration,
+				title : data.title,
+				subtitle : data.subtitle,
+				author : data.author,
+				station : data.station,
+				pubdate : data.pubdate
+			});
+			
+		}
+		
+	};
 	var pages = [];
 	for (var station in Model) {
 		pages.push(require('ui/mediathek.page')({
@@ -60,24 +102,5 @@ module.exports = function() {
 			state : false
 		});
 	});
-	self.createAndStartPlayer = function(_args) {
-		var start = new Date().getTime();
-		var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer(_args);
-		self.add(PlayerOverlay);
-		PlayerOverlay.oncomplete = function() {
-			try {
-				self.remove(PlayerOverlay);
-				PlayerOverlay = null;
-			} catch(E) {
-				console.log(E);
-			}
-		};
-		console.log('Info: constructTime for player: ' + (new Date().getTime() - start));
-	};
-
-	/*self.add(require('vendor/equalizer.widget').createView({
-		bottom : 10,
-		height : 120
-	}));*/
 	return self;
 };

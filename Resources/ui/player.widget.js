@@ -47,7 +47,9 @@ var createView = function(args) {
 		bubbleParent : false,
 		touchEnabled : false,
 		color : this.color,
-		ellipsize : false,
+		horizontalWrap : false,
+		wordWrap : false,
+		ellipsize : true,
 		height : 25,
 		font : {
 			fontSize : 20,
@@ -63,6 +65,7 @@ var createView = function(args) {
 		color : '#555',
 		horizontalWrap : false,
 		wordWrap : false,
+		ellipsize : true,
 		width : Ti.UI.FILL,
 		ellipsize : true,
 		height : 20,

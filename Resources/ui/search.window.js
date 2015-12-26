@@ -5,7 +5,6 @@ var Model = require('model/stations'),
 
 module.exports = function() {
 	function setDataintoSection(_res) {
-		console.log(_res);
 		var total = _res.items.length;
 		self.container.setRefreshing(false);
 		if (total > 0) {
@@ -107,22 +106,18 @@ module.exports = function() {
 			done : setDataintoSection
 		});
 		self.list.addEventListener('itemclick', function(_e) {
-			var item = JSON.parse(_e.itemId);
+			var data = JSON.parse(_e.itemId);
 			Ti.Media.vibrate([10, 200, 10, 200]);
-			var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer({
-				color : item.color,
-				url : item.url,
-				duration : item.duration,
-				title : item.title,
-				subtitle : item.subtitle,
-				station : item.stataion,
+			require('ui/audioplayer.window').createAndStartPlayer({
+				color : '#000',
+				url : data.url,
+				duration : data.duration,
+				title : data.title,
+				subtitle : Moment(data.pubdate).format('LLL') + ' Uhr',
+				author : data.author,
+				station : data.station,
 				pubdate : data.pubdate
 			});
-			self.add(PlayerOverlay);
-			PlayerOverlay.oncomplete = function() {
-				self.remove(PlayerOverlay);
-				PlayerOverlay = null;
-			};
 		});
 
 	});

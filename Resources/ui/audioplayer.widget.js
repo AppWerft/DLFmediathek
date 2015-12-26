@@ -83,11 +83,6 @@ Player.prototype = {
 			touchEnabled : false,
 			backgroundColor : (args.color) ? args.color : 'black'
 		}));
-		this._view.add(Ti.UI.createView({
-			opacity : 0.5,
-			touchEnabled : false,
-			backgroundColor : 'black'
-		}));
 		this._container = Ti.UI.createView({
 			bubbleParent : false,
 			touchEnabled : false,
@@ -199,7 +194,6 @@ Player.prototype = {
 			message : 'Setzte Wiedergabe am Zeitpunkt ' + ('' + progress).toHHMMSS() + ' fort.'
 		}).show();
 		this._player.setTime(progress);
-		console.log('201');
 		this._title.setText(args.title);
 		console.log('203  ' + args.duration);
 		//this._duration.setText(('' + args.duration).toHHMMSS());

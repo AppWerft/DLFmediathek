@@ -4,41 +4,8 @@ var Model = require('model/stations'),
     Podcast = new (require('controls/feed.adapter'))(),
     stations = ['dlf', 'drk', 'drw'];
 
-var tiles3template = {
-	properties : {
-		layout : 'horizontal',
-		height : Ti.UI.SIZE,
-	},
-	childTemplates : [{
-		type : 'Ti.UI.ImageView',
-		bindId : 'i1',
-		properties : {
-			left : 0,
-			top : 0,
-			width : '33%',
-			height : 'auto'
-		}
-	}, {
-		type : 'Ti.UI.ImageView',
-		bindId : 'i2',
-		properties : {
-			left : 0,
-			top : 0,
-			width : '33%',
-			height : 'auto'
-		}
-	}, {
-		type : 'Ti.UI.ImageView',
-		bindId : 'i3',
-		properties : {
-			left : 0,
-			top : 0,
-			width : '33%',
-			height : 'auto'
-		}
-	}]
-};
-var tiles2template = {
+
+var tilestemplate = {
 	properties : {
 		layout : 'horizontal',
 		height : Ti.UI.SIZE,
@@ -71,7 +38,7 @@ module.exports = function() {
 		var color = podcasts.color;
 		pages[ndx] = Ti.UI.createListView({
 			templates : {
-				'tiles' : tiles3template,
+				'tiles' : tilestemplate,
 			},
 			defaultItemTemplate : 'tiles',
 			station : stations[ndx].name,
@@ -88,7 +55,7 @@ module.exports = function() {
 			}
 		});
 		var dataitems = [];
-		for (var i = 0; i < podcasts.length; i += 3) {
+		for (var i = 0; i < podcasts.length; i += 2) {
 			var item = {
 				i1 : {
 					image : (podcasts[i].a) ? podcasts[i].a.img.src : podcasts[i].img.src,
@@ -111,15 +78,7 @@ module.exports = function() {
 				};
 
 			}
-			if (podcasts[i + 2]) {
-				item.i3 = {
-					image : (podcasts[i + 2].a) ? podcasts[i + 2].a.img.src : podcasts[i + 2].img.src,
-				};
-				itemId.i3 = {
-					title : (podcasts[i + 2].a) ? podcasts[i + 2].a.img.alt : podcasts[i + 2].img.alt,
-					url : (podcasts[i + 2].a) ? podcasts[i + 2].a.href : podcasts[i + 2].href,
-				};
-			}
+			
 			item.properties = {
 				itemId : JSON.stringify(itemId)
 			};

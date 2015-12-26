@@ -197,46 +197,8 @@ module.exports = function(_args) {
 	else
 		clearInterval(self.cron);
 	var locked = false;
-	var onitemclickFunc = function(_e) {
-		var start = new Date().getTime();
-		if (locked == true)
-			return;
-		locked = true;
-		setTimeout(function() {
-			locked = false;
-		}, 700);
-		if (_e.bindId && _e.bindId == 'fav') {
-			var item = _e.section.getItemAt(_e.itemIndex);
-			var isfav = Favs.toggleFav(JSON.parse(item.properties.itemId));
-			item.fav.image = isfav ? '/images/fav.png' : '/images/favadd.png';
-			item.fav.opacity = isfav ? 0.8 : 0.5;
-			_e.section.updateItemAt(_e.itemIndex, item);
-		} else if (_e.bindId && _e.bindId == 'share') {
-			Ti.Media.vibrate(1, 0);
-			require('ui/sharing.chooser')(function(_type) {
-				require('vendor/socialshare')({
-					type : _type,
-					message : 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“ auf ' + Model[_args.station].name,
-					url : JSON.parse(_e.itemId).url,
-					// image : fileToShare.nativePath,
-				});
-			});
-		} else if (_e.bindId && _e.bindId == 'playtrigger') {
-			var data = JSON.parse(_e.itemId);
-			Ti.Media.vibrate([1, 1]);
-			_args.window.createAndStartPlayer({
-				color : _args.color,
-				url : data.url,
-				duration : data.duration,
-				title : data.title,
-				subtitle : data.subtitle,
-				author : data.author,
-				station : data.station,
-				pubdate : data.pubdate
-			});
-		}
-	};
-	self.bottomList.addEventListener('itemclick', onitemclickFunc);
+	console.log(_args.window);
+	self.bottomList.addEventListener('itemclick', _args.window.onitemclickFunc);
 	if (_args.station != 'drw')
 		setInterval(self.updateCurrentinTopBox, 5000);
 	Ti.App.addEventListener('app:state', function(_payload) {

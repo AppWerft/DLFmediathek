@@ -39,25 +39,19 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/podcast-campus-karriere.1801.de.podcast.xml",
     "img" : {
         "alt" : "Campus und Karriere",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/1/110b998c47ab642c840a7744f022de3cv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/1/110b998c47ab642c840a7744f022de3cv1.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation.685.de.podcast.xml",
     "img" : {
         "alt" : "Computer und Kommunikation Beiträge",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/5/583bd6c8cf8bbc5ee1b42d265b704b77v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://a3.mzstatic.com/eu/r30/Music4/v4/28/4c/56/284c5624-7f41-49ee-42dc-8b15cd875ee5/cover170x170.jpeg"
     }
-}, {
-    "href" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation-komplette-sendung.416.de.podcast.xml",
-    "img" : {
-        "alt" : "Computer und Kommunikation Sendung",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/d/d4a13a32cde15fff1f5bdbfc3688d14av1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
-    }
-}, {
+},  {
     "href" : "http://www.deutschlandfunk.de/podcast-corso.808.de.podcast.xml",
     "img" : {
         "alt" : "Corso",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/9/979a03b2a80291a7b4656b7d98d4ddc9v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/9/979a03b2a80291a7b4656b7d98d4ddc9v1.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-das-feature.1248.de.podcast.xml",
@@ -75,7 +69,7 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/das-kulturgespraech-podcast.2274.de.podcast.xml",
     "img" : {
         "alt" : "Das Kulturgespräch",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/e/ef4457e780335d1c8a1d81ba2f6b12eav1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/e/ef4457e780335d1c8a1d81ba2f6b12eav1.jpg"
     }
 }, 
 
@@ -155,15 +149,7 @@ module.exports = [{
         "src" : "http://www.deutschlandfunk.de/media/thumbs/2/281cf6222d619dc0f022437474c4d2fdv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
      
     }
-}, {
-    "href" : "http://www.deutschlandfunk.de/podcast-feature.1383.de.podcast.xml",
-
-    "img" : {
-        "alt" : "Feature",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/f/f7ed9b9651ece4d4c1532fe33cd80201v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
-        
-    }
-}, {
+},{
     "href" : "http://www.deutschlandfunk.de/podcast-firmenportraet.1198.de.podcast.xml",
 
     "img" : {
@@ -266,58 +252,44 @@ module.exports = [{
         "alt" : "Kirchensendungen",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/a/a3cf6dfd01a800fa7abb4885a42a196cv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
-}, {
-    "href" : "http://www.deutschlandfunk.de/podcast-kommentar.721.de.podcast.xml",
-
-    "img" : {
-        "alt" : "Kommentar",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/6/60c9435a68f2c301493c0023c3e9d7cfv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
-    }
-}, {
+},  {
     "href" : "http://www.deutschlandfunk.de/podcast-kontrovers.852.de.podcast.xml",
-
     "img" : {
         "alt" : "Kontrovers",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/6/62cb4086dd82c99fe039b43ced613017v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-kultur-heute.692.de.podcast.xml",
-
     "img" : {
         "alt" : "Kultur heute – Beiträge",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/e/ef04b02a756d460590824f3bd1c3e63ev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-kultur-heute-komplette-sendung.414.de.podcast.xml",
-
     "img" : {
         "alt" : "Kultur heute – Sendung",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/5/596d34a07bfad7f3681b1ea631bb2a6ev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-kulturfragen.912.de.podcast.xml",
-
     "img" : {
         "alt" : "Kulturfragen",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/f/f68fc9390c45239f983d4d59de83cd79v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-lebenszeit.1177.de.podcast.xml",
-
     "img" : {
         "alt" : "Lebenszeit",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/9/96eb2f88ca7a23b35ef46e8575f697cfv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-laenderzeit.880.de.podcast.xml",
-
     "img" : {
         "alt" : "Länderzeit",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/2/2e1501b4115820e7195ed64750172f31v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-markt-und-medien.762.de.podcast.xml",
-
     "img" : {
         "alt" : "Markt und Medien",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/7/793170e13dc4b8c1e03c2ec915fa2da2v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"

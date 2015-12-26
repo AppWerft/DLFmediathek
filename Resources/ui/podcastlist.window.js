@@ -69,7 +69,7 @@ module.exports = function(_args) {
 						height : (description) ? Ti.UI.SIZE : 0
 					},
 					duration : {
-						text : (item.duration) ? 'Dauer: ' + (''+item.duration).toHHMMSS() : '',
+						text : (item.duration) ? 'Dauer: ' + ('' + item.duration).toHHMMSS() : '',
 						height : (item.duration) ? Ti.UI.SIZE : 0,
 
 					},
@@ -87,31 +87,32 @@ module.exports = function(_args) {
 		}
 	});
 	self.add(self.list);
-	
+
 	self.list.addEventListener('itemclick', function(_e) {
 		if (_e.bindId && _e.bindId == 'image') {
 			var item = _e.section.getItemAt(_e.itemIndex);
 			if (item.copyright.text != null)
 				Ti.UI.createNotification({
-					duration:3000,
-					message : item.copyright.text.replace(/&quot;/g,'"')
+					duration : 3000,
+					message : item.copyright.text.replace(/&quot;/g, '"')
 				}).show();
 		} else {
 			var item = JSON.parse(_e.itemId);
 			self.createAndStartPlayer(item);
 		}
 	});
-	self.createAndStartPlayer = function(_args) {
-		var PlayerOverlay = require('ui/hlsplayer.factory').createAndStartPlayer(_args);
-		self.add(PlayerOverlay);
-		PlayerOverlay.oncomplete = function() {
-			try {
-				self.remove(PlayerOverlay);
-				PlayerOverlay = null;
-			} catch(E) {
-				console.log(E);
-			}
-		};
+	self.createAndStartPlayer = function(data) {
+		require('ui/audioplayer.window').createAndStartPlayer({
+			color : '#000',
+			url : data.url,
+			duration : data.duration,
+			title : data.title,
+			subtitle :  Moment(data.pubdate).format('LLL') + ' Uhr',
+			author : data.author,
+			station : data.station,
+			pubdate : data.pubdate
+		});
+
 	};
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
