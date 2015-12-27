@@ -3,8 +3,6 @@ var Model = require('model/stations'),
     Moment = require('vendor/moment'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
-
-
 String.prototype.toHHMMSS = function() {
 	var sec_num = parseInt(this, 10);
 	// don't forget the second param
@@ -30,10 +28,7 @@ module.exports = function() {
 		fullscreen : true,
 		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
 	});
-	var Player = require('ui/hlsplayer.widget').createPlayer();
-	self.AudioPlayerView = Player.createView({
-		color : 'gray'
-	});
+	
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
 		templates : {
@@ -45,13 +40,15 @@ module.exports = function() {
 	var items = [];
 	var recents = Recents.getAllRecents();
 	var items = recents.map(function(item) {
-		console.log(item);
 		return {
 			title : {
 				text : item.subtitle,
 			},
 			image : {
 				image : item.image,
+			},
+			cached : {
+				opacity : (require('controls/cache.adapter').isCached(item) ? 1 : 0)
 			},
 			sendung : {
 				text : item.title,
@@ -82,7 +79,6 @@ module.exports = function() {
 	});
 	self.list.sections[0].setItems(items);
 	self.add(self.list);
-	self.add(self.AudioPlayerView);
 	self.list.addEventListener('itemclick', function(_e) {
 		if (_e.bindId && _e.bindId == 'image') {
 			var item = _e.section.getItemAt(_e.itemIndex);
@@ -92,33 +88,32 @@ module.exports = function() {
 					message : item.copyright.text.replace(/&quot;/g, '"')
 				}).show();
 		} else {
-			var item = JSON.parse(_e.itemId);
-			if (item.duration) {
-				Player.startPlayer({
-					url : item.url,
-					title : item.title,
-					subtitle: item.subtitle,
-					duration : item.duration
-				});
+			var data = JSON.parse(_e.itemId);
+			if (data.duration) {
+				require('ui/audioplayer.window').createAndStartPlayer({
+				color : '#000',
+				url : data.url,
+				duration : data.duration,
+				title : data.title,
+				subtitle : Moment(data.pubdate).format('LLL') + ' Uhr',
+				author : data.author,
+				station : data.station,
+				pubdate : data.pubdate
+			});
 			}
 		}
 	});
-	self.addEventListener('close', function() {
-		Player.stopPlayer();
-	});
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
-		АктйонБар.subtitle = 'Letztgehörtes …';
+		АктйонБар.subtitle = 'Letztgehörtes/Unvollständiges';
 		АктйонБар.titleFont = "Aller Bold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');
 
 		var activity = _event.source.getActivity();
 		if (activity) {
-			console.log('activity');
 			activity.onCreateOptionsMenu = function(_menuevent) {
 				activity.actionBar.displayHomeAsUp = true;
-
 				activity.actionBar.onHomeIconItemSelected = function() {
 					self.close();
 				};

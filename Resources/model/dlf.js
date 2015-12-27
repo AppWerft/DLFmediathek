@@ -39,7 +39,7 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/podcast-campus-karriere.1801.de.podcast.xml",
     "img" : {
         "alt" : "Campus und Karriere",
-        "src" : "http://www.deutschlandfunk.de/media/files/1/110b998c47ab642c840a7744f022de3cv1.jpg"
+        "src" : "/images/podcasts/campusundkarrieresendung.png"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation.685.de.podcast.xml",
@@ -51,7 +51,7 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/podcast-corso.808.de.podcast.xml",
     "img" : {
         "alt" : "Corso",
-        "src" : "http://www.deutschlandfunk.de/media/files/9/979a03b2a80291a7b4656b7d98d4ddc9v1.jpg"
+        "src" : "/images/podcasts/corso.png"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-das-feature.1248.de.podcast.xml",
@@ -69,7 +69,7 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/das-kulturgespraech-podcast.2274.de.podcast.xml",
     "img" : {
         "alt" : "Das Kulturgespräch",
-        "src" : "http://www.deutschlandfunk.de/media/files/e/ef4457e780335d1c8a1d81ba2f6b12eav1.jpg"
+        "src" : "/images/podcasts/kulturgespraech.png"
     }
 }, 
 
@@ -77,20 +77,20 @@ module.exports = [{
     "href" : "http://www.deutschlandfunk.de/podcast-das-war-der-tag.803.de.podcast.xml",
     "img" : {
         "alt" : "Das war der Tag Beiträge",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/d/df252a48d62e779b3e30f67cea5e6737v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/thumbs/d/dc3b141885cc13637e84c88d4defa403v1_max_448x448_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-das-war-der-tag-komplette-sendung.1951.de.podcast",
     "img" : {
         "alt" : "Das war der Tag Sendung",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/2/2a831ba46d137d441b64b24898f078dbv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/2/2a831ba46d137d441b64b24898f078dbv1.jpg"
         
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-informationen-am-morgen-das-wichtigste-heute-morgen.1930.de.podcast.xml",
     "img" : {
         "alt" : "Informationen am Morgen Das Wichtigste heute Morgen",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/0/098bb40a7060cd9a32a100b63c28b2d3v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/0/098bb40a7060cd9a32a100b63c28b2d3v1.jpg"
         
     }
 }, {
@@ -259,22 +259,28 @@ module.exports = [{
         "src" : "http://www.deutschlandfunk.de/media/thumbs/6/62cb4086dd82c99fe039b43ced613017v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
+    "href" : "http://www.deutschlandfunk.de/podcast-kommentar.721.de.podcast.xml",
+    "img" : {
+        "alt" : "Kommentar und Themen der Woche",
+        "src" : "http://www.deutschlandfunk.de/media/files/6/60c9435a68f2c301493c0023c3e9d7cfv2.jpg"
+    }
+},{
     "href" : "http://www.deutschlandfunk.de/podcast-kultur-heute.692.de.podcast.xml",
     "img" : {
         "alt" : "Kultur heute – Beiträge",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/e/ef04b02a756d460590824f3bd1c3e63ev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
-    "href" : "http://www.deutschlandfunk.de/podcast-kultur-heute-komplette-sendung.414.de.podcast.xml",
-    "img" : {
-        "alt" : "Kultur heute – Sendung",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/5/596d34a07bfad7f3681b1ea631bb2a6ev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
-    }
-}, {
     "href" : "http://www.deutschlandfunk.de/podcast-kulturfragen.912.de.podcast.xml",
     "img" : {
         "alt" : "Kulturfragen",
         "src" : "http://www.deutschlandfunk.de/media/thumbs/f/f68fc9390c45239f983d4d59de83cd79v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+    }
+}, {
+    "href" : "http://www.deutschlandfunk.de/podcast-kultur-heute-komplette-sendung.414.de.podcast.xml",
+    "img" : {
+        "alt" : "Kultur heute – Sendung",
+        "src" : "http://www.deutschlandfunk.de/media/thumbs/5/596d34a07bfad7f3681b1ea631bb2a6ev1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-lebenszeit.1177.de.podcast.xml",
@@ -362,13 +368,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "Tag für Tag",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/3/3da728fca34377201400a2a7fb2d77a4v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
-    }
-}, {
-    "href" : "http://www.deutschlandfunk.de/podcast-themen-der-woche.859.de.podcast.xml",
-    "img" : {
-        "alt" : "Themen der Woche",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/3/33d8b82be047ee6e43844efffc1b0398v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "/images/podcasts/tagfuertag.png"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-umwelt-und-verbraucher.698.de.podcast.xml",
@@ -387,43 +387,43 @@ module.exports = [{
 
     "img" : {
         "alt" : "Verbrauchertipp",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/9/9d472ff9c89576e6c23ff6d4ed9391d8v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/9/9d472ff9c89576e6c23ff6d4ed9391d8v1.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-wirtschaft-am-mittag.767.de.podcast.xml",
     "img" : {
         "alt" : "Wirtschaft am Mittag",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/5/5d2f952abf254e459d88b024f0bbf2a4v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/5/5d2f952abf254e459d88b024f0bbf2a4v1.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-wirtschaftspresseschau.744.de.podcast.xml",
     "img" : {
         "alt" : "Wirtschaftspresseschau",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/a/a4604c4a85ec520a61704ca746339ffcv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/a/a4604c4a85ec520a61704ca746339ffcv1.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-wirtschaft-und-gesellschaft.770.de.podcast.xml",
     "img" : {
         "alt" : "Wirtschaft und Gesellschaft",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/2/2941d8efec8a127c487a285cd57c4955v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/files/2/2941d8efec8a127c487a285cd57c4955v1.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-wissenschaft-im-brennpunkt.741.de.podcast.xml",
     "img" : {
         "alt" : "Wissenschaft im Brennpunkt",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/a/a8f793362ded7ce633a41ef46d79eafdv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "http://www.deutschlandfunk.de/media/thumbs/a/a8f793362ded7ce633a41ef46d79eafdv1_max_448x448_b3535db83dc50e27c1bb1392364c95a2.jpg"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-zur-diskussion.902.de.podcast.xml",
 
     "img" : {
         "alt" : "Zur Diskussion",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/0/01f7cb43ce48cf4242b97b4447567c79v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "/images/podcasts/zurdiskussion.png"
     }
 }, {
     "href" : "http://www.deutschlandfunk.de/podcast-zwischentoene.2258.de.podcast.xml",
     "img" : {
         "alt" : "Zwischentöne",
-        "src" : "http://www.deutschlandfunk.de/media/thumbs/e/e0d6396d3edc7832bd82dbcdfe2e364cv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg"
+        "src" : "/images/podcasts/zwischentoene.png"
     }
 }];

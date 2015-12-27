@@ -49,7 +49,7 @@ Module.prototype = {
 	getAllRecents : function() {
 		var link = Ti.Database.open(DB);
 		var recents = [];
-		var res = link.execute('SELECT * FROM recents WHERE progress <= duration ORDER BY DATETIME(lastaccess) DESC');
+		var res = link.execute('SELECT * FROM recents WHERE progress <= duration ORDER BY DATETIME(lastaccess) DESC LIMIT 100');
 		while (res.isValidRow()) {
 			var station = res.getFieldByName('station');
 			recents.push({

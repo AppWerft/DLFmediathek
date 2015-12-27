@@ -43,7 +43,7 @@ module.exports = function(_args) {
 		done : function(_feeditems) {
 			_feeditems.items.forEach(function(item) {
 				var res = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
-				var image = (res) ? res[1] : item.channelimage;
+				item.image = (res) ? res[1] : item.channelimage;
 				var height = (res) ? 65 : 90;
 				var description = (res) ? res[3] : null;
 				var copyright = (res) ? res[2] : null;
@@ -52,7 +52,7 @@ module.exports = function(_args) {
 						text : Moment(item.pubdate).format('LLL') + ' Uhr'
 					},
 					image : {
-						image : image,
+						image : item.image ? item.image : undefined,
 						height : height,
 						defaultImage : '/images/' + _args.station + '.png'
 					},
@@ -71,12 +71,10 @@ module.exports = function(_args) {
 					duration : {
 						text : (item.duration) ? 'Dauer: ' + ('' + item.duration).toHHMMSS() : '',
 						height : (item.duration) ? Ti.UI.SIZE : 0,
-
 					},
 					author : {
 						text : (item.author) ? 'Autor: ' + item.author : 0,
 						height : (item.author) ? Ti.UI.SIZE : 0,
-
 					},
 					properties : {
 						itemId : JSON.stringify(item)
@@ -110,6 +108,7 @@ module.exports = function(_args) {
 			subtitle :  Moment(data.pubdate).format('LLL') + ' Uhr',
 			author : data.author,
 			station : data.station,
+			image : data.image,
 			pubdate : data.pubdate
 		});
 

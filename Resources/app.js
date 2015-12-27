@@ -31,7 +31,7 @@
 			Ti.App.Properties.setString('LASTDAY', today);
 			Ti.App.fireEvent('daychanged');
 		}
-	}, 1000 * 60);
+	}, 1000 * 6);
 	self.open();
 	self.setActiveTab(0);
 	var tools = require('bencoding.android.tools');

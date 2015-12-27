@@ -54,6 +54,9 @@ var AudioPlayer = function(options) {
 				that._view.setVisible(false);
 			that._Recents.setComplete();
 		});
+		that._player.addEventListener('complete', function(_e) {
+			that.stopPlayer();
+		});
 		that._player.addEventListener('change', function(_e) {
 			Ti.API.error(_e.state + '    ' + _e.description);
 			switch (_e.description) {
@@ -65,9 +68,7 @@ var AudioPlayer = function(options) {
 				that._view.remove(that._view.equalizer);
 				that._view.equalizer.opacity = 0;
 				that._view.control.image = '/images/play.png';
-				if (that._view && that._view.oncomplete && typeof that._view.oncomplete == 'function') {
-					that._view.oncomplete();
-				}
+				that.stopPlayer();
 				break;
 			case 'stopping':
 				that._view.equalizer.opacity = 0;
@@ -107,6 +108,7 @@ var AudioPlayer = function(options) {
 				} else {
 				}
 				that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+				that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 				that._view.equalizer.animate({
 					opacity : 1,
 					duration : 2000
@@ -126,10 +128,10 @@ AudioPlayer.prototype = {
 		this.color = (this.options.color) ? this.options.color : 'black';
 		this._window = Ti.UI.createWindow({
 			fullscreen : true,
-			backgroundColor:'transparent',
+			backgroundColor : 'transparent',
 			theme : 'Theme.NoActionBar'
 		});
-		this._view = playerViewModule.getView();
+		this._view = playerViewModule.getView(this.options);
 		this._window.add(this._view);
 		var that = this;
 		this._view.control.addEventListener('click', function() {
@@ -146,7 +148,8 @@ AudioPlayer.prototype = {
 		this._window.open();
 	},
 	startPlayer : function() {
-		if (Ti.Network.online != true) {
+		var url = require('controls/cache.adapter').getURL(this.options);
+		if (Ti.Network.online != true && url.cached == false) {
 			Ti.UI.createNotification({
 				message : 'Bitte Internetverbindung prüfen.\n\n Mediathekinhalte dürfen leider aus lizenzrechtlichen Gründen nicht offline zur Verfügung gestellt werden.'
 			}).show();
@@ -171,17 +174,14 @@ AudioPlayer.prototype = {
 		this._view.subtitle.setText(this.options.subtitle);
 		this._view.duration.setText(('' + this.options.duration).toHHMMSS());
 		this._view.add(this._view.equalizer);
-		this._player.setUrl(this.options.url + '?_=' + Math.random());
+		this._player.setUrl(url.url);
 		that._player.start();
 	},
 	stopPlayer : function() {
-		if (this._player.isPlaying() || this._player.isPaused()) {
-			this._player.stop();
-			this._player.release();
-			this._window.removeAllChildren();
-			this._window.close();
-		}
-
+		this._player.stop();
+		this._player.release();
+		this._window.removeAllChildren();
+		this._window.close();
 	}
 };
 

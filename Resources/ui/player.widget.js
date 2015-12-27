@@ -1,8 +1,12 @@
 console.log('Info: start player building');
 var start = new Date().getTime();
 var createView = function(args) {
-	if (!args) args = {};
-	var color = (args.color) ? args.color : 'black', self = Ti.UI.createView({
+	if (!args)
+		args = {};
+	console.log('PPPPPPPPPPPPPP');	
+	console.log(args);
+	var color = (args.color) ? args.color : 'black',
+	    self = Ti.UI.createView({
 		visible : false
 	});
 	self.add(Ti.UI.createView({
@@ -10,8 +14,18 @@ var createView = function(args) {
 		touchEnabled : false,
 		backgroundColor : color
 	}));
+	if (args.image) {
+		self.add(Ti.UI.createImageView({
+			touchEnabled : false,
+			bottom : 130,
+			width : '60%',
+			left:0,
+			height : 'auto',
+			image : args.image
+		}));
+	}	
 	self.add(Ti.UI.createView({
-		opacity : 0.5,
+		opacity : 0.3,
 		touchEnabled : false,
 		backgroundColor : 'black'
 	}));
@@ -48,8 +62,9 @@ var createView = function(args) {
 		touchEnabled : false,
 		color : this.color,
 		horizontalWrap : false,
+		width : Ti.UI.FILL,
 		wordWrap : false,
-		ellipsize : true,
+		ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE,
 		height : 25,
 		font : {
 			fontSize : 20,
@@ -67,7 +82,6 @@ var createView = function(args) {
 		wordWrap : false,
 		ellipsize : true,
 		width : Ti.UI.FILL,
-		ellipsize : true,
 		height : 20,
 		font : {
 			fontSize : 14,
@@ -84,7 +98,7 @@ var createView = function(args) {
 		image : '/images/play.png',
 		bottom : 115
 	});
-	
+
 	self.equalizer = Ti.UI.createWebView({
 		borderRadius : 1,
 		width : 250,
@@ -106,12 +120,5 @@ var createView = function(args) {
 	return self;
 };
 
-var playerView = createView();
-console.log('Time for player building = ' + (new Date().getTime()-start));
-console.log(typeof playerView);
-console.log(playerView.apiName);
-
-exports.getView = function() {
-	return playerView;
-};
+exports.getView = createView;
 

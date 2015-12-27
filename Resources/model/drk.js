@@ -40,7 +40,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "das blaue sofa",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/c/c40d4eac26716e347befcba4be857a97v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "/images/podcasts/dasblauesofa.png",
 
         "title" : "das blaue sofa"
     }
@@ -115,8 +115,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "Kompressor",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/a/a5fb1a5810c3a260a7a1a04310c34b0cv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
+        "src" : "/images/podcasts/kompressor.png",
         "title" : "Kompressor"
     }
 }, {
@@ -208,36 +207,33 @@ module.exports = [{
     "href" : "http://www.deutschlandradiokultur.de/podcast-sein-und-streit.2163.de.podcast.xml",
     "img" : {
         "alt" : "Sein und Streit",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/e/e52a28c721188921a6cc0354b06b605dv1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "http://www.deutschlandradiokultur.de/media/files/e/e52a28c721188921a6cc0354b06b605dv1.jpg",
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-studio-9.2166.de.podcast.xml",
     "img" : {
         "alt" : "Studio 9",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/a/a1c5f31c30b9337766cced5708bf7a36v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "http://www.deutschlandradiokultur.de/media/files/a/a1c5f31c30b9337766cced5708bf7a36v1.jpg",
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-tacheles.991.de.podcast.xml",
     "img" : {
         "alt" : "Tacheles",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/5/5e8a3919807fd6d8f6d31fade703c1a3v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "http://www.deutschlandradiokultur.de/media/files/5/5e8a3919807fd6d8f6d31fade703c1a3v1.jpg",
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-vollbild.2169.de.podcast.xml",
 
     "img" : {
         "alt" : "Vollbild",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/3/39ded5ba2b7f9ea1d21fd7e067de7899v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
+        "src" : "http://www.deutschlandradiokultur.de/media/files/3/39ded5ba2b7f9ea1d21fd7e067de7899v1.jpg",
         "title" : "Vollbild"
     }
 }, {
     "href" : "http://www.deutschlandradiokultur.de/podcast-weltzeit.980.de.podcast.xml",
-
     "img" : {
         "alt" : "Weltzeit",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/7/778359754a64caa656e7270770aa7ea4v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
-
+        "src" : "/images/podcasts/weltzeit.png",
         "title" : "Weltzeit"
     }
 }, {
@@ -245,7 +241,7 @@ module.exports = [{
 
     "img" : {
         "alt" : "Wortwechsel",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/1/1e2a8fe7d2ba46114d9d0ad5ef390e39v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "http://static.radio.de/images/broadcasts/c4/74/11367/c175.png",
 
         "title" : "Wortwechsel"
     }
@@ -253,7 +249,7 @@ module.exports = [{
     "href" : "http://www.deutschlandradiokultur.de/podcast-wurfsendung.1922.de.podcast.xml",
     "img" : {
         "alt" : "Wurfsendung",
-        "src" : "http://www.deutschlandradiokultur.de/media/thumbs/3/342bbe091ccd52350b9f1f41ce50a024v1_abs_100x100_b3535db83dc50e27c1bb1392364c95a2.jpg",
+        "src" : "/images/podcasts/wurfsendung.png",
 
         "title" : "Wurfsendung"
     }

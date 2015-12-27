@@ -107,7 +107,7 @@ module.exports = function() {
 		});
 		self.list.addEventListener('itemclick', function(_e) {
 			var data = JSON.parse(_e.itemId);
-			Ti.Media.vibrate([10, 200, 10, 200]);
+			
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.url,

@@ -110,9 +110,9 @@ exports.podcastlist = {
 			visible : false,
 			touchEnabled : false,
 		}
-	},{
+	}, {
 		type : 'Ti.UI.View',
-		bindId: 'playstarter',
+		bindId : 'playstarter',
 		properties : {
 			width : Ti.UI.FILL,
 			layout : 'vertical',
@@ -829,8 +829,6 @@ exports.search = {
 	}]
 };
 
-
-
 exports.recents = {
 	properties : {
 		height : Ti.UI.SIZE,
@@ -845,6 +843,18 @@ exports.recents = {
 			top : 0,
 			width : 70,
 			height : 70
+		}
+	}, {
+		type : 'Ti.UI.ImageView',
+		bindId : 'cached',
+		properties : {
+			left : 10,
+			touchEnabled : false,
+			top : 80,
+			width : 40,
+			touchEnabled : false,
+			image : '/images/offline.png',
+			height : 40
 		}
 	}, {
 		type : 'Ti.UI.View',
@@ -866,7 +876,7 @@ exports.recents = {
 				height : Ti.UI.SIZE,
 				touchEnabled : false,
 				font : {
-					fontSize : 20,
+					fontSize : 18,
 					fontFamily : 'Aller Bold'
 				},
 				color : '#333'
@@ -913,7 +923,7 @@ exports.recents = {
 				},
 				color : '#333'
 			}
-		},  {
+		}, {
 			type : 'Ti.UI.Label',
 			bindId : 'lastaccess',
 			properties : {
@@ -927,7 +937,7 @@ exports.recents = {
 				},
 				color : '#333'
 			}
-		},  {
+		}, {
 			type : 'Ti.UI.Label',
 			bindId : 'progress',
 			properties : {
@@ -941,7 +951,7 @@ exports.recents = {
 				},
 				color : '#333'
 			}
-		},{
+		}, {
 			type : 'Ti.UI.Label',
 			bindId : 'sendung',
 			properties : {
@@ -957,4 +967,4 @@ exports.recents = {
 			}
 		}]
 	}]
-};
+}; 
