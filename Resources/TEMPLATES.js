@@ -1,3 +1,17 @@
+var cacheIcon = {
+	type : 'Ti.UI.ImageView',
+	bindId : 'cached',
+	properties : {
+		left : 5,
+		touchEnabled : false,
+		top : 10,
+		width : 30,
+		touchEnabled : false,
+		image : '/images/offline.png',
+		height : 30
+	}
+};
+
 exports.schema = {
 	properties : {
 		height : Ti.UI.SIZE,
@@ -103,7 +117,7 @@ exports.podcastlist = {
 			width : 90,
 			height : 90
 		}
-	}, {
+	}, cacheIcon, {
 		type : 'Ti.UI.Label',
 		bindId : 'copyright',
 		properties : {
@@ -201,7 +215,7 @@ exports.klangkunst = {
 		bindId : 'image',
 		properties : {
 			left : 0,
-			top : 5,
+			top : 0,
 			touchEnabled : false,
 			width : 120,
 			height : 90
@@ -628,13 +642,13 @@ exports.mypodcasts = {
 		bindId : 'logo',
 		properties : {
 			left : 0,
-			top : 5,
+			top : 0,
 			bubbleParent : true,
 			image : '',
 			width : 90,
 			height : 90
 		}
-	}, {
+	}, cacheIcon, {
 		type : 'Ti.UI.View',
 		properties : {
 			width : Ti.UI.FILL,
@@ -844,19 +858,7 @@ exports.recents = {
 			width : 70,
 			height : 70
 		}
-	}, {
-		type : 'Ti.UI.ImageView',
-		bindId : 'cached',
-		properties : {
-			left : 10,
-			touchEnabled : false,
-			top : 80,
-			width : 40,
-			touchEnabled : false,
-			image : '/images/offline.png',
-			height : 40
-		}
-	}, {
+	},cacheIcon,{
 		type : 'Ti.UI.View',
 		bindId : 'playtrigger',
 		properties : {
@@ -967,4 +969,4 @@ exports.recents = {
 			}
 		}]
 	}]
-}; 
+};

@@ -25,8 +25,7 @@ String.prototype.toHHMMSS = function() {
 
 module.exports = function(_args) {
 	var self = Ti.UI.createWindow({
-		fullscreen : true,
-		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
+		fullscreen : true
 	});
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
@@ -47,9 +46,12 @@ module.exports = function(_args) {
 				var height = (res) ? 65 : 90;
 				var description = (res) ? res[3] : null;
 				var copyright = (res) ? res[2] : null;
+				var pubdate = Moment(item.pubdate).format('LLL') + ' Uhr';
+				if (!item.station)
+					item.station = 'dlf';
 				items.push({
 					pubdate : {
-						text : Moment(item.pubdate).format('LLL') + ' Uhr'
+						text : pubdate
 					},
 					image : {
 						image : item.image ? item.image : undefined,
@@ -76,6 +78,9 @@ module.exports = function(_args) {
 						text : (item.author) ? 'Autor: ' + item.author : 0,
 						height : (item.author) ? Ti.UI.SIZE : 0,
 					},
+					cached : {
+						opacity : item.cached ?1 :0
+					},
 					properties : {
 						itemId : JSON.stringify(item)
 					}
@@ -85,7 +90,6 @@ module.exports = function(_args) {
 		}
 	});
 	self.add(self.list);
-
 	self.list.addEventListener('itemclick', function(_e) {
 		if (_e.bindId && _e.bindId == 'image') {
 			var item = _e.section.getItemAt(_e.itemIndex);
@@ -105,7 +109,7 @@ module.exports = function(_args) {
 			url : data.url,
 			duration : data.duration,
 			title : data.title,
-			subtitle :  Moment(data.pubdate).format('LLL') + ' Uhr',
+			subtitle : Moment(data.pubdate).format('LLL') + ' Uhr',
 			author : data.author,
 			station : data.station,
 			image : data.image,
@@ -122,15 +126,24 @@ module.exports = function(_args) {
 
 		var activity = _event.source.getActivity();
 		if (activity) {
-			console.log('activity');
 			activity.onCreateOptionsMenu = function(_menuevent) {
 				activity.actionBar.displayHomeAsUp = true;
 				if (_args.station)
 					activity.actionBar.logo = '/images/' + _args.station + '.png';
 				// _menuevent.menu.clear();
 				_menuevent.menu.add({
+					title : 'Kanal speichern',
+					itemId : 0,
+					icon : Ti.App.Android.R.drawable.ic_action_offline,
+					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+				}).addEventListener("click", function(_e) {
+					var menuitem = _menuevent.menu.findItem('1');
+					Feed.toggleFaved(_args.url);
+					menuitem.setIcon(Feed.isFaved(_args.url) ? Ti.App.Android.R.drawable.ic_action_faved : Ti.App.Android.R.drawable.ic_action_favorite_add);
+				});
+				_menuevent.menu.add({
 					title : 'Kanal merken',
-					itemId : '1',
+					itemId : 1,
 					icon : (Feed.isFaved(_args.url)) ? Ti.App.Android.R.drawable.ic_action_faved : Ti.App.Android.R.drawable.ic_action_favorite_add,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 				}).addEventListener("click", function(_e) {

@@ -1,10 +1,7 @@
-console.log('Info: start player building');
 var start = new Date().getTime();
 var createView = function(args) {
 	if (!args)
 		args = {};
-	console.log('PPPPPPPPPPPPPP');	
-	console.log(args);
 	var color = (args.color) ? args.color : 'black',
 	    self = Ti.UI.createView({
 		visible : false
@@ -19,11 +16,12 @@ var createView = function(args) {
 			touchEnabled : false,
 			bottom : 130,
 			width : '60%',
-			left:0,
+			left : 0,
+			zIndex : 99,
 			height : 'auto',
 			image : args.image
 		}));
-	}	
+	}
 	self.add(Ti.UI.createView({
 		opacity : 0.3,
 		touchEnabled : false,
@@ -119,6 +117,5 @@ var createView = function(args) {
 	self.container.add(self.control);
 	return self;
 };
-
 exports.getView = createView;
 

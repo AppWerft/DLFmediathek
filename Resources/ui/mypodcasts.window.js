@@ -42,6 +42,9 @@ module.exports = function() {
 					image : item.image,
 					defaultImage : '/images/' + station + '.png'
 				},
+				cached : {
+					opacity : 0
+				}
 			};
 		});
 		self.list.sections[0].setItems(dataItems);

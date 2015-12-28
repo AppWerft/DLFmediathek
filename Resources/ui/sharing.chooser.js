@@ -1,17 +1,20 @@
 
-/* Thanks to Stefan G.  ;-)) */
-var myAccounts = require('org.bcbhh').getAccounts();
 
-console.log(myAccounts);
-function hasAccount(_accounttype) {
-    for (var i = 0; i < myAccounts.length; i++) {
-        if (myAccounts[i].accountType == _accounttype)
-            return true;
-    }
-    return false;
-}
+
+
 
 module.exports = function(_cb) {
+	/* Thanks to Stefan G.  ;-)) */
+	console.log('Thanks to Stefan G.  ;-))	');
+	var myAccounts = require('org.bcbhh').getAccounts();
+	function hasAccount(_accounttype) {
+ 	   for (var i = 0; i < myAccounts.length; i++) {
+    	    if (myAccounts[i].accountType == _accounttype)
+        	    return true;
+    	}
+    	return false;
+	}
+	console.log(myAccounts);
     var items = [{
         label : 'Twitter',
         icon : '/images/twitter.png'
@@ -31,7 +34,6 @@ module.exports = function(_cb) {
         label : 'Dropbox',
         icon : '/images/dropbox.png',
     }*/];
-
     var rows = [];
     items.forEach(function(item) {
         if (hasAccount(item.label) || item.label=='Download') {

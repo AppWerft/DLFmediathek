@@ -23,12 +23,11 @@ String.prototype.toHHMMSS = function() {
 	return time;
 };
 
+/*   ===================  */
 module.exports = function() {
 	var self = Ti.UI.createWindow({
 		fullscreen : true,
-		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
 	});
-	
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
 		templates : {
@@ -38,46 +37,48 @@ module.exports = function() {
 		sections : [Ti.UI.createListSection({})]
 	});
 	var items = [];
-	var recents = Recents.getAllRecents();
-	var items = recents.map(function(item) {
-		return {
-			title : {
-				text : item.subtitle,
-			},
-			image : {
-				image : item.image,
-			},
-			cached : {
-				opacity : (require('controls/cache.adapter').isCached(item) ? 1 : 0)
-			},
-			sendung : {
-				text : item.title,
-				height : (item.title) ? Ti.UI.SIZE : 0,
-				color : (item.title && item.station) ? Model[item.station].color : '#555'
-			},
-			author : {
-				text : 'Autor: ' + item.author,
-				height : (item.author) ? Ti.UI.SIZE : 0,
-			},
-			progress : {
-				text : 'schon gehört: ' + Math.floor(item.progress * 100) + '%',
-			},
-			duration : {
-				text : (item.duration) ? 'Dauer: ' + ('' + item.duration).toHHMMSS() : '',
-				height : (item.duration) ? Ti.UI.SIZE : 0,
-			},
-			pubdate : {
-				text : (item.pubdate) ? 'Sendezeit : ' + require('vendor/smartDate')(item.pubdate) : ''
-			},
-			lastaccess : {
-				text : (item.lastaccess) ? 'Hörzeit : ' + require('vendor/smartDate')(item.lastacccess) : ''
-			},
-			properties : {
-				itemId : JSON.stringify(item)
-			}
-		};
-	});
-	self.list.sections[0].setItems(items);
+	self.updateList = function() {
+		var recents = Recents.getAllRecents();
+		var items = recents.map(function(item) {
+			return {
+				title : {
+					text : item.subtitle,
+				},
+				image : {
+					image : item.image,
+				},
+				cached : {
+					opacity : (require('controls/cache.adapter').isCached(item) ? 1 : 0)
+				},
+				sendung : {
+					text : item.title,
+					height : (item.title) ? Ti.UI.SIZE : 0,
+					color : (item.title && item.station) ? Model[item.station].color : '#555'
+				},
+				author : {
+					text : 'Autor: ' + item.author,
+					height : (item.author) ? Ti.UI.SIZE : 0,
+				},
+				progress : {
+					text : 'schon gehört: ' + Math.floor(item.progress * 100) + '%',
+				},
+				duration : {
+					text : (item.duration) ? 'Dauer: ' + ('' + item.duration).toHHMMSS() : '',
+					height : (item.duration) ? Ti.UI.SIZE : 0,
+				},
+				pubdate : {
+					text : (item.pubdate) ? 'Sendezeit : ' + require('vendor/smartDate')(item.pubdate) : ''
+				},
+				lastaccess : {
+					text : (item.lastaccess) ? 'Hörzeit : ' + require('vendor/smartDate')(item.lastacccess) : ''
+				},
+				properties : {
+					itemId : JSON.stringify(item)
+				}
+			};
+		});
+		self.list.sections[0].setItems(items);
+	};
 	self.add(self.list);
 	self.list.addEventListener('itemclick', function(_e) {
 		if (_e.bindId && _e.bindId == 'image') {
@@ -91,18 +92,20 @@ module.exports = function() {
 			var data = JSON.parse(_e.itemId);
 			if (data.duration) {
 				require('ui/audioplayer.window').createAndStartPlayer({
-				color : '#000',
-				url : data.url,
-				duration : data.duration,
-				title : data.title,
-				subtitle : Moment(data.pubdate).format('LLL') + ' Uhr',
-				author : data.author,
-				station : data.station,
-				pubdate : data.pubdate
-			});
+					color : '#000',
+					url : data.url,
+					duration : data.duration,
+					title : data.title,
+					subtitle : Moment(data.pubdate).format('LLL') + ' Uhr',
+					author : data.author,
+					station : data.station,
+					pubdate : data.pubdate
+				});
 			}
 		}
 	});
+	self.addEventListener('focus', self.updateList);
+	
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
 		АктйонБар.subtitle = 'Letztgehörtes/Unvollständiges';

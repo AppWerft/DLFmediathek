@@ -10,13 +10,10 @@ String.prototype.toHHMMSS = function() {
 	var seconds = sec_num - (hours * 3600) - (minutes * 60);
 	if (hours < 10)
 		hours = "0" + hours;
-
 	if (minutes < 10)
 		minutes = "0" + minutes;
-
 	if (seconds < 10)
 		seconds = "0" + seconds;
-
 	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
 	return time;
 };
@@ -53,8 +50,6 @@ var AudioPlayer = function(options) {
 			if (that._view)
 				that._view.setVisible(false);
 			that._Recents.setComplete();
-		});
-		that._player.addEventListener('complete', function(_e) {
 			that.stopPlayer();
 		});
 		that._player.addEventListener('change', function(_e) {

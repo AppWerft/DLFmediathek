@@ -109,7 +109,6 @@ Module.prototype = {
 		if (!Ti.App.Properties.hasProperty(KEY)) {
 			var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
 			if (Model[_args.station].dayplan) {
-				console.log('Info: we must retrieve for dayplan :::::. ' + url);
 				var xhr = Ti.Network.createHTTPClient({
 					onload : function() {
 						var channel = new XMLTools(this.responseXML).toObject().channel;

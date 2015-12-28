@@ -4,7 +4,8 @@ var FlipModule = require('de.manumaticx.androidflip'),
 	'drk' : 1,
 	'drw' : 2
 },
-    Model = require('model/stations');
+    Model = require('model/stations'),
+    Favs = new (require('controls/favorites.adapter'))();
 
 module.exports = function() {
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
@@ -25,19 +26,21 @@ module.exports = function() {
 			item.fav.opacity = isfav ? 0.8 : 0.5;
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else if (_e.bindId && _e.bindId == 'share') {
-			Ti.Media.vibrate(1, 0);
+			console.log('===========================================');
+			//return;
 			require('ui/sharing.chooser')(function(_type) {
+				console.log(_type);
+				var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
+				console.log(message);
 				require('vendor/socialshare')({
 					type : _type,
-					message : 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“ auf ' + Model[_args.station].name,
+					message : message,
 					url : JSON.parse(_e.itemId).url,
 					// image : fileToShare.nativePath,
 				});
 			});
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			var data = JSON.parse(_e.itemId);
-			Ti.Media.vibrate([1, 1]);
-			var start = new Date().getTime();
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.url,
@@ -48,9 +51,7 @@ module.exports = function() {
 				station : data.station,
 				pubdate : data.pubdate
 			});
-			
 		}
-		
 	};
 	var pages = [];
 	for (var station in Model) {

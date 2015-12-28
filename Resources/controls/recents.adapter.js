@@ -3,6 +3,7 @@ var Model = require('model/stations');
 
 const DB = Ti.App.Properties.getString('DATABASE');
 var link = Ti.Database.open(DB);
+
 //link.execute('DROP  TABLE IF EXISTS "recents"');
 link.execute('CREATE TABLE IF NOT EXISTS "recents" ("url" TEXT UNIQUE, "image" TEXT,"station" TEXT, "title" TEXT,"sendung" TEXT, "duration" NUMBER, "progress" NUMBER, "lastaccess" DATETIME,"pubdate" DATETIME, "author" TEXT)');
 link.execute('CREATE INDEX IF NOT EXISTS urlindex ON recents (url)');

@@ -48,6 +48,12 @@ module.exports = [{
         "src" : "http://a3.mzstatic.com/eu/r30/Music4/v4/28/4c/56/284c5624-7f41-49ee-42dc-8b15cd875ee5/cover170x170.jpeg"
     }
 },  {
+    "href" : "http://www.deutschlandfunk.de/podcast-computer-und-kommunikation-komplette-sendung.416.de.podcast.xml",
+    "img" : {
+        "alt" : "Computer und Kommunikation Sendung",
+        "src" : "http://www.deutschlandfunk.de/media/files/d/d4a13a32cde15fff1f5bdbfc3688d14av1.jpg"
+    }
+}, {
     "href" : "http://www.deutschlandfunk.de/podcast-corso.808.de.podcast.xml",
     "img" : {
         "alt" : "Corso",

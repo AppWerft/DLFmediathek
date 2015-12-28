@@ -3,9 +3,7 @@ var Moment = require('vendor/moment'),
 
 const DB = Ti.App.Properties.getString('DATABASE');
 
-var toType = function(obj) {
-	return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
-};
+var Cache = require('controls/cache.adapter');
 
 var Module = function() {
 	this.eventhandlers = {};
@@ -21,16 +19,6 @@ var Module = function() {
 };
 
 Module.prototype = {
-	/* will called from UI and calls background service */
-	triggerPodcastDownload : function(_args) {
-		require('bencoding.alarmmanager').createAlarmManager().addAlarmService({
-			service : 'de.appwerft.dlrmediathek.DownloaderService',
-			second : 10,
-			parameter : {
-				url : _args.url
-			}
-		});
-	},
 	mirrorAllFeeds : function(_args) {
 		var that = this;
 		var total = 0;
@@ -114,26 +102,29 @@ Module.prototype = {
 		var items = [];
 		if (rows.getRowCount() > 0) {
 			while (rows.isValidRow()) {
-				var parts = rows.getFieldByName('duration').split(':');
+				var parts = rows.getFieldByName('duration').split(':'),
+				    url = rows.getFieldByName('enclosure_url'),
+				    station = rows.getFieldByName('station') || 'dlf';
 				var item = {
 					pubdate : rows.getFieldByName('pubdate'),
 					title : rows.getFieldByName('title').replace(/\(podcast\)/gi, '').replace(/(\d\d\.\d\d\.\d\d\d\d)/gi, ''),
 					description : rows.getFieldByName('description'),
-					url : rows.getFieldByName('enclosure_url'),
+					url : url,
 					podcast : rows.getFieldByName('podcast'),
 					author : rows.getFieldByName('author'),
 					duration : parseInt(parts[0] * 60) + parseInt(parts[1]),
-					station : rows.getFieldByName('station'),
+					station : station,
 					channelimage : rows.getFieldByName('channelimage'),
+					cached : Cache.isCached({
+						station : station,
+						url : url
+					}) ? true : false
 				};
 				items.push(item);
 				rows.next();
 			}
 			rows.close();
 			link.close();
-			items.sort(function(a, b) {
-				return Moment(b.pubDate).unix() - Moment(a.pubDate).unix();
-			});
 			_args.done({
 				ok : true,
 				items : items
@@ -147,7 +138,7 @@ Module.prototype = {
 		var xhr = Ti.Network.createHTTPClient({
 			onload : function() {
 				var channel = new XMLTools(this.responseXML).toObject().channel;
-				if (channel.item && toType(channel.item) != 'array') {
+				if (channel.item && !Array.isArray(channel.item)) {
 					channel.item = [channel.item];
 				}
 				var link = Ti.Database.open(DB);
@@ -167,7 +158,7 @@ Module.prototype = {
 				channel.item.forEach(function(item) {
 					link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
 					_args.url, item.title, item.link, item.description, item.guid, //
-					item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], Moment(item.pubDate).toISOString, 0);
+					item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], Moment(item.pubDate).toISOString(), 0);
 				});
 
 				link.close();
@@ -182,13 +173,20 @@ Module.prototype = {
 		xhr.open('GET', _args.url);
 		xhr.send();
 	},
+	/* load feed from net, args:
+	 *
+	 * url - STRING i.e. http://www.deutschlandfunk.de/podcast-computer-und-kommunikation-komplette-sendung.416.de.podcast.xml
+	 * station - STRING i.e. dlf
+	 * done - callback function
+	 *
+	 */
 	loadFeed : function(_args) {
 		var faved = 0;
 		var that = this;
 		var xhr = Ti.Network.createHTTPClient({
 			onload : function() {
 				var channel = new XMLTools(this.responseXML).toObject().channel;
-				if (channel.item && toType(channel.item) != 'array') {
+				if (channel.item && !Array.isArray(channel.item)) {
 					channel.item = [channel.item];
 				}
 				var link = Ti.Database.open(DB);
@@ -232,7 +230,6 @@ Module.prototype = {
 					0 //watched
 					);
 				});
-				//	console.log(Moment(channel.item.pubDate).toISOString());
 				link.close();
 				channel.item.faved = that.isFaved(_args.url);
 				var result = {
