@@ -1,16 +1,21 @@
 const FOLDER = 'RadioCache';
+if (Ti.Filesystem.isExternalStoragePresent())
+	var DEPOT = Ti.Filesystem.externalStorageDirectory;
+else
+	var DEPOT = Ti.Filesystem.applicationDataDirectory;
+var folder = Ti.Filesystem.getFile(DEPOT, FOLDER);
+if (!folder.exists()) {
+	folder.createDirectory();
+}
+
+exports.getTree = function(){
+	
+};
 
 exports.isCached = function(options) {
 	console.log(options);
-	if (!options.station) return false;
-	if (Ti.Filesystem.isExternalStoragePresent())
-		var DEPOT = Ti.Filesystem.externalStorageDirectory;
-	else
-		var DEPOT = Ti.Filesystem.applicationDataDirectory;
-	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER);
-	if (!folder.exists()) {
-		folder.createDirectory();
-	}
+	if (!options.station)
+		return false;
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {
 		folder.createDirectory();
@@ -22,14 +27,6 @@ exports.isCached = function(options) {
 };
 
 exports.getURL = function(options) {
-	if (Ti.Filesystem.isExternalStoragePresent())
-		var DEPOT = Ti.Filesystem.externalStorageDirectory;
-	else
-		var DEPOT = Ti.Filesystem.applicationDataDirectory;
-	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER);
-	if (!folder.exists()) {
-		folder.createDirectory();
-	}
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {
 		folder.createDirectory();

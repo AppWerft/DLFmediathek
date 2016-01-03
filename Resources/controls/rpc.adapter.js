@@ -1,5 +1,8 @@
 var Moment = require('vendor/moment'),
     Favs = new (require('controls/favorites.adapter'))();
+    
+if (!Ti.App.Properties.hasProperty('LAST_STATION'))
+	Ti.App.Properties.setString('LAST_STATION', 'dlf');
 
 module.exports = function(_args) {
 	if (_args.station != Ti.App.Properties.getString('LAST_STATION')) {

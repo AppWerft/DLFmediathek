@@ -1,12 +1,11 @@
 ! function() {
 	var Moment = require('vendor/moment');
-	//require('controls/wurfsendung.import')(240);
+	Ti.UI.backgroundImage='#00cc00';
 	var self = Ti.UI.createTabGroup({
-		fullscreen : true,
+		fullscreen : false,
 		swipeable : false,
 		exitOnClose : true,
 		smoothScrollOnTabClick : true,
-		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
 		tabs : [Ti.UI.createTab({
 			title : 'Mediathek',
 			ndx : 0,

@@ -7,6 +7,8 @@ var FlipModule = require('de.manumaticx.androidflip'),
     Model = require('model/stations'),
     Favs = new (require('controls/favorites.adapter'))();
 
+
+
 module.exports = function() {
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
 	var locked = false;
@@ -70,15 +72,17 @@ module.exports = function() {
 		height : Ti.UI.FILL
 	});
 	self.onFlippedFunc = function(_e) {
+		
 		Ti.App.fireEvent('app:station', {
-			station : pages[_e.index].station,
+			station : _e.index != undefined ? pages[_e.index].station : _e.station,
 			page : 'mediathek'
 		});
+		
 		pages.forEach(function(page, ndx) {
-			if (ndx == _e.index) {
+			if (ndx == _e.index || _e.forced == true) {
 				setTimeout(function() {
 					page.updateCurrentinTopBox(true);
-				}, 1000);
+				}, 500);
 				page.updateMediathekList();
 			} else
 				page.hideCurrent([_e.index]);
@@ -94,6 +98,11 @@ module.exports = function() {
 			title : Ti.App.Properties.getString('LAST_STATION'),
 			icon : 'drk'
 		});
+		self.onFlippedFunc({
+			station :  Ti.App.Properties.getString('LAST_STATION', 'dlf'),
+			forced : true
+		});
+		// initial
 	};
 	self.FlipViewCollection.addEventListener('flipped', self.onFlippedFunc);
 	self.addEventListener('focus', self.onFocusFunc);

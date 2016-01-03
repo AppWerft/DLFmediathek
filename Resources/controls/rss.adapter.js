@@ -80,6 +80,9 @@ Module.prototype = {
 		// test if right day:
 		return currentonair;
 	},
+	syncAll : function() {
+		
+	},
 	getRSS : function(_args) {
 		var that = this;
 		var KEY = "DAYPLAN#" + _args.station;

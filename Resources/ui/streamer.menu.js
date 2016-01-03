@@ -30,11 +30,7 @@ var STOPPED = 0,
     STREAMERROR = 3,
     STATUS = 0;
 
-var Player = Ti.Media.createAudioPlayer({
-	allowBackground : true,
-	volume : 1
-}),
-    Model = require('model/stations'),
+var Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras'),
     stations = require('model/stations'),
     currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf'),
@@ -57,7 +53,12 @@ searchView.addEventListener('submit', function(_e) {
 	searchMenu.collapseActionView();
 });
 
+console.log('Info: ≈≈≈≈≈≈≈≈≈≈  module parsed');
+
 module.exports = function(_event) {
+
+	console.log('Info: Window opended≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈');
+
 	searchView.where = _event.source.activeTab.ndx;
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;
@@ -67,15 +68,14 @@ module.exports = function(_event) {
 	АктйонБар.setFont("Aller");
 	АктйонБар.setBackgroundColor('#444444');
 	АктйонБар.subtitleColor = "#ccc";
-	_event.source.addEventListener('focus', function(_e) {
-		//	АктйонБар.setSubtitle(subtitles[_e.index]);
-	});
 	var activity = _event.source.getActivity();
 	if (activity) {
 		activity.actionBar.logo = '/images/' + currentStation + '.png';
 		activity.onPrepareOptionsMenu = function() {
+			console.log('Info: ≈≈≈≈≈≈≈ onPrepareOptionsMenu ');
 		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
+			console.log('Info: ≈≈≈≈≈≈≈ onCreateOptionsMenu ');
 			_menuevent.menu.clear();
 			_menuevent.menu.add({
 				title : 'Start live Radio',
@@ -144,6 +144,12 @@ module.exports = function(_event) {
 				}).addEventListener("click", function(_e) {
 					require('ui/dayplan.window')().open();
 				});
+				_menuevent.menu.add({
+					title : 'PDF Sendepläne',
+					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+				}).addEventListener("click", function(_e) {
+					require('ui/pdf.window')().open();
+				});
 			}, 7000);
 
 			/* Handling of Playerevents */
@@ -199,19 +205,23 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				Ti.App.fireEvent('radiotext', {
-					message : null
-				});
-				currentStation = _e.station;
-				menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
-				activity.actionBar.logo = '/images/' + currentStation + '.png';
-				АктйонБар.setTitle(Model[currentStation].name);
-				Ti.App.Properties.setString('LAST_STATION', currentStation);
-				// only if radio is active we switch to other station:
-				if (AudioStreamer.getStatus() == PLAYING) {
-					AudioStreamer.stop();
-					console.log('Info: streamer stopped by swiping');
-					startAudioStreamer(stations[currentStation].stream);
+				console.log('Info: ≈≈≈≈≈≈≈ app:onstation ');
+				console.log(_e.station);
+				if (_e.station) {
+					Ti.App.fireEvent('radiotext', {
+						message : null
+					});
+					currentStation = _e.station;
+					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+					activity.actionBar.logo = '/images/' + currentStation + '.png';
+					АктйонБар.setTitle(Model[currentStation].name);
+					Ti.App.Properties.setString('LAST_STATION', currentStation);
+					// only if radio is active we switch to other station:
+					if (AudioStreamer.getStatus() == PLAYING) {
+						AudioStreamer.stop();
+						console.log('Info: streamer stopped by swiping');
+						startAudioStreamer(stations[currentStation].stream);
+					}
 				}
 			});
 			Ti.App.addEventListener('app:stop', function(_event) {
@@ -224,5 +234,14 @@ module.exports = function(_event) {
 		};
 		activity && activity.invalidateOptionsMenu();
 		require('vendor/versionsreminder')();
+		activity.onResume = function() {
+			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+			console.log('Info: Activity resumed ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈' + currentStation);
+			activity.actionBar.logo = '/images/' + currentStation + '.png';
+
+		};
+		activity.onRestart = function() {
+			console.log('Info: Activity restarted ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ' + currentStation);
+		};
 	}
 };

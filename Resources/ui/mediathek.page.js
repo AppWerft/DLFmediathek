@@ -107,7 +107,7 @@ module.exports = function(_args) {
 		self.bottomView.setRefreshing(true);
 		setTimeout(function() {
 			self.bottomView.setRefreshing(false);
-		}, 10000);
+		}, 3000);
 		if (activityworking == false) {
 			return;
 		}

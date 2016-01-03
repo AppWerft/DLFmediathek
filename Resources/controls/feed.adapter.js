@@ -19,6 +19,20 @@ var Module = function() {
 };
 
 Module.prototype = {
+	cacheAll : function(channelurl) {
+		var link = Ti.Database.open(DB);
+		var res = link.execute('SELECT items.enclosure_url AS url,feeds.station AS station FROM items,feeds WHERE items.channelurl=? AND items.channelurl=feeds.url', channelurl);
+		while (res.isValidRow()) {
+			Cache.getURL({
+				url : res.getFieldByName('url'),
+				station : res.getFieldByName('station'),
+			});
+			res.next();
+		}
+		res.close();
+		link.close();
+
+	},
 	mirrorAllFeeds : function(_args) {
 		var that = this;
 		var total = 0;
@@ -53,7 +67,6 @@ Module.prototype = {
 
 		loadfeeds();
 	},
-
 	getAllFavedFeeds : function() {
 		var link = Ti.Database.open(DB);
 		var res = link.execute('SELECT feeds.*, (SELECT MAX(DATE(pubDate)) FROM items WHERE feeds.url=items.channelurl) AS lastpubdate, (SELECT COUNT(*) FROM items WHERE feeds.url=items.channelurl) AS total FROM feeds WHERE feeds.faved=1 ORDER BY lastpubdate DESC');

@@ -858,7 +858,7 @@ exports.recents = {
 			width : 70,
 			height : 70
 		}
-	},cacheIcon,{
+	}, cacheIcon, {
 		type : 'Ti.UI.View',
 		bindId : 'playtrigger',
 		properties : {
@@ -970,3 +970,62 @@ exports.recents = {
 		}]
 	}]
 };
+
+
+var w = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
+exports.tilestemplate = {
+	properties : {
+		layout : 'horizontal',
+		height : Ti.UI.SIZE,
+	},
+	childTemplates : [{
+		type : 'Ti.UI.View',
+		bindId : 'i1',
+		properties : {
+			left : 0,
+			top : 0,
+			width : '50%',
+			height : w / 2
+		},
+		childTemplates : [{
+			type : 'Ti.UI.Label',
+			bindId : 'label1',
+			properties : {
+				top : '50%',
+				left : 10,
+				color : '#222',
+				touchEnabled : false,
+				right : 5,
+				font : {
+					fontSize : 24,
+					fontFamily : 'ScalaSans'
+				}
+			}
+		}]
+	}, {
+		type : 'Ti.UI.View',
+		bindId : 'i2',
+		properties : {
+			left : 0,
+			top : 0,
+			width : '50%',
+			height : w / 2
+		},
+		childTemplates : [{
+			type : 'Ti.UI.Label',
+			bindId : 'label2',
+			properties : {
+				top : '50%',
+				left : 10,
+				color : '#222',
+				touchEnabled : false,
+				right : 5,
+				font : {
+					fontSize : 22,
+					fontFamily : 'ScalaSans'
+				}
+			}
+		}]
+	}]
+};
+

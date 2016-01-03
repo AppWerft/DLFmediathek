@@ -47,7 +47,7 @@ module.exports = function() {
 			}).show();
 			self.removeAllChildren();
 			self.add(Ti.UI.createImageView({
-				image : '/images/wurfsendung.png',
+				image : '/images/wurfsendung.jpg',
 				bottom : 0,
 				width : Ti.UI.FILL,
 				height : 'auto'
