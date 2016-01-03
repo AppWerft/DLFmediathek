@@ -2,9 +2,8 @@ var АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function(_args) {
 	var self = Ti.UI.createWindow({
-		fullscreen : true,
+		fullscreen : false,
 		backgroundColor : 'white',
-
 	});
 	self.list = Ti.UI.createTableView();
 	self.list.addEventListener('click', function(_e) {

@@ -3,25 +3,20 @@ var Model = require('model/stations'),
     Moment = require('vendor/moment'),
     FlipModule = require('de.manumaticx.androidflip'),
     АктйонБар = require('com.alcoapps.actionbarextras');
-;
 
-module.exports = function() {
+
+module.exports = function(_args) {
 	var self = Ti.UI.createWindow({
-		backgroundColor : 'gray',
-		fullscreen : true
+		fullscreen : false
 	});
 	self.addEventListener('open', function(_event) {
-		
-
 		АктйонБар.title = 'DeutschlandRadio';
 		АктйонБар.subtitle = 'Tagesübersicht';
 		АктйонБар.titleFont = "Aller Bold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');
-
 		var activity = _event.source.getActivity();
 		if (activity) {
-			console.log('activity');
 			activity.onCreateOptionsMenu = function(_menuevent) {
 				activity.actionBar.displayHomeAsUp = true;
 
@@ -41,7 +36,7 @@ module.exports = function() {
 			overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 			views : pages,
 			top : 0,
-			currentPage : Ti.App.Properties.getInt('LAST_STATION_NDX', 0) % 2,
+			currentPage : _args && _args.station == 'dlf' ? 0 : 1,
 			height : Ti.UI.FILL
 		});
 		self.add(self.FlipViewCollection);

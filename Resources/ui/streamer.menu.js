@@ -8,9 +8,9 @@ var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
 
 var startAudioStreamer = function(m3u) {
-	console.log('Playerinfo: ' + AudioStreamer.getStatus());
-	if (AudioStreamer.getStatus()==1 || AudioStreamer.getStatus()==2) {
-		console.log('Playerinfo: was active');
+	var status = AudioStreamer.getStatus();
+	if (status == BUFFERING || status == PLAYING) {
+		console.log('Playerinfo: was active ' + status);
 		AudioStreamer.stop();
 	}
 	setTimeout(function() {

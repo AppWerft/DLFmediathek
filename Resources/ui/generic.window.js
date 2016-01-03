@@ -5,9 +5,8 @@ module.exports = function(_args) {
         title : _args.title,
         subtitle : _args.subtitle,
         itemId : _args.station,
-        fullscreen : true,
-        backgroundColor : 'white',
-        orientationModes : (_args.orientationModes) ? _args.orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
+        fullscreen : false,
+        backgroundColor : 'white'
     });
     if (_args.singlewindow == true)
         self.addEventListener('open', function(_event) {

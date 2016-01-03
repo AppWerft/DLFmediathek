@@ -26,7 +26,7 @@ String.prototype.toHHMMSS = function() {
 /*   ===================  */
 module.exports = function() {
 	var self = Ti.UI.createWindow({
-		fullscreen : true,
+		fullscreen : false,
 	});
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,

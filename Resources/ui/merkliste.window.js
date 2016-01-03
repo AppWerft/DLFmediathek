@@ -7,7 +7,7 @@ Moment.locale('de');
 module.exports = function(station) {
     var self = Ti.UI.createWindow({
         theme : 'Theme.NoActionBar',
-        fullscreen : true,
+        fullscreen : false,
         backgroundColor : 'white',
         orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
