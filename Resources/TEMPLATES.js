@@ -380,11 +380,25 @@ exports.mediathek = {
 			}
 		}, {
 			type : 'Ti.UI.Label',
-			bindId : 'duration',
+			bindId : 'depub',
 			properties : {
 				left : 0,
 				top : 0,
-				bottom : 10,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 12,
+					fontFamily : 'Aller'
+				},
+				color : '#333'
+			}
+		},{
+			type : 'Ti.UI.Label',
+			bindId : 'duration',
+			properties : {
+				left : 0,
+				top : 5,
+				bottom : 5,
 				height : Ti.UI.SIZE,
 				touchEnabled : false,
 				font : {

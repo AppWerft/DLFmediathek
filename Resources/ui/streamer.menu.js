@@ -8,10 +8,10 @@ var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
 
 var startAudioStreamer = function(m3u) {
-	if (AudioStreamer.isPlaying() == true) {
+	console.log('Playerinfo: ' + AudioStreamer.getStatus());
+	if (AudioStreamer.getStatus()==1 || AudioStreamer.getStatus()==2) {
 		console.log('Playerinfo: was active');
 		AudioStreamer.stop();
-		//AudioStreamer.release();
 	}
 	setTimeout(function() {
 		console.log('Playerinfo: try start');
@@ -55,12 +55,7 @@ searchView.addEventListener('submit', function(_e) {
 	searchMenu.collapseActionView();
 });
 
-console.log('Info: ≈≈≈≈≈≈≈≈≈≈  module parsed');
-
 module.exports = function(_event) {
-
-	console.log('Info: Window opended≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈');
-
 	searchView.where = _event.source.activeTab.ndx;
 	var subtitles = _event.source.tabs.map(function(tab) {
 		return tab.title;
@@ -237,12 +232,10 @@ module.exports = function(_event) {
 		require('vendor/versionsreminder')();
 		activity.onResume = function() {
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
-			console.log('Info: Activity resumed ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈' + currentStation);
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
 
 		};
 		activity.onRestart = function() {
-			console.log('Info: Activity restarted ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ ' + currentStation);
 		};
 	}
 };

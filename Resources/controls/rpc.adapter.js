@@ -1,21 +1,21 @@
 var Moment = require('vendor/moment'),
     Favs = new (require('controls/favorites.adapter'))();
-    
+
 if (!Ti.App.Properties.hasProperty('LAST_STATION'))
 	Ti.App.Properties.setString('LAST_STATION', 'dlf');
 
 module.exports = function(_args) {
 	if (_args.station != Ti.App.Properties.getString('LAST_STATION')) {
-			console.log('Warning: no same station');
-			_args.onload(null);
-			return;
+		console.log('Warning: no same station');
+		_args.onload(null);
+		return;
 	}
 	var onloadFunc = function() {
 		var start = new Date().getTime();
 		var entries = require('controls/aodlistaudio.rpc').parseXMLDoc(this.responseXML.documentElement);
 		console.log('Info: time for mediathekparsing= ' + (new Date().getTime() - start) + '  ' + entries.length + ' Beiträge');
 		var result = {
-			hash : Ti.Utils.md5HexDigest(this.responseText),
+			hash : Ti.Utils.md5HexDigest(this.responseText + 'geheim'),
 			live : entries
 		};
 		// little dirty cleaning process:
@@ -33,11 +33,11 @@ module.exports = function(_args) {
 					station : item.station,
 					url : item.url,
 					datetime : item.datetime,
+					killtime : item.killtime,
 					pubdate : item.datetime,
 					duration : item.duration,
 					//	id : item.sendung.id,
 					title : item.title,
-
 				};
 				sub.isfav = Favs.isFav(sub) ? true : false;
 				if (item.sendung != lastsendung) {

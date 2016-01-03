@@ -31,7 +31,9 @@ module.exports = function(_args) {
 		self.add(self.calendarView);
 	}, 3000);
 
-	var TopBoxWidget = new (require('ui/currenttop.widget'))();
+	var TopBoxWidget = new (require('ui/currenttop.widget'))({
+		station : _args.station
+	});
 	self.topBox = TopBoxWidget.createView({
 		height : HEIGHT_OF_TOPBOX,
 		color : _args.color
@@ -51,7 +53,7 @@ module.exports = function(_args) {
 			'mediathek' : require('TEMPLATES').mediathek,
 		},
 		defaultItemTemplate : 'mediathek',
-		sections : [Ti.UI.createListSection({})]
+		sections : [Ti.UI.createListSection()]
 	});
 	self.bottomView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 		view : self.bottomList,
@@ -120,14 +122,32 @@ module.exports = function(_args) {
 				if (_sendungen == null)
 					return;
 				self.bottomView.setRefreshing(false);
-				if (currentMediathekHash == _sendungen.hash)
-					return;
+				//if (currentMediathekHash == _sendungen.hash)
+				//	return;
 				currentMediathekHash = _sendungen.hash;
 				self.bottomList.sections = [];
 				_sendungen.mediathek.forEach(function(sendung) {
 					var dataitems = [];
 					sendung.subs.forEach(function(item) {
 						item.title = sendung.name;
+						var depub = {
+							days : Moment.unix(item.killtime).diff(Moment(), 'days'),
+							weeks : Moment.unix(item.killtime).diff(Moment(), 'weeks'),
+							years : Moment.unix(item.killtime).diff(Moment(), 'years'),
+							
+						};
+						switch (true) {
+							case depub.days<15:
+								depub.str =  depub.days + ' Tagen';
+							break;
+							case (depub.days>=15 && depub.days<730):
+								depub.str =  depub.weeks + ' Wochen';
+							break;
+							default:
+								depub.str =  depub.years + ' Jahren';
+							
+						}
+						
 						dataitems.push({
 							properties : {
 								accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
@@ -157,6 +177,10 @@ module.exports = function(_args) {
 							autor : {
 								text : (item.author) ? 'Autor: ' + item.author : '',
 								height : (item.author) ? Ti.UI.SIZE : 0
+							},
+							depub : {
+								text : 'Depublizierung in ' + depub.str,
+								height : (item.killtime) ? Ti.UI.SIZE : 0
 							},
 							duration : {
 								text : (item.duration) ? 'Dauer: ' + Moment().startOf('day').seconds(item.duration).format('m:ss') : '',

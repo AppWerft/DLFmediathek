@@ -1,6 +1,6 @@
 var Moment = require('vendor/moment');
 
-var Module = function() {
+var Module = function(_args) {
 	this._view = Ti.UI.createScrollView({
 		scrollType : 'vertical',
 		contentHeight : Ti.UI.SIZE,
@@ -73,6 +73,11 @@ var Module = function() {
 		} else {
 			that._view.radiotext.setText(_e.message);
 		}
+	});
+	this._view.addEventListener('click', function() {
+		require('ui/dayplan.window')({
+			station : _args.station
+		}).open();
 	});
 	return this;
 };
