@@ -8,20 +8,22 @@ var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
 
 var startAudioStreamer = function(m3u) {
-	AudioStreamer.stop();
-	AudioStreamer = null;
-	AudioStreamer = require('com.woohoo.androidaudiostreamer');
-	AudioStreamer.setAllowBackground(true);
+	if (AudioStreamer.isPlaying() == true) {
+		console.log('Playerinfo: was active');
+		AudioStreamer.stop();
+		//AudioStreamer.release();
+	}
 	setTimeout(function() {
+		console.log('Playerinfo: try start');
 		require('controls/resolveplaylist')({
 			playlist : m3u,
 			onload : function(_icyUrl) {
-				АктйонБар.setSubtitle('Erwarte Radiotext …');
-				console.log('Info: AudioStreamerplayer will play with ' + _icyUrl);
+				АктйонБар.setSubtitle('Playerinfo: Erwarte Radiotext …');
+				console.log('Playerinfo: AudioStreamerplayer will play with ' + _icyUrl);
 				AudioStreamer.play(_icyUrl + '?' + Math.random());
 			}
 		});
-	}, 200);
+	}, 50);
 };
 
 var STOPPED = 0,
@@ -169,7 +171,6 @@ module.exports = function(_event) {
 				АктйонБар.setSubtitle(_e.title);
 			});
 			AudioStreamer.addEventListener('change', function(_e) {
-
 				STATUS = _e.status;
 				switch (_e.status) {
 				case BUFFERING:
