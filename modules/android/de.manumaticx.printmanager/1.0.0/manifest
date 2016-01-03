@@ -1,0 +1,18 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0.0
+apiversion: 2
+architectures: armeabi armeabi-v7a x86
+description: printmanager
+author: Manuel Lehner
+license: MIT
+copyright: Copyright (c) 2015 by Manuel Lehner
+
+# these should not be edited
+name: printmanager
+moduleid: de.manumaticx.printmanager
+guid: 862d2fc4-675a-4d3f-a266-0d94d7920c10
+platform: android
+minsdk: 3.1.0.GA
