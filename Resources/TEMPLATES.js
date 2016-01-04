@@ -392,7 +392,7 @@ exports.mediathek = {
 				},
 				color : '#333'
 			}
-		},{
+		}, {
 			type : 'Ti.UI.Label',
 			bindId : 'duration',
 			properties : {
@@ -985,8 +985,8 @@ exports.recents = {
 	}]
 };
 
-
 var w = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
+
 exports.tilestemplate = {
 	properties : {
 		layout : 'horizontal',
@@ -1040,6 +1040,47 @@ exports.tilestemplate = {
 				}
 			}
 		}]
+	}]
+};
+
+exports.earlybird = {
+	properties : {
+
+		height : Ti.UI.SIZE,
+	},
+	childTemplates : [{
+		type : 'Ti.UI.ImageView',
+		bindId : 'image',
+		properties : {
+			touchEnabled : false,
+			top : 0,
+			width : Ti.UI.FILL,
+			height : 'auto',
+			defaultImage : '/images/earlybird.jpg'
+		}
+	}, {
+		type : 'Ti.UI.View',
+		properties : {
+			bottom : 0,
+			height : 55,
+			backgroundColor : '#8801953C',
+			touchEnabled : false,
+		}
+	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'description',
+		properties : {
+			bottom : 5,
+			right : 10,
+			left : 10,
+			color : '#fff',
+			touchEnabled : false,
+			right : 5,
+			font : {
+				fontSize : 18,
+				fontFamily : 'Aller Bold'
+			}
+		}
 	}]
 };
 
