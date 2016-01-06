@@ -6,14 +6,11 @@
 
  **/
 const BLOCKSIZE = 1024;
-const DURATION = 10000;
 var moment = require('vendor/moment');
 
 module.exports = function(_args) {
     if (!_args.url)
         _args.url = URL;
-    if (!_args.duration)
-        _args.duration = DURATION;
     var mp3file = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent()) ? Ti.Filesystem.externalStorageDirectory : Ti.Filesystem.applicationDataDirectory, moment().format('YYYY-MM-DD_HHmm') + '.mp3');
     var res = _args.url.match(regex);
     _args.host = [res[4], res[5], res[6]].join('.');
@@ -62,8 +59,6 @@ module.exports = function(_args) {
     });
     socket.connect();
 
-    setTimeout(function() {
-        !!socket && socket.close();
-    }, _args.duration);
+   
 };
 
