@@ -6,12 +6,12 @@
 
  **/
 const BLOCKSIZE = 1024;
+const DURATION = 10000;
 var moment = require('vendor/moment');
 
 module.exports = function(_args) {
-    if (!_args.url)
-        _args.url = URL;
     var mp3file = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent()) ? Ti.Filesystem.externalStorageDirectory : Ti.Filesystem.applicationDataDirectory, moment().format('YYYY-MM-DD_HHmm') + '.mp3');
+    var regex = /^(?:([^\:]*)\:\/\/)?(?:([^\:\@]*)(?:\:([^\@]*))?\@)?(?:([^\/\:]*)\.(?=[^\.\/\:]*\.[^\.\/\:]*))?([^\.\/\:]*)(?:\.([^\/\.\:]*))?(?:\:([0-9]*))?(\/[^\?#]*(?=.*?\/)\/)?([^\?#]*)?(?:\?([^#]*))?(?:#(.*))?/;
     var res = _args.url.match(regex);
     _args.host = [res[4], res[5], res[6]].join('.');
     _args.port = res[7] || 80;
@@ -52,6 +52,7 @@ module.exports = function(_args) {
             }), function(_write) {
                 Ti.API.info('Successfully wrote GET request to shoutcast server');
             });
+
         },
         error : function(e) {
             Ti.API.info('Error (' + e.errorCode + '): ' + e.error);
@@ -59,6 +60,6 @@ module.exports = function(_args) {
     });
     socket.connect();
 
-   
+  
 };
 
