@@ -5,21 +5,17 @@
 
  **/
 
-var jsUri =require('vendor/jsUri');
+var Uri =require('vendor/jsUri');
 const BLOCKSIZE = 1024;
 
 var moment = require('vendor/moment');
 
 module.exports = function(_args) {
+	var uri = new Uri(_args.url);
     var mp3file = Ti.Filesystem.getFile((Ti.Filesystem.isExternalStoragePresent()) ? Ti.Filesystem.externalStorageDirectory : Ti.Filesystem.applicationDataDirectory, moment().format('YYYY-MM-DD_HHmm') + '.mp3');
-    var regex = /^(?:([^\:]*)\:\/\/)?(?:([^\:\@]*)(?:\:([^\@]*))?\@)?(?:([^\/\:]*)\.(?=[^\.\/\:]*\.[^\.\/\:]*))?([^\.\/\:]*)(?:\.([^\/\.\:]*))?(?:\:([0-9]*))?(\/[^\?#]*(?=.*?\/)\/)?([^\?#]*)?(?:\?([^#]*))?(?:#(.*))?/;
-    var res = _args.url.match(regex);
-    _args.host = [res[4], res[5], res[6]].join('.');
-    _args.port = res[7] || 80;
-    _args.path = res[8] + res[9];
     var socket = Ti.Network.Socket.createTCP({
-        host : _args.host,
-        port : _args.port,
+        host : uri.host,
+        port : uri.port,
         connected : function(e) {
             Ti.Stream.pump(e.socket, function(_pump) {
                 console.log(_pump.error);
@@ -49,7 +45,7 @@ module.exports = function(_args) {
                 } 
             }, BLOCKSIZE, true);
             Ti.Stream.write(e.socket, Ti.createBuffer({
-                value : 'GET ' + _args.path + ' HTTP/1.1\r\n\r\n'
+                value : 'GET ' + uri.path + ' HTTP/1.1\r\n\r\n'
             }), function(_write) {
                 Ti.API.info('Successfully wrote GET request to shoutcast server');
             });
