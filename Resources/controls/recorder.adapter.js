@@ -2,11 +2,12 @@
  call parameters :
 
  url
- duration
 
  **/
+
+var jsUri =require('vendor/jsUri');
 const BLOCKSIZE = 1024;
-const DURATION = 10000;
+
 var moment = require('vendor/moment');
 
 module.exports = function(_args) {
@@ -59,7 +60,5 @@ module.exports = function(_args) {
         },
     });
     socket.connect();
-
-  
 };
 
