@@ -4,6 +4,7 @@
 	var self = Ti.UI.createTabGroup({
 		fullscreen : false,
 		swipeable : false,
+		backgroundColor:'transparent',
 		exitOnClose : true,
 		smoothScrollOnTabClick : true,
 		tabs : [Ti.UI.createTab({
@@ -34,6 +35,11 @@
 	self.setActiveTab(0);
 	var tools = require('bencoding.android.tools');
 	require('vendor/cronservice.trigger')();
+	if (!Ti.App.Properties.hasProperty('M1')){
+		//alert('Deutschlandradio stellt zur Zeit seine Serverstruktur um. Deswegen wird die Mediathek zur Zeit nicht angezeigt.\nSobald alles bereinigt ist, wird auch diese App wieder voll funktionieren');
+	 	Ti.App.Properties.setString('M1','0');
+	 }
+	 
 	self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({

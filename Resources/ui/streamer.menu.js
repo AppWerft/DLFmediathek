@@ -3,7 +3,6 @@ const RECENT = 0,
     MYPODS = 2,
     MYPLAYLIST = 3,
     PLAY = 4;
-
 var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
 
@@ -136,12 +135,6 @@ module.exports = function(_event) {
 					require('ui/recents.window')().open();
 				});
 				_menuevent.menu.add({
-					title : 'Tagesübersicht',
-					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-				}).addEventListener("click", function(_e) {
-					require('ui/dayplan.window')().open();
-				});
-				_menuevent.menu.add({
 					title : 'PDF Sendepläne',
 					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
 				}).addEventListener("click", function(_e) {
@@ -201,8 +194,9 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				console.log('Info: ≈≈≈≈≈≈≈ app:onstation ');
-				console.log(_e.station);
+				console.log(Model[_e.station].color);
+				
+				АктйонБар.setStatusbarColor(Model[_e.station].color);
 				if (_e.station) {
 					Ti.App.fireEvent('radiotext', {
 						message : null
@@ -233,6 +227,7 @@ module.exports = function(_event) {
 		activity.onResume = function() {
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
+			АктйонБар.setStatusbarColor(Model[currentStation].color);
 
 		};
 		activity.onRestart = function() {

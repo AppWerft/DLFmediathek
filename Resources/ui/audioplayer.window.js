@@ -140,7 +140,10 @@ AudioPlayer.prototype = {
 			Ti.API.error('Info: background of player clicked');
 			that.stopPlayer();
 		});
-		this._window.open();
+		this._window.open({
+			activityEnterAnimation :Ti.Android.R.anim.fade_in,
+//				activityExitAnimation : Ti.Android.R.anim.fade_out
+		});
 	},
 	startPlayer : function() {
 		var url = require('controls/cache.adapter').getURL(this.options);

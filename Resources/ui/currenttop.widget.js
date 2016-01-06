@@ -114,6 +114,7 @@ Module.prototype = {
 		this._view.progress.setValue(arguments[0]);
 	},
 	setDescription : function(msg) {
+		return;
 		if ( typeof arguments[0] == 'string')
 			this._view.description.setHtml(msg);
 		else

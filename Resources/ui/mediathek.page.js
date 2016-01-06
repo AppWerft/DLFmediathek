@@ -4,7 +4,7 @@ CurrentTransmission = new (require('controls/rss.adapter'))();
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
-const HEIGHT_OF_TOPBOX = 160;
+const HEIGHT_OF_TOPBOX = 110;
 
 module.exports = function(_args) {
 	var activityworking = true;
@@ -122,8 +122,8 @@ module.exports = function(_args) {
 				if (_sendungen == null)
 					return;
 				self.bottomView.setRefreshing(false);
-				//if (currentMediathekHash == _sendungen.hash)
-				//	return;
+				if (currentMediathekHash == _sendungen.hash)
+					return;
 				currentMediathekHash = _sendungen.hash;
 				self.bottomList.sections = [];
 				_sendungen.mediathek.forEach(function(sendung) {

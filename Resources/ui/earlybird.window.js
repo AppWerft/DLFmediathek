@@ -42,6 +42,7 @@ module.exports = function(_args) {
 		АктйонБар.title = 'DRadio Wissen';
 		АктйонБар.subtitle = 'Earlybird';
 		АктйонБар.titleFont = "ScalaSansBold";
+		АктйонБар.setStatusbarColor('#FF01953C');
 		АктйонБар.setBackgroundColor('#444444');
 		АктйонБар.subtitleColor = "#ccc";
 		var activity = _event.source.getActivity();

@@ -7,7 +7,7 @@ deviceManager.addEventListener('deviceOnline', function (e) {
     if (!deviceManager.isConnected()) {
         device.connect(function () {
             device.startApplication(function () {
-                device.sendJsonMessage({foo: 'bar'});
+                device.sendMessage({foo: 'bar'});
             });
         });
     }
