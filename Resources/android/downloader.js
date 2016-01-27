@@ -27,7 +27,7 @@ var $ = Ti.Network.createHTTPClient({
 			icon : Ti.App.Android.R.drawable.appicon,
 			sound : Ti.Filesystem.getResRawDirectory() + 'kkj',
 		});
-		intent.close();
+		service.close();
 	}
 });
 

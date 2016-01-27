@@ -109,7 +109,7 @@ module.exports = function(station) {
                 view : Ti.UI.createWebView({
                     borderRadius : 1,
                     enableZoomControls : false,
-                    url : item.link
+                    url : item.link.replace('.html','.mhtml')
                 }),
                 height : Ti.UI.FILL,
                 width : Ti.UI.FILL

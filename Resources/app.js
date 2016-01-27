@@ -24,23 +24,14 @@
 		}, ndx * 5000);
 	});
 	setInterval(function() {
-		var today = Moment().format('YYYYMMDD');
-		var lastday = Ti.App.Properties.getString('LASTDAY', '');
-		if (lastday != today) {
-			Ti.App.Properties.setString('LASTDAY', today);
-			Ti.App.fireEvent('daychanged');
-		}
+		Ti.App.fireEvent('daychanged');
 	}, 1000 * 6);
 	self.open();
 	self.setActiveTab(0);
-	var tools = require('bencoding.android.tools');
+	/* start background service: */
 	require('vendor/cronservice.trigger')();
-	if (!Ti.App.Properties.hasProperty('M1')){
-		//alert('Deutschlandradio stellt zur Zeit seine Serverstruktur um. Deswegen wird die Mediathek zur Zeit nicht angezeigt.\nSobald alles bereinigt ist, wird auch diese App wieder voll funktionieren');
-	 	Ti.App.Properties.setString('M1','0');
-	 }
-	 
-	self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
+	//listen for the back-button-tap event
+	self.addEventListener("android:back", function(_e) {
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({
 			action : Ti.Android.ACTION_MAIN,

@@ -228,6 +228,7 @@ module.exports = function(_event) {
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
 			АктйонБар.setStatusbarColor(Model[currentStation].color);
+			Ti.App.fireEvent('daychanged',{});
 
 		};
 		activity.onRestart = function() {

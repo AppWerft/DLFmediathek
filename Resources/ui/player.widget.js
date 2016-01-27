@@ -96,7 +96,16 @@ var createView = function(args) {
 		image : '/images/play.png',
 		bottom : 115
 	});
-
+	self.spinner = Ti.UI.createActivityIndicator({
+		width : 50,
+		height : 50,
+		style: Ti.UI.ActivityIndicatorStyle.BIG,
+		bubbleParent : true,
+		touchEnabled:false,
+		left : 10,
+		bottom : 115
+	});
+	self.spinner.show();
 	self.equalizer = Ti.UI.createWebView({
 		borderRadius : 1,
 		width : 250,
@@ -115,6 +124,7 @@ var createView = function(args) {
 	self.container.add(self.title);
 	self.container.add(self.subtitle);
 	self.container.add(self.control);
+	self.container.add(self.spinner);
 	return self;
 };
 exports.getView = createView;
