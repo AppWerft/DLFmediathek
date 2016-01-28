@@ -6,7 +6,7 @@ module.exports = function(_args) {
 		backgroundColor : require('model/stations').drw.color
 	});
 	var sections = [];
-	for (var i = 0; i < 10; i++) {
+	for (var i = 0; i < 20; i++) {
 		sections[i] = Ti.UI.createListSection({});
 	}
 	self.list = Ti.UI.createListView({
@@ -63,14 +63,13 @@ module.exports = function(_args) {
 						itemId : JSON.stringify(bird)
 					},
 					image : {
-						image : bird.image
+						image : encodeURI(bird.image)
 					},
 					description : {
 						text : bird.title
 					}
 				};
 			});
-
 		});
 	});
 	return self;

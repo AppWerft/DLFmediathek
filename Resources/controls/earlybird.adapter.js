@@ -9,7 +9,6 @@ module.exports = function(_onload) {
 			}
 		});
 	}
-
 	// START
 	nextPage(0);
 };
@@ -19,10 +18,10 @@ function loadPage(_i, _onload) {
 		_onload(Ti.App.Properties.getList('EARLYBIRD_'+_i));
 	}
 	var xhr = Ti.Network.createHTTPClient({
-		timeout : 20000,
+		timeout : 40000,
 		onload : function() {
 			var figures = JSON.parse(this.responseText).query.results.figure;
-			console.log(figures[0]);
+			
 			if (Array.isArray(figures) && typeof figures[0] == 'object') {
 				var items = [];
 				figures.forEach(function(f) {
@@ -46,6 +45,7 @@ function loadPage(_i, _onload) {
 					}
 				});
 				_onload(items);
+				// renew list
 				Ti.App.Properties.setList('EARLYBIRD_'+_i,items);
 
 			} else {
@@ -56,7 +56,8 @@ function loadPage(_i, _onload) {
 			console.log('Error: ' + _e);
 		}
 	});
-	var url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'dradiowissen.de%2Fearly-bird%2Fp" + _i + "'%20and%20xpath%3D'%2F%2Ffigure'&format=json";
+	var url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'http%3A%2F%2Fdradiowissen.de%2Fearly-bird%2Fp" + _i + "'%20and%20xpath%3D'%2F%2Ffigure'&format=json";
+	//console.log(url);
 	xhr.open('GET', url, true);
 	xhr.send(null);
 }
