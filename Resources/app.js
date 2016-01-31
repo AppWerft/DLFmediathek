@@ -1,8 +1,7 @@
 ! function() {
 	var Moment = require('vendor/moment');
-	//require('controls/wurfsendung.import')(240);
 	var self = Ti.UI.createTabGroup({
-		fullscreen : true,
+		fullscreen : false,
 		swipeable : false,
 		exitOnClose : true,
 		smoothScrollOnTabClick : true,
@@ -23,14 +22,9 @@
 			self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
 		}, ndx * 5000);
 	});
-	setInterval(function() {
-		var today = Moment().format('YYYYMMDD');
-		var lastday = Ti.App.Properties.getString('LASTDAY', '');
-		if (lastday != today) {
-			Ti.App.Properties.setString('LASTDAY', today);
-			Ti.App.fireEvent('daychanged');
-		}
-	}, 1000 * 6);
+	
+	
+	
 	self.open();
 	self.setActiveTab(0);
 	var tools = require('bencoding.android.tools');

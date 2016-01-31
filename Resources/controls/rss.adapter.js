@@ -123,6 +123,7 @@ Module.prototype = {
 							})
 						};
 						// back to caller
+						Ti.App.Properties.setString('LASTPLANDAY',Moment().format('YYYYMMDD'));
 						_args.done && _args.done(result);
 						// persist
 						try {

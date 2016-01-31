@@ -123,7 +123,6 @@ module.exports = function(_args) {
 		АктйонБар.titleFont = "ScalaSansBold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');
-
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function(_menuevent) {
@@ -134,12 +133,10 @@ module.exports = function(_args) {
 				_menuevent.menu.add({
 					title : 'Kanal speichern',
 					itemId : 0,
-					icon : Ti.App.Android.R.drawable.ic_action_offline,
+					icon : Ti.App.Android.R.drawable.ic_action_cache,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 				}).addEventListener("click", function(_e) {
-					var menuitem = _menuevent.menu.findItem('1');
-					Feed.toggleFaved(_args.url);
-					menuitem.setIcon(Feed.isFaved(_args.url) ? Ti.App.Android.R.drawable.ic_action_faved : Ti.App.Android.R.drawable.ic_action_favorite_add);
+					Feed.cacheAll(_args.url);
 				});
 				_menuevent.menu.add({
 					title : 'Kanal merken',

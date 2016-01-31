@@ -3,9 +3,27 @@ const RECENT = 0,
     MYPODS = 2,
     MYPLAYLIST = 3,
     PLAY = 4;
-
+var Moment = require('vendor/moment');
 var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
+
+var cron;
+function startCron() {
+	cron && clearInterval(cron);
+	cron = setInterval(function() {
+		var today = Moment().format('YYYYMMDD');
+		var lastday = Ti.App.Properties.getString('LASTPLANDAY', '');
+		if (lastday != today) {
+			Ti.App.fireEvent('daychanged');
+		}
+	}, 1000 * 60);
+}	
+function stopCron() {
+	console.log('stopCron: ==========================');
+	cron && clearInterval(cron);
+}
+
+
 
 var startAudioStreamer = function(m3u) {
 	AudioStreamer.stop();
@@ -224,5 +242,13 @@ module.exports = function(_event) {
 		};
 		activity && activity.invalidateOptionsMenu();
 		require('vendor/versionsreminder')();
+		
+		activity.onStart = startCron;
+		activity.onPause = stopCron;
+		activity.onResume = startCron;
+		
+		
+		
+		
 	}
 };
