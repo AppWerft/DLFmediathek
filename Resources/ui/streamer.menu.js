@@ -5,6 +5,24 @@ const RECENT = 0,
     PLAY = 4;
 var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
+var Moment = require('vendor/moment');
+
+var cron;
+function startCron() {
+	cron && clearInterval(cron);
+	cron = setInterval(function() {
+		var today = Moment().format('YYYYMMDD');
+		var lastday = Ti.App.Properties.getString('LASTPLANDAY', '');
+		if (lastday != today) {
+			Ti.App.fireEvent('daychanged');
+		}
+	}, 1000 * 60);
+}
+
+function stopCron() {
+	console.log('stopCron: ==========================');
+	cron && clearInterval(cron);
+}
 
 var startAudioStreamer = function(m3u) {
 	var status = AudioStreamer.getStatus();
@@ -195,7 +213,7 @@ module.exports = function(_event) {
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
 				console.log(Model[_e.station].color);
-				
+
 				АктйонБар.setStatusbarColor(Model[_e.station].color);
 				if (_e.station) {
 					Ti.App.fireEvent('radiotext', {
@@ -224,14 +242,13 @@ module.exports = function(_event) {
 		};
 		activity && activity.invalidateOptionsMenu();
 		require('vendor/versionsreminder')();
+		activity.onStart = startCron;
+		activity.onPause = stopCron;
 		activity.onResume = function() {
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
 			АктйонБар.setStatusbarColor(Model[currentStation].color);
-			Ti.App.fireEvent('daychanged',{});
-
-		};
-		activity.onRestart = function() {
+			startCron();
 		};
 	}
 };
