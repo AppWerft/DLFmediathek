@@ -9,14 +9,12 @@ var Moment = require('vendor/moment');
 
 var cron;
 function startCron() {
+	var cronJob = function() {
+		Ti.App.fireEvent('daychanged');
+	};
 	cron && clearInterval(cron);
-	cron = setInterval(function() {
-		var today = Moment().format('YYYYMMDD');
-		var lastday = Ti.App.Properties.getString('LASTPLANDAY_' + currentstation, '');
-		if (lastday != today) {
-			Ti.App.fireEvent('daychanged');
-		}
-	}, 1000 * 60);
+	cron = setInterval(cronJob, 1000 * 60);
+	cronJob();
 }
 
 function stopCron() {
@@ -86,10 +84,8 @@ module.exports = function(_event) {
 	if (activity) {
 		activity.actionBar.logo = '/images/' + currentStation + '.png';
 		activity.onPrepareOptionsMenu = function() {
-			console.log('Info: ≈≈≈≈≈≈≈ onPrepareOptionsMenu ');
 		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
-			console.log('Info: ≈≈≈≈≈≈≈ onCreateOptionsMenu ');
 			_menuevent.menu.clear();
 			_menuevent.menu.add({
 				title : 'Start live Radio',
@@ -212,8 +208,6 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				console.log(Model[_e.station].color);
-
 				АктйонБар.setStatusbarColor(Model[_e.station].color);
 				if (_e.station) {
 					Ti.App.fireEvent('radiotext', {
@@ -227,7 +221,6 @@ module.exports = function(_event) {
 					// only if radio is active we switch to other station:
 					if (AudioStreamer.getStatus() == PLAYING) {
 						AudioStreamer.stop();
-						console.log('Info: streamer stopped by swiping');
 						startAudioStreamer(stations[currentStation].stream);
 					}
 				}

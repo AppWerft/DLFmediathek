@@ -13,12 +13,14 @@ var Module = function() {
 	var that = this;
 	Ti.App.addEventListener('daychanged', function() {
 		var today = Moment().format('YYYYMMDD');
-		var lastday = Ti.App.Properties.getString('LASTDAY', '');
+		var key = 'LASTPLANDAY_'+Ti.App.Properties.getString('LAST_STATION', 'dlf');
+		var lastday = Ti.App.Properties.getString(key, '');
+	//	console.log(lastday +' ======= ' + today + '  '  + key);
 		if (lastday != today) {
 			Ti.UI.createNotification({
 				message : 'Sendeplan wird neu geholt.'
 			}).show();
-			Ti.App.Properties.setString('LASTDAY', today);
+			//Ti.App.Properties.setString('LASTDAY', today);
 			['dlf', 'drk'].forEach(function(station) {
 				var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
 				Ti.App.Properties.removeProperty("DAYPLAN#" + station);
@@ -130,7 +132,7 @@ Module.prototype = {
 								station : _args.station
 							})
 						};
-						Ti.App.Properties.setString('LASTPLANDAY_' + _args.station, Moment().format('YYYYMMDD'));
+						Ti.App.Properties.setString('LASTPLANDAY_'+_args.station,Moment().format('YYYYMMDD'));
 						// back to caller
 						_args.done && _args.done(result);
 						// persist
