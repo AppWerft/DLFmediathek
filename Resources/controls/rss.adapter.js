@@ -130,7 +130,7 @@ Module.prototype = {
 								station : _args.station
 							})
 						};
-						Ti.App.Properties.setString('LASTPLANDAY',Moment().format('YYYYMMDD'));
+						Ti.App.Properties.setString('LASTPLANDAY_' + _args.station, Moment().format('YYYYMMDD'));
 						// back to caller
 						_args.done && _args.done(result);
 						// persist

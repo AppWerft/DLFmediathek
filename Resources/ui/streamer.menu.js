@@ -12,7 +12,7 @@ function startCron() {
 	cron && clearInterval(cron);
 	cron = setInterval(function() {
 		var today = Moment().format('YYYYMMDD');
-		var lastday = Ti.App.Properties.getString('LASTPLANDAY', '');
+		var lastday = Ti.App.Properties.getString('LASTPLANDAY_' + currentstation, '');
 		if (lastday != today) {
 			Ti.App.fireEvent('daychanged');
 		}
