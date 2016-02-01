@@ -1,6 +1,6 @@
-var RecentsModule = require('controls/recents.adapter');
-
-var playerViewModule = require('ui/player.widget');
+var RecentsModule = require('controls/recents.adapter'),
+    CacheAdapter = require('controls/cache.adapter'),
+    playerViewModule = require('ui/player.widget');
 
 String.prototype.toHHMMSS = function() {
 	var sec_num = parseInt(this, 10);
@@ -18,6 +18,7 @@ String.prototype.toHHMMSS = function() {
 	return time;
 };
 
+/* ********************************************************* */
 var AudioPlayer = function(options) {
 	this.options = options;
 	this._Recents = new RecentsModule({
@@ -102,6 +103,7 @@ var AudioPlayer = function(options) {
 					dialog.show();
 				} else {
 				}
+				that._view.spinner.hide();
 				that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 				that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 				that._view.equalizer.animate({
@@ -130,27 +132,16 @@ AudioPlayer.prototype = {
 		this._window.add(this._view);
 		var that = this;
 		this._view.control.addEventListener('click', function() {
-			if (that._player.isPlaying()) {
-				that._player.pause();
-			} else if (that._player.isPaused()) {
-				that._player.play();
-			}
-		});
-		this._view.addEventListener('click', function() {
 			Ti.API.error('Info: background of player clicked');
 			that.stopPlayer();
 		});
-		this._window.open();
+		this._window.open({
+			activityEnterAnimation : Ti.Android.R.anim.fade_in,
+			//				activityExitAnimation : Ti.Android.R.anim.fade_out
+		});
 	},
 	startPlayer : function() {
-		var url = require('controls/cache.adapter').getURL(this.options);
-		if (Ti.Network.online != true && url.cached == false) {
-			Ti.UI.createNotification({
-				message : 'Bitte Internetverbindung prüfen.\n\n Mediathekinhalte dürfen leider aus lizenzrechtlichen Gründen nicht offline zur Verfügung gestellt werden.'
-			}).show();
-			this.stopPlayer();
-			return;
-		}
+		var url = CacheAdapter.getURL(this.options);
 		Ti.App.fireEvent('app:stop');
 		this._view.setVisible(true);
 		var that = this;
@@ -173,6 +164,7 @@ AudioPlayer.prototype = {
 		that._player.start();
 	},
 	stopPlayer : function() {
+		var url = CacheAdapter.cacheURL(this.options);
 		this._player.stop();
 		this._player.release();
 		this._window.removeAllChildren();

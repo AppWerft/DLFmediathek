@@ -1,6 +1,6 @@
 var Moment = require('vendor/moment');
-
-var Module = function() {
+var banneradded = false;
+var Module = function(_args) {
 	this._view = Ti.UI.createScrollView({
 		scrollType : 'vertical',
 		contentHeight : Ti.UI.SIZE,
@@ -74,6 +74,14 @@ var Module = function() {
 			that._view.radiotext.setText(_e.message);
 		}
 	});
+	this._view.addEventListener('click', function() {
+		if (_args.station == 'drw')
+			require('ui/earlybird.window')().open();
+		else
+			require('ui/dayplan.window')({
+				station : _args.station
+			}).open();
+	});
 	return this;
 };
 
@@ -85,13 +93,16 @@ Module.prototype = {
 		return this._view;
 	},
 	addBanner : function() {
-		this._view.removeAllChildren();
-		var banner = Ti.UI.createImageView({
-			image : 'http://static.dradiowissen.de/banner/2015_early_bird.jpg',
-			top : 0,
-			width : Ti.UI.FILL
-		});
-		this._view.add(banner);
+		if (!banneradded) {
+			this._view.removeAllChildren();
+			var banner = Ti.UI.createImageView({
+				image : 'http://static.dradiowissen.de/banner/2015_early_bird.jpg',
+				top : 0,
+				width : Ti.UI.FILL
+			});
+			this._view.add(banner);
+			banneradded = true;
+		}
 	},
 	setPubDate : function(msg) {
 		this._view.pubdate.setText('seit: ' + Moment(msg).format('HH:mm') + ' Uhr');
@@ -103,6 +114,7 @@ Module.prototype = {
 		this._view.progress.setValue(arguments[0]);
 	},
 	setDescription : function(msg) {
+		return;
 		if ( typeof arguments[0] == 'string')
 			this._view.description.setHtml(msg);
 		else

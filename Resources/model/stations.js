@@ -1,6 +1,6 @@
 module.exports = {
     dlf : {
-        color : '#006AB3',
+        color : '#FF006AB3',
         name: 'Deutschlandfunk',
         /* für Tagesübersicht, wird auch in der Mediathek genutzt und einaml täglich über
          einen Hintergrundprozess gesynct*/
@@ -11,14 +11,14 @@ module.exports = {
         mediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=4&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'
     },
     drk : {
-        color : '#E95D0F',
+        color : '#FFE95D0F',
         name : 'DRadio Kultur',
         dayplan: 'http://www.deutschlandradiokultur.de/programmvorschau.282.de.rss',
         stream : 'http://www.dradio.de/streaming/dkultur.m3u',
         mediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=3&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'
     },
     drw : {
-        color : '#01953C',
+        color : '#FF01953C',
         name :'DRadio Wissen',
         stream : 'http://www.deutschlandradio.de/streaming/dradiowissen.m3u',
         mediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=1&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'

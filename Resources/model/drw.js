@@ -2,50 +2,50 @@ module.exports = [{
     "href" : "http://dradiowissen.de/podcast/eine-stunde-film",
     "img" : {
         "alt" : "Eine Stunde Film",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_eine_stunde_film.jpg"
+        "src" : "film.png"
     }
 }, {
 
     "href" : "http://dradiowissen.de/podcast/eine-stunde-liebe",
     "img" : {
         "alt" : "Eine Stunde Liebe",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_eine_stunde_liebe.jpg"
+        "src" :  "liebe.png"
     }
 
 }, {
     "href" : "http://dradiowissen.de/podcast/eine-stunde-netz",
     "img" : {
         "alt" : "Eine Stunde Netz",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_eine_stunde_netz.jpg"
+        "src" : "netz.png"
     }
 }, {
     "href" : "http://dradiowissen.de/podcast/eine-stunde-medien",
     "img" : {
         "alt" : "Eine Stunde was mit Medien",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_eine_stunde_medien.jpg"
+        "src" : "medien.png"
     }
 }, {
     "href" : "http://dradiowissen.de/podcast/einhundert",
     "img" : {
         "alt" : "Einhundert",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_einhundert.jpg"
+        "src" : "100.png"
     }
 }, {
     "href" : "http://dradiowissen.de/podcast/hoersaal-der-podcast",
     "img" : {
         "alt" : "Hörsaal",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_hrsaal.jpg"
+        "src" : "hsaal.png"
     }
 }, {
     "href" : "http://dradiowissen.de/podcast/redaktionskonferenz",
     "img" : {
         "alt" : "Redaktionskonferenz",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_redaktionskonf.jpg"
+        "src" : "konferenz.png"
     }
 }, {
     "href" : "http://dradiowissen.de/podcast/update",
     "img" : {
         "alt" : "Update",
-        "src" : "http://static.dradiowissen.de/cover/Podcasts/2015_update.jpg"
+        "src" : "update.png"
     }
 }];

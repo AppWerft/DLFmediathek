@@ -3,9 +3,9 @@ const RECENT = 0,
     MYPODS = 2,
     MYPLAYLIST = 3,
     PLAY = 4;
-var Moment = require('vendor/moment');
 var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
+var Moment = require('vendor/moment');
 
 var cron;
 function startCron() {
@@ -17,29 +17,30 @@ function startCron() {
 			Ti.App.fireEvent('daychanged');
 		}
 	}, 1000 * 60);
-}	
+}
+
 function stopCron() {
 	console.log('stopCron: ==========================');
 	cron && clearInterval(cron);
 }
 
-
-
 var startAudioStreamer = function(m3u) {
-	AudioStreamer.stop();
-	AudioStreamer = null;
-	AudioStreamer = require('com.woohoo.androidaudiostreamer');
-	AudioStreamer.setAllowBackground(true);
+	var status = AudioStreamer.getStatus();
+	if (status == BUFFERING || status == PLAYING) {
+		console.log('Playerinfo: was active ' + status);
+		AudioStreamer.stop();
+	}
 	setTimeout(function() {
+		console.log('Playerinfo: try start');
 		require('controls/resolveplaylist')({
 			playlist : m3u,
 			onload : function(_icyUrl) {
-				АктйонБар.setSubtitle('Erwarte Radiotext …');
-				console.log('Info: AudioStreamerplayer will play with ' + _icyUrl);
+				АктйонБар.setSubtitle('Playerinfo: Erwarte Radiotext …');
+				console.log('Playerinfo: AudioStreamerplayer will play with ' + _icyUrl);
 				AudioStreamer.play(_icyUrl + '?' + Math.random());
 			}
 		});
-	}, 200);
+	}, 50);
 };
 
 var STOPPED = 0,
@@ -48,11 +49,7 @@ var STOPPED = 0,
     STREAMERROR = 3,
     STATUS = 0;
 
-var Player = Ti.Media.createAudioPlayer({
-	allowBackground : true,
-	volume : 1
-}),
-    Model = require('model/stations'),
+var Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras'),
     stations = require('model/stations'),
     currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf'),
@@ -85,15 +82,14 @@ module.exports = function(_event) {
 	АктйонБар.setFont("Aller");
 	АктйонБар.setBackgroundColor('#444444');
 	АктйонБар.subtitleColor = "#ccc";
-	_event.source.addEventListener('focus', function(_e) {
-		//	АктйонБар.setSubtitle(subtitles[_e.index]);
-	});
 	var activity = _event.source.getActivity();
 	if (activity) {
 		activity.actionBar.logo = '/images/' + currentStation + '.png';
 		activity.onPrepareOptionsMenu = function() {
+			console.log('Info: ≈≈≈≈≈≈≈ onPrepareOptionsMenu ');
 		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
+			console.log('Info: ≈≈≈≈≈≈≈ onCreateOptionsMenu ');
 			_menuevent.menu.clear();
 			_menuevent.menu.add({
 				title : 'Start live Radio',
@@ -157,10 +153,10 @@ module.exports = function(_event) {
 					require('ui/recents.window')().open();
 				});
 				_menuevent.menu.add({
-					title : 'Tagesübersicht',
+					title : 'PDF Sendepläne',
 					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
 				}).addEventListener("click", function(_e) {
-					require('ui/dayplan.window')().open();
+					require('ui/pdf.window')().open();
 				});
 			}, 7000);
 
@@ -181,7 +177,6 @@ module.exports = function(_event) {
 				АктйонБар.setSubtitle(_e.title);
 			});
 			AudioStreamer.addEventListener('change', function(_e) {
-
 				STATUS = _e.status;
 				switch (_e.status) {
 				case BUFFERING:
@@ -217,19 +212,24 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				Ti.App.fireEvent('radiotext', {
-					message : null
-				});
-				currentStation = _e.station;
-				menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
-				activity.actionBar.logo = '/images/' + currentStation + '.png';
-				АктйонБар.setTitle(Model[currentStation].name);
-				Ti.App.Properties.setString('LAST_STATION', currentStation);
-				// only if radio is active we switch to other station:
-				if (AudioStreamer.getStatus() == PLAYING) {
-					AudioStreamer.stop();
-					console.log('Info: streamer stopped by swiping');
-					startAudioStreamer(stations[currentStation].stream);
+				console.log(Model[_e.station].color);
+
+				АктйонБар.setStatusbarColor(Model[_e.station].color);
+				if (_e.station) {
+					Ti.App.fireEvent('radiotext', {
+						message : null
+					});
+					currentStation = _e.station;
+					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+					activity.actionBar.logo = '/images/' + currentStation + '.png';
+					АктйонБар.setTitle(Model[currentStation].name);
+					Ti.App.Properties.setString('LAST_STATION', currentStation);
+					// only if radio is active we switch to other station:
+					if (AudioStreamer.getStatus() == PLAYING) {
+						AudioStreamer.stop();
+						console.log('Info: streamer stopped by swiping');
+						startAudioStreamer(stations[currentStation].stream);
+					}
 				}
 			});
 			Ti.App.addEventListener('app:stop', function(_event) {
@@ -242,13 +242,13 @@ module.exports = function(_event) {
 		};
 		activity && activity.invalidateOptionsMenu();
 		require('vendor/versionsreminder')();
-		
 		activity.onStart = startCron;
 		activity.onPause = stopCron;
-		activity.onResume = startCron;
-		
-		
-		
-		
+		activity.onResume = function() {
+			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+			activity.actionBar.logo = '/images/' + currentStation + '.png';
+			АктйонБар.setStatusbarColor(Model[currentStation].color);
+			startCron();
+		};
 	}
 };

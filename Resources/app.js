@@ -1,11 +1,12 @@
 ! function() {
 	var Moment = require('vendor/moment');
+	Ti.UI.backgroundImage='#00cc00';
 	var self = Ti.UI.createTabGroup({
 		fullscreen : false,
 		swipeable : false,
+		backgroundColor:'transparent',
 		exitOnClose : true,
 		smoothScrollOnTabClick : true,
-		orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
 		tabs : [Ti.UI.createTab({
 			title : 'Mediathek',
 			ndx : 0,
@@ -22,14 +23,15 @@
 			self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
 		}, ndx * 5000);
 	});
-	
-	
-	
+	setInterval(function() {
+		Ti.App.fireEvent('daychanged');
+	}, 1000 * 6);
 	self.open();
 	self.setActiveTab(0);
-	var tools = require('bencoding.android.tools');
+	/* start background service: */
 	require('vendor/cronservice.trigger')();
-	self.addEventListener("android:back", function(_e) {//listen for the back-button-tap event
+	//listen for the back-button-tap event
+	self.addEventListener("android:back", function(_e) {
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({
 			action : Ti.Android.ACTION_MAIN,

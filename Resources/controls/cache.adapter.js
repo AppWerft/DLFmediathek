@@ -9,9 +9,11 @@ if (!folder.exists()) {
 }
 
 exports.getTree = function(){
+	
 };
 
 exports.isCached = function(options) {
+	console.log(options);
 	if (!options.station)
 		return false;
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
@@ -24,7 +26,7 @@ exports.isCached = function(options) {
 	return file.exists() ? true : false;
 };
 
-exports.getURL = function(options) {
+exports.cacheURL= function(options) {
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {
 		folder.createDirectory();
@@ -49,6 +51,29 @@ exports.getURL = function(options) {
 			filename : filename
 		}));
 		Ti.Android.createService(intent).start();
+		return {
+			url : options.url,
+			cached : false
+		};
+	}
+	
+};
+
+exports.getURL = function(options) {
+	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
+	if (!folder.exists()) {
+		folder.createDirectory();
+	}
+	var parts = options.url.match(/\/([0-9_a-zA-Z]+\.mp3)$/);
+	var filename = parts ? parts[1] : Ti.Utils.md5HexDigest(options.url);
+	var file = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, filename);
+	if (file.exists()) {
+		console.log('Info: file was in cache =========>' + file.nativePath);
+		return {
+			url : file.nativePath,
+			cached : true
+		};
+	} else {
 		return {
 			url : options.url,
 			cached : false

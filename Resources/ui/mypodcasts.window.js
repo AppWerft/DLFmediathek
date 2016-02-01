@@ -9,7 +9,8 @@ module.exports = function() {
 		title : 'DeutschlandRadio',
 		subtitle : 'Meine Podcasts',
 		station : null,
-		singlewindow : true
+		singlewindow : true,
+		fullscreen : false
 	});
 	self.list = Ti.UI.createListView({
 		templates : {

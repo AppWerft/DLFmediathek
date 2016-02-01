@@ -380,11 +380,25 @@ exports.mediathek = {
 			}
 		}, {
 			type : 'Ti.UI.Label',
-			bindId : 'duration',
+			bindId : 'depub',
 			properties : {
 				left : 0,
 				top : 0,
-				bottom : 10,
+				height : Ti.UI.SIZE,
+				touchEnabled : false,
+				font : {
+					fontSize : 12,
+					fontFamily : 'Aller'
+				},
+				color : '#333'
+			}
+		}, {
+			type : 'Ti.UI.Label',
+			bindId : 'duration',
+			properties : {
+				left : 0,
+				top : 5,
+				bottom : 5,
 				height : Ti.UI.SIZE,
 				touchEnabled : false,
 				font : {
@@ -858,7 +872,7 @@ exports.recents = {
 			width : 70,
 			height : 70
 		}
-	},cacheIcon,{
+	}, cacheIcon, {
 		type : 'Ti.UI.View',
 		bindId : 'playtrigger',
 		properties : {
@@ -970,3 +984,103 @@ exports.recents = {
 		}]
 	}]
 };
+
+var w = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor;
+
+exports.tilestemplate = {
+	properties : {
+		layout : 'horizontal',
+		height : Ti.UI.SIZE,
+	},
+	childTemplates : [{
+		type : 'Ti.UI.View',
+		bindId : 'i1',
+		properties : {
+			left : 0,
+			top : 0,
+			width : '50%',
+			height : w / 2
+		},
+		childTemplates : [{
+			type : 'Ti.UI.Label',
+			bindId : 'label1',
+			properties : {
+				top : '50%',
+				left : 10,
+				color : '#222',
+				touchEnabled : false,
+				right : 5,
+				font : {
+					fontSize : 24,
+					fontFamily : 'ScalaSans'
+				}
+			}
+		}]
+	}, {
+		type : 'Ti.UI.View',
+		bindId : 'i2',
+		properties : {
+			left : 0,
+			top : 0,
+			width : '50%',
+			height : w / 2
+		},
+		childTemplates : [{
+			type : 'Ti.UI.Label',
+			bindId : 'label2',
+			properties : {
+				top : '50%',
+				left : 10,
+				color : '#222',
+				touchEnabled : false,
+				right : 5,
+				font : {
+					fontSize : 22,
+					fontFamily : 'ScalaSans'
+				}
+			}
+		}]
+	}]
+};
+
+exports.earlybird = {
+	properties : {
+
+		height : Ti.UI.SIZE,
+	},
+	childTemplates : [{
+		type : 'Ti.UI.ImageView',
+		bindId : 'image',
+		properties : {
+			touchEnabled : false,
+			top : 0,
+			width : Ti.UI.FILL,
+			height : 'auto',
+			defaultImage : '/images/earlybird.jpg'
+		}
+	}, {
+		type : 'Ti.UI.View',
+		properties : {
+			bottom : 0,
+			height : 55,
+			backgroundColor : '#8801953C',
+			touchEnabled : false,
+		}
+	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'description',
+		properties : {
+			bottom : 5,
+			right : 10,
+			left : 10,
+			color : '#fff',
+			touchEnabled : false,
+			right : 5,
+			font : {
+				fontSize : 18,
+				fontFamily : 'Aller Bold'
+			}
+		}
+	}]
+};
+

@@ -28,17 +28,13 @@ module.exports = function() {
 			item.fav.opacity = isfav ? 0.8 : 0.5;
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else if (_e.bindId && _e.bindId == 'share') {
-			console.log('===========================================');
-			//return;
 			require('ui/sharing.chooser')(function(_type) {
-				console.log(_type);
 				var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
 				console.log(message);
 				require('vendor/socialshare')({
 					type : _type,
 					message : message,
 					url : JSON.parse(_e.itemId).url,
-					// image : fileToShare.nativePath,
 				});
 			});
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
@@ -72,9 +68,8 @@ module.exports = function() {
 		height : Ti.UI.FILL
 	});
 	self.onFlippedFunc = function(_e) {
-		console.log('≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈  FLIPPED');
 		Ti.App.fireEvent('app:station', {
-			station : pages[_e.index].station,
+			station : _e.index != undefined ? pages[_e.index].station : _e.station,
 			page : 'mediathek'
 		});
 		pages.forEach(function(page, ndx) {
@@ -98,7 +93,7 @@ module.exports = function() {
 			icon : 'drk'
 		});
 		self.onFlippedFunc({
-			index : 0,
+			station :  Ti.App.Properties.getString('LAST_STATION', 'dlf'),
 			forced : true
 		});
 		// initial

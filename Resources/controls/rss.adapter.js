@@ -12,13 +12,18 @@ var Module = function() {
 	this.dayplan = {};
 	var that = this;
 	Ti.App.addEventListener('daychanged', function() {
-		Ti.UI.createNotification({
-			message : 'Tageswechsel:\nSendeplan wird neu geholt.'
-		}).show();
-		['dlf', 'drk'].forEach(function(station) {
-			var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-			Ti.App.Properties.removeProperty("DAYPLAN#" + station);
-		});
+		var today = Moment().format('YYYYMMDD');
+		var lastday = Ti.App.Properties.getString('LASTDAY', '');
+		if (lastday != today) {
+			Ti.UI.createNotification({
+				message : 'Sendeplan wird neu geholt.'
+			}).show();
+			Ti.App.Properties.setString('LASTDAY', today);
+			['dlf', 'drk'].forEach(function(station) {
+				var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+				Ti.App.Properties.removeProperty("DAYPLAN#" + station);
+			});
+		}
 	});
 	return this;
 };
@@ -80,6 +85,9 @@ Module.prototype = {
 		// test if right day:
 		return currentonair;
 	},
+	syncAll : function() {
+
+	},
 	getRSS : function(_args) {
 		var that = this;
 		var KEY = "DAYPLAN#" + _args.station;
@@ -97,7 +105,7 @@ Module.prototype = {
 				Ti.App.Properties.removeProperty(KEY);
 			}
 		}
-			if (Ti.App.Properties.hasProperty(KEY)) {
+		if (Ti.App.Properties.hasProperty(KEY)) {
 			_args.done && _args.done({
 				ok : true,
 				items : that._updateTimestamps({
@@ -122,8 +130,8 @@ Module.prototype = {
 								station : _args.station
 							})
 						};
-						// back to caller
 						Ti.App.Properties.setString('LASTPLANDAY',Moment().format('YYYYMMDD'));
+						// back to caller
 						_args.done && _args.done(result);
 						// persist
 						try {

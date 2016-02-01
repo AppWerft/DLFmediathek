@@ -82,7 +82,7 @@ module.exports = function(station) {
         defaultItemTemplate : 'schema',
         sections : [Ti.UI.createListSection({})]
     });
-
+	
     var cron = setInterval(function() {
         RSS.getRSS({
             station : station,
@@ -109,7 +109,7 @@ module.exports = function(station) {
                 view : Ti.UI.createWebView({
                     borderRadius : 1,
                     enableZoomControls : false,
-                    url : item.link
+                    url : item.link.replace('.html','.mhtml')
                 }),
                 height : Ti.UI.FILL,
                 width : Ti.UI.FILL
@@ -122,6 +122,12 @@ module.exports = function(station) {
             win.open();
         }
 
+    });
+    self.addEventListener('scrollstart',function(_e){
+    	console.log(_e.firstVisibleItemIndex);
+    });
+     self.addEventListener('scrollend',function(_e){
+    	console.log(_e.firstVisibleItemIndex);
     });
     return self;
 };

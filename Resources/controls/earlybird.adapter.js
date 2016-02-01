@@ -1,40 +1,63 @@
-module.exports = function() {
-	function nextPage(i) {
-		loadPage(i, function(res) {
-			console.log(res.length);
-			if (i < 10) {
-				i++;
-				nextPage(i);
+module.exports = function(_onload) {
+	var page = 0;
+	function nextPage(page) {
+		loadPage(page + 1, function(res) {
+			_onload(page, res);
+			if (page < 10) {
+				page++;
+				nextPage(page);
 			}
 		});
 	}
-
 	// START
-	nextPage(1);
+	nextPage(0);
 };
 
-function loadPage(i, onload) {
+function loadPage(_i, _onload) {
+	if (Ti.App.Properties.hasProperty('EARLYBIRD_'+_i)) {
+		_onload(Ti.App.Properties.getList('EARLYBIRD_'+_i));
+	}
 	var xhr = Ti.Network.createHTTPClient({
+		timeout : 40000,
 		onload : function() {
 			var figures = JSON.parse(this.responseText).query.results.figure;
-			if ( typeof figures[0] == 'object') {
+			
+			if (Array.isArray(figures) && typeof figures[0] == 'object') {
 				var items = [];
 				figures.forEach(function(f) {
 					if (f['class'] == "teaser__image") {
-						items.push({
-							mp3 : f.button['data-mp3'],
-							title : f.button['data-title'],
-							image : f.a.img.src,
-							alt : f.a.img.alt,
-							copy : f.div ? f.div.a.span : undefined,
-						});
+						if (f.button) {
+							var title = f.button['data-title'].replace('Early Bird - ', '').replace(/(\([\d:]+\))/, '');
+							var res = f.button['data-title'].match(/\(([\d:]+)\)/, '');
+							if (res)
+								var duration = parseInt(res[1].split(':')[0]) * 60 + parseInt(res[1].split(':')[1]);
+							items.push({
+								mp3 : f.button['data-mp3'],
+								title : title,
+								duration : res ? duration : '', // in sec.
+								image : f.a.img.src,
+								alt : f.a.img.alt,
+								copy : f.div ? f.div.a.span : 'k.A.',
+							});
+						} else {
+
+						}
 					}
 				});
+				_onload(items);
+				// renew list
+				Ti.App.Properties.setList('EARLYBIRD_'+_i,items);
+
+			} else {
+				console.log('Warning: yql-result is invalide' + this.responseText);
 			}
-			console.log(items[0]);
-			onload(items);
+		},
+		onerror : function(_e) {
+			console.log('Error: ' + _e);
 		}
 	});
-	xhr.open('GET', "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'dradiowissen.de%2Fearly-bird%2Fp" + i + "'%20and%20xpath%3D'%2F%2Ffigure'&format=json");
-	xhr.send();
+	var url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'http%3A%2F%2Fdradiowissen.de%2Fearly-bird%2Fp" + _i + "'%20and%20xpath%3D'%2F%2Ffigure'&format=json";
+	//console.log(url);
+	xhr.open('GET', url, true);
+	xhr.send(null);
 }
