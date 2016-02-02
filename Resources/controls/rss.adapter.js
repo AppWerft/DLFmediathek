@@ -13,10 +13,10 @@ var Module = function() {
 	var that = this;
 	Ti.App.addEventListener('daychanged', function() {
 		var today = Moment().format('YYYYMMDD');
-		var key = 'LASTPLANDAY_'+Ti.App.Properties.getString('LAST_STATION', 'dlf');
+		var key = 'LASTPLANDAY_' + Ti.App.Properties.getString('LAST_STATION', 'dlf');
 		var lastday = Ti.App.Properties.getString(key, '');
-	//	console.log(lastday +' ======= ' + today + '  '  + key);
-		if (lastday != today) {
+		//	console.log(lastday +' ======= ' + today + '  '  + key);
+		if (lastday != today && (Ti.App.Properties.getString('LAST_STATION', 'dlf') != 'drw')) {
 			Ti.UI.createNotification({
 				message : 'Sendeplan wird neu geholt.'
 			}).show();
@@ -132,7 +132,7 @@ Module.prototype = {
 								station : _args.station
 							})
 						};
-						Ti.App.Properties.setString('LASTPLANDAY_'+_args.station,Moment().format('YYYYMMDD'));
+						Ti.App.Properties.setString('LASTPLANDAY_' + _args.station, Moment().format('YYYYMMDD'));
 						// back to caller
 						_args.done && _args.done(result);
 						// persist

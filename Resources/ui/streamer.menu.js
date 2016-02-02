@@ -10,6 +10,7 @@ var Moment = require('vendor/moment');
 var cron;
 function startCron() {
 	var cronJob = function() {
+
 		Ti.App.fireEvent('daychanged');
 	};
 	cron && clearInterval(cron);
