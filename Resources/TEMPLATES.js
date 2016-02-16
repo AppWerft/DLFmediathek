@@ -863,7 +863,7 @@ exports.recents = {
 		height : Ti.UI.SIZE,
 		backgroundColor : 'white',
 	},
-	events : {
+	events : {    
 		"longpress" : function(event) {
 			var item = event.section.getItemAt(event.itemIndex);
 			event.section.deleteItemsAt(event.itemIndex, 1);
