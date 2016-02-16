@@ -12,17 +12,19 @@ var Module = function() {
 	this.dayplan = {};
 	var that = this;
 	Ti.App.addEventListener('daychanged', function() {
+		var station = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+		var KEY = "CACHEDPLAN_DAYSTAMP_" + station;
 		var today = Moment().format('YYYYMMDD');
-		var lastday = Ti.App.Properties.getString('LASTDAY', '');
+		var lastday = Ti.App.Properties.getString(KEY, '');
 		if (lastday != today) {
 			Ti.UI.createNotification({
 				message : 'Sendeplan wird neu geholt.'
 			}).show();
-			Ti.App.Properties.setString('LASTDAY', today);
-			['dlf', 'drk'].forEach(function(station) {
-				var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-				Ti.App.Properties.removeProperty("DAYPLAN#" + station);
-			});
+			Ti.App.Properties.setString(KEY, today);
+			//['dlf', 'drk'].forEach(function(station) {
+			var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+			//Ti.App.Properties.removeProperty(KEY);
+			//});
 		}
 	});
 	return this;
@@ -41,8 +43,8 @@ Module.prototype = {
 	},
 	_updateTimestamps : function(_args) {
 		var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
-		if (Ti.App.Properties.hasProperty("DAYPLAN#" + _args.station)) {
-			var items = JSON.parse(Ti.App.Properties.getString("DAYPLAN#" + _args.station));
+		if (Ti.App.Properties.hasProperty("CACHEDPLAN_" + _args.station)) {
+			var items = JSON.parse(Ti.App.Properties.getString("CACHEDPLAN_" + _args.station));
 			var length = items.length;
 			var ndx = 0;
 			for ( i = 0; i < length; i++) {
@@ -90,22 +92,24 @@ Module.prototype = {
 	},
 	getRSS : function(_args) {
 		var that = this;
-		var KEY = "DAYPLAN#" + _args.station;
-		if (Ti.App.Properties.hasProperty(KEY)) {
-			var items = JSON.parse(Ti.App.Properties.getString(KEY));
+		var CACHE = "CACHEDPLAN_" + _args.station;
+		if (Ti.App.Properties.hasProperty(CACHE)) {
+			/* first testing if cache contents an array and has a node with timestamp */
+			var items = JSON.parse(Ti.App.Properties.getString(CACHE));
 			if (!Array.isArray(items) || !items[0].guid || !items[0].guid.text) {
-				console.log('Warning: we kill old DAYPLAN');
-				Ti.App.Properties.removeProperty(KEY);
+				Ti.App.Properties.removeProperty(CACHE);
 				return;
 			}
-			var res = items[0].guid.text.match(/schema\-([\d]\-[\d]\-[\d]\))\-/g);
-			if (res && res !== Moment().format('YYYY-MM-DD')) {
-				// force new:
-				console.log('Warning: we kill old ' + KEY);
-				Ti.App.Properties.removeProperty(KEY);
-			}
+			/* test if in CACHE items with current date */
+			var date = items[0].guid.text.replace('schema-', '').replace('-00:00+0100', '');
+			if (date !== Moment().format('YYYY-MM-DD')) {
+				Ti.App.Properties.removeProperty(CACHE);
+				console.log('Warning: CACHE invalide');
+				console.log('Warning: we kill old ' + CACHE);
+			//	
+			} 
 		}
-		if (Ti.App.Properties.hasProperty(KEY)) {
+		/*if (Ti.App.Properties.hasProperty(CACHE)) {
 			_args.done && _args.done({
 				ok : true,
 				items : that._updateTimestamps({
@@ -113,8 +117,8 @@ Module.prototype = {
 				})
 			});
 			return;
-		}
-		if (!Ti.App.Properties.hasProperty(KEY)) {
+		}*/
+		if (!Ti.App.Properties.hasProperty(CACHE)) {
 			var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
 			if (Model[_args.station].dayplan) {
 				var xhr = Ti.Network.createHTTPClient({
@@ -123,14 +127,18 @@ Module.prototype = {
 						if (channel.item && !Array.isArray(channel.item)) {
 							channel.item = [channel.item];
 						}
-						Ti.App.Properties.setString(KEY, JSON.stringify(channel.item));
+						/* save dayplan in property */
+						Ti.App.Properties.setString(CACHE, JSON.stringify(channel.item));
+						/* save current daystamp */
+						Ti.App.Properties.setString('CACHEDPLAN_DAYSTAMP_' + _args.station, Moment().format('YYYYMMDD'));
+						/* build result */
 						var result = {
 							ok : true,
 							items : that._updateTimestamps({
 								station : _args.station
 							})
 						};
-						Ti.App.Properties.setString('LASTPLANDAY_' + _args.station, Moment().format('YYYYMMDD'));
+						//
 						// back to caller
 						_args.done && _args.done(result);
 						// persist

@@ -29,6 +29,7 @@ module.exports = function() {
 		fullscreen : false,
 	});
 	self.list = Ti.UI.createListView({
+		top:72,
 		height : Ti.UI.FILL,
 		templates : {
 			'recents' : require('TEMPLATES').recents,

@@ -1,85 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- File created by the Android Action Bar Style Generator
 
-     Copyright (C) 2011 The Android Open Source Project
-     Copyright (C) 2012 readyState Software Ltd
+Copyright (C) 2011 The Android Open Source Project
+Copyright (C) 2012 readyState Software Ltd
 
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-  
-          http://www.apache.org/licenses/LICENSE-2.0
-  
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 -->
 
 <resources>
-	<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat">
-            <item name="windowActionBar">false</item>
-            <item name="android:windowNoTitle">true</item>
-    </style>
-    <style name="Theme.Dlrmediathek" parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <item name="actionBarItemBackground">@drawable/selectable_background_dlrmediathek</item>
-        <item name="popupMenuStyle">@style/PopupMenu.Dlrmediathek</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Dlrmediathek</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Dlrmediathek</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.Dlrmediathek</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.Dlrmediathek</item>
-        <item name="actionModeBackground">@drawable/cab_background_top_dlrmediathek</item>
-        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_dlrmediathek</item>
-        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Dlrmediathek</item>
-
-                <!-- Light.DarkActionBar specific -->
-        <item name="actionBarWidgetTheme">@style/Theme.Dlrmediathek.Widget</item>
-
-    </style>
-
-    <style name="ActionBar.Solid.Dlrmediathek" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/ab_solid_dlrmediathek</item>
-        <item name="backgroundStacked">@drawable/ab_stacked_solid_dlrmediathek</item>
-        <item name="backgroundSplit">@drawable/ab_bottom_solid_dlrmediathek</item>
-        <item name="progressBarStyle">@style/ProgressBar.Dlrmediathek</item>
-    </style>
-
-    <style name="ActionBar.Transparent.Dlrmediathek" parent="@style/Widget.AppCompat.ActionBar">
-        <item name="background">@drawable/ab_transparent_dlrmediathek</item>
-        <item name="progressBarStyle">@style/ProgressBar.Dlrmediathek</item>
-    </style>
+	<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat.Translucent">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:windowBackground">@android:color/transparent</item>
+		
 	
-    <style name="PopupMenu.Dlrmediathek" parent="@style/Widget.AppCompat.PopupMenu">	
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_dlrmediathek</item>	
-    </style>
-	
-    <style name="DropDownListView.Dlrmediathek" parent="@style/Widget.AppCompat.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_dlrmediathek</item>
-    </style>
+	</style>
+	<style name="Theme.Dlrmediathek" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+		<item name="android:windowTranslucentNavigation">true</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="android:fitsSystemWindows">true</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<item name="actionBarItemBackground">@drawable/selectable_background_dlrmediathek</item>
+		<item name="popupMenuStyle">@style/PopupMenu.Dlrmediathek</item>
+		<item name="dropDownListViewStyle">@style/DropDownListView.Dlrmediathek</item>
+		<item name="actionBarTabStyle">@style/ActionBarTabStyle.Dlrmediathek</item>
+		<item name="actionDropDownStyle">@style/DropDownNav.Dlrmediathek</item>
+		<item name="actionBarStyle">@style/ActionBar.Solid.Dlrmediathek</item>
+		<item name="actionModeBackground">@drawable/cab_background_top_dlrmediathek</item>
+		<item name="actionModeSplitBackground">@drawable/cab_background_bottom_dlrmediathek</item>
+		<item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Dlrmediathek</item>
 
-    <style name="ActionBarTabStyle.Dlrmediathek" parent="@style/Widget.AppCompat.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_dlrmediathek</item>
-    </style>
-	
-    <style name="DropDownNav.Dlrmediathek" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
-        <item name="android:background">@drawable/spinner_background_ab_dlrmediathek</item>
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_dlrmediathek</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_dlrmediathek</item>
-    </style>
-    
-    <style name="ProgressBar.Dlrmediathek" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_dlrmediathek</item>
-    </style>
-    
-    <style name="ActionButton.CloseMode.Dlrmediathek" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_dlrmediathek</item>
-    </style>
-    
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Dlrmediathek.Widget" parent="@style/Theme.AppCompat">
-        <item name="popupMenuStyle">@style/PopupMenu.Dlrmediathek</item>
-        <item name="dropDownListViewStyle">@style/DropDownListView.Dlrmediathek</item>
-    </style>
+		<!-- Light.DarkActionBar specific -->
+		<item name="actionBarWidgetTheme">@style/Theme.Dlrmediathek.Widget</item>
+		<item name="android:windowTranslucentNavigation">true</item>
+
+	</style>
+	<style name="ActionBar.Solid.Dlrmediathek" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+		<item name="background">@drawable/ab_solid_dlrmediathek</item>
+		<item name="backgroundStacked">@drawable/ab_stacked_solid_dlrmediathek</item>
+		<item name="backgroundSplit">@drawable/ab_bottom_solid_dlrmediathek</item>
+		<item name="progressBarStyle">@style/ProgressBar.Dlrmediathek</item>
+	</style>
+	<style name="ActionBar.Transparent.Dlrmediathek" parent="@style/Widget.AppCompat.ActionBar">
+		<item name="background">@drawable/ab_transparent_dlrmediathek</item>
+		<item name="progressBarStyle">@style/ProgressBar.Dlrmediathek</item>
+	</style>
+	<style name="PopupMenu.Dlrmediathek" parent="@style/Widget.AppCompat.PopupMenu">
+		<item name="android:popupBackground">@drawable/menu_dropdown_panel_dlrmediathek</item>
+	</style>
+	<style name="DropDownListView.Dlrmediathek" parent="@style/Widget.AppCompat.ListView.DropDown">
+		<item name="android:listSelector">@drawable/selectable_background_dlrmediathek</item>
+	</style>
+	<style name="ActionBarTabStyle.Dlrmediathek" parent="@style/Widget.AppCompat.ActionBar.TabView">
+		<item name="android:background">@drawable/tab_indicator_ab_dlrmediathek</item>
+	</style>
+	<style name="DropDownNav.Dlrmediathek" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
+		<item name="android:background">@drawable/spinner_background_ab_dlrmediathek</item>
+		<item name="android:popupBackground">@drawable/menu_dropdown_panel_dlrmediathek</item>
+		<item name="android:dropDownSelector">@drawable/selectable_background_dlrmediathek</item>
+	</style>
+	<style name="ProgressBar.Dlrmediathek" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+		<item name="android:progressDrawable">@drawable/progress_horizontal_dlrmediathek</item>
+	</style>
+	<style name="ActionButton.CloseMode.Dlrmediathek" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+		<item name="android:background">@drawable/btn_cab_done_dlrmediathek</item>
+	</style>
+
+	<!-- this style is only referenced in a Light.DarkActionBar based theme -->
+	<style name="Theme.Dlrmediathek.Widget" parent="@style/Theme.AppCompat">
+		<item name="popupMenuStyle">@style/PopupMenu.Dlrmediathek</item>
+		<item name="dropDownListViewStyle">@style/DropDownListView.Dlrmediathek</item>
+	</style>
 
 </resources>

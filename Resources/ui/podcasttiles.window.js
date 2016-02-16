@@ -4,10 +4,23 @@ var Model = require('model/stations'),
     Podcast = new (require('controls/feed.adapter'))(),
     stations = ['dlf', 'drk', 'drw'];
 
+
+
 module.exports = function() {
 	var self = Ti.UI.createWindow();
 	var pages = [];
+	function flipTo() {
+	var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+	var stationindex;
 	for (var ndx = 0; ndx < stations.length; ndx++) {
+		if (stations[ndx] == laststation)
+			stationindex = ndx;
+	}
+	if (self.FlipViewCollection)
+		self.FlipViewCollection.currentPage = stationindex;
+}
+	for (var ndx = 0; ndx < stations.length; ndx++) {
+
 		var podcasts = require('model/' + stations[ndx]);
 		var color = podcasts.color;
 		pages[ndx] = Ti.UI.createListView({
@@ -46,7 +59,7 @@ module.exports = function() {
 			};
 			if (podcasts[i + 1]) {
 				item.i2 = {
-					backgroundImage : ndx == 2 ? '/images/podcasts/' + podcasts[i+1].img.src : '/images/' + stations[ndx] + 'tile.png',
+					backgroundImage : ndx == 2 ? '/images/podcasts/' + podcasts[i + 1].img.src : '/images/' + stations[ndx] + 'tile.png',
 				};
 				item.label2 = {
 					text : ndx == 2 ? '' : (podcasts[i + 1].a) ? podcasts[i + 1].a.img.alt : podcasts[i + 1].img.alt
@@ -70,7 +83,8 @@ module.exports = function() {
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
-		currentPage : 0,
+		top : 120,
+
 		height : Ti.UI.FILL,
 		width : Ti.UI.FILL
 	});
@@ -81,5 +95,6 @@ module.exports = function() {
 		});
 	});
 	self.add(self.FlipViewCollection);
+	self.addEventListener('focus',flipTo);
 	return self;
 };

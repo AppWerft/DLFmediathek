@@ -25,7 +25,7 @@ String.prototype.toHHMMSS = function() {
 
 module.exports = function(_args) {
 	var self = Ti.UI.createWindow({
-		fullscreen : true
+
 	});
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
@@ -34,6 +34,7 @@ module.exports = function(_args) {
 			'podcastlist' : require('TEMPLATES').podcastlist,
 		},
 		defaultItemTemplate : 'podcastlist',
+		top : 78,
 		sections : [Ti.UI.createListSection({})]
 	});
 	var items = [];
@@ -79,7 +80,7 @@ module.exports = function(_args) {
 						height : (item.author) ? Ti.UI.SIZE : 0,
 					},
 					cached : {
-						opacity : item.cached ?1 :0
+						opacity : item.cached ? 1 : 0
 					},
 					properties : {
 						itemId : JSON.stringify(item)
@@ -104,6 +105,8 @@ module.exports = function(_args) {
 		}
 	});
 	self.createAndStartPlayer = function(data) {
+		if (!data.url)  // new since 02/2006 (new feed structur)
+			data.url = data.enclosure.url;
 		require('ui/audioplayer.window').createAndStartPlayer({
 			color : '#000',
 			url : data.url,
@@ -118,13 +121,16 @@ module.exports = function(_args) {
 
 	};
 	self.addEventListener('open', function(_event) {
-		АктйонБар.title = 'DeutschlandRadio';
+		var station = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+		АктйонБар.title = Model[station].name;
 		АктйонБар.subtitle = _args.title;
 		АктйонБар.titleFont = "ScalaSansBold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');
+		АктйонБар.setStatusbarColor(Model[station].color);
 		var activity = _event.source.getActivity();
 		if (activity) {
+			activity.actionBar.logo = '/images/' + station + '.png';
 			activity.onCreateOptionsMenu = function(_menuevent) {
 				activity.actionBar.displayHomeAsUp = true;
 				if (_args.station)

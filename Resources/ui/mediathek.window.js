@@ -7,8 +7,6 @@ var FlipModule = require('de.manumaticx.androidflip'),
     Model = require('model/stations'),
     Favs = new (require('controls/favorites.adapter'))();
 
-
-
 module.exports = function() {
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
 	var locked = false;
@@ -28,14 +26,24 @@ module.exports = function() {
 			item.fav.opacity = isfav ? 0.8 : 0.5;
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else if (_e.bindId && _e.bindId == 'share') {
-			require('ui/sharing.chooser')(function(_type) {
-				var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
-				console.log(message);
-				require('vendor/socialshare')({
-					type : _type,
-					message : message,
-					url : JSON.parse(_e.itemId).url,
-				});
+			/*
+			 require('ui/sharing.chooser')(function(_type) {
+			 var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
+			 console.log(message);
+			 require('vendor/socialshare')({
+			 type : _type,
+			 message : message,
+			 url : JSON.parse(_e.itemId).url,
+			 });
+			 });*/
+			var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
+			Ti.UI.createNotification({
+				message : 'Verkürze URL des Beirags.\nEinen Augenblick …'
+			}).show();
+			require('vendor/socialshare')({
+				type : 'all',
+				message : message,
+				url : JSON.parse(_e.itemId).url,
 			});
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			var data = JSON.parse(_e.itemId);
@@ -64,6 +72,7 @@ module.exports = function() {
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
+		top:110,
 		currentPage : stations[Ti.App.Properties.getString('LAST_STATION', 'dlf')],
 		height : Ti.UI.FILL
 	});
@@ -93,7 +102,7 @@ module.exports = function() {
 			icon : 'drk'
 		});
 		self.onFlippedFunc({
-			station :  Ti.App.Properties.getString('LAST_STATION', 'dlf'),
+			station : Ti.App.Properties.getString('LAST_STATION', 'dlf'),
 			forced : true
 		});
 		// initial

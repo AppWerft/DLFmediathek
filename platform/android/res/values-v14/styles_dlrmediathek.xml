@@ -20,6 +20,7 @@
 <resources>
 
     <style name="Theme.Dlrmediathek" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    	<item name="android:windowTranslucentNavigation">true</item>
         <item name="android:actionBarItemBackground">@drawable/selectable_background_dlrmediathek</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Dlrmediathek</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Dlrmediathek</item>

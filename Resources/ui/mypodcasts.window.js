@@ -2,12 +2,13 @@ var Model = require('model/stations'),
     Feeds = new (require('controls/feed.adapter'))(),
     Moment = require('vendor/moment');
 Moment.locale('de');
+ АктйонБар = require('com.alcoapps.actionbarextras'),
 
 module.exports = function() {
 	var station = 'dlf';
 	var self = require('ui/generic.window')({
-		title : 'DeutschlandRadio',
-		subtitle : 'Meine Podcasts',
+		title : 'Meine Podcasts',
+		subtitle : 'Feedlisten',
 		station : null,
 		singlewindow : true,
 		fullscreen : false
@@ -16,6 +17,7 @@ module.exports = function() {
 		templates : {
 			'mypodcasts' : require('TEMPLATES').mypodcasts,
 		},
+		top:72,
 		defaultItemTemplate : 'mypodcasts',
 		sections : [Ti.UI.createListSection({})]
 	});
@@ -51,9 +53,15 @@ module.exports = function() {
 		self.list.sections[0].setItems(dataItems);
 	}
 
-	updateList();
+	updateList();	
 	self.list.addEventListener('itemclick', function(_e) {
 		require('ui/podcastlist.window')(JSON.parse(_e.itemId)).open();
+	});
+	self.addEventListener('open', function(_event) {
+		АктйонБар.titleFont = "ScalaSansBold";
+		АктйонБар.subtitleColor = "#ccc";
+		АктйонБар.setBackgroundColor('#444444');
+		АктйонБар.setStatusbarColor('#444444');
 	});
 	return self;
 };

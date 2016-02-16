@@ -74,16 +74,18 @@ Module.prototype = {
 		return recents;
 	},
 	getProgress : function(_url) {
-		var link = Ti.Database.open(DB);
-
-		var res = link.execute('SELECT progress FROM recents  WHERE url=?', this.url || _url);
-		var progress = 0;
-		if (res.isValidRow()) {
-			progress = res.getFieldByName('progress');
-			res.close();
+		if (_url) {
+			var link = Ti.Database.open(DB);
+			var res = link.execute('SELECT progress FROM recents  WHERE url=?', this.url || _url);
+			var progress = 0;
+			if (res.isValidRow()) {
+				progress = res.getFieldByName('progress');
+				res.close();
+			}
+			link.close();
+			return progress;
 		}
-		link.close();
-		return progress;
+		return 0;
 	},
 	fireEvent : function(_event, _payload) {
 		if (this.eventhandlers[_event]) {

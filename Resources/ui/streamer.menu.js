@@ -9,13 +9,10 @@ var Moment = require('vendor/moment');
 
 var cron;
 function startCron() {
+	Ti.App.fireEvent('daychanged');
 	cron && clearInterval(cron);
 	cron = setInterval(function() {
-		var today = Moment().format('YYYYMMDD');
-		var lastday = Ti.App.Properties.getString('LASTPLANDAY_' + currentstation, '');
-		if (lastday != today) {
-			Ti.App.fireEvent('daychanged');
-		}
+		Ti.App.fireEvent('daychanged');
 	}, 1000 * 60);
 }
 
@@ -30,19 +27,20 @@ var startAudioStreamer = function(m3u) {
 		console.log('Playerinfo: was active ' + status);
 		AudioStreamer.stop();
 	}
+
 	setTimeout(function() {
-		console.log('Playerinfo: try start');
 		require('controls/resolveplaylist')({
 			playlist : m3u,
 			onload : function(_icyUrl) {
 				АктйонБар.setSubtitle('Playerinfo: Erwarte Radiotext …');
-				console.log('Playerinfo: AudioStreamerplayer will play with ' + _icyUrl);
 				AudioStreamer.play(_icyUrl + '?' + Math.random());
 			}
 		});
 	}, 50);
+
 };
 
+/* constants for audiostreamer */
 var STOPPED = 0,
     BUFFERING = 1,
     PLAYING = 2,
@@ -100,12 +98,15 @@ module.exports = function(_event) {
 				/* Handling of PlayIcon*/
 				var menuitem = _menuevent.menu.findItem(PLAY);
 				if (AudioStreamer.getStatus() == PLAYING) {
-					console.log('Info: AudioStreamerplayer was playing => nothing to do');
 					AudioStreamer.stop();
 					return;
 				}
-				menuitem.setVisible(false);
-				startAudioStreamer(stations[currentStation].stream);
+				if (Ti.Network.online) {
+					menuitem.setVisible(false);
+					startAudioStreamer(stations[currentStation].stream);
+				} else {
+					Ti.UI.createNotification({message:'Gerät ist nicht online.\nProbleme mit der Radiowiedergabe.'}).show;
+				}
 			});
 			searchMenu = _menuevent.menu.add({
 				title : 'S U C H E ',
@@ -178,6 +179,7 @@ module.exports = function(_event) {
 			});
 			AudioStreamer.addEventListener('change', function(_e) {
 				STATUS = _e.status;
+				console.log('AAS: ' + _e.status);
 				switch (_e.status) {
 				case BUFFERING:
 					menuitem.setVisible(true);
@@ -195,12 +197,13 @@ module.exports = function(_event) {
 					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					break;
 				case STREAMERROR:
-					Ti.App.fireEvent('radiotext', null);
+					AudioStreamer.stop();
 					АктйонБар.setSubtitle('Fehler, Internet kaputt?');
 					Ti.UI.createNotification({
 						message : 'Fehler beim Zugriff auf den AudioStreamerserver.',
 						duration : 7000
 					}).show();
+					Ti.App.fireEvent('radiotext', null);
 					break;
 				};
 			});

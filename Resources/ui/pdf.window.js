@@ -31,10 +31,11 @@ module.exports = function(_args) {
 		require('controls/pdf.adapter')(function(_res) {
 			self.list.setData(_res.map(require('ui/pdf.row')));
 		});
-		АктйонБар.title = 'Programmübersichten';
+		АктйонБар.title = 'Wochenprogrammübersichten';
 		АктйонБар.subtitle = 'PDF zum Ausdrucken';
 		АктйонБар.titleFont = "ScalaSansBold";
 		АктйонБар.setBackgroundColor('#444444');
+		АктйонБар.setStatusbarColor('#444444');
 		АктйонБар.subtitleColor = "#ccc";
 		var activity = _event.source.getActivity();
 		if (activity) {
