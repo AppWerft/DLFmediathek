@@ -26,6 +26,19 @@ exports.isCached = function(options) {
 	return file.exists() ? true : false;
 };
 
+exports.deleteURL =function(url) {
+	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
+	if (!folder.exists()) {
+		folder.createDirectory();
+	}
+	var parts = url.match(/\/([0-9_a-zA-Z]+\.mp3)$/);
+	var filename = parts ? parts[1] : Ti.Utils.md5HexDigest(url);
+	var file = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, filename);
+	if (file.exists()) {
+		file.deleteFile();
+	}
+	
+};
 exports.cacheURL= function(options) {
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {

@@ -11,7 +11,8 @@ var cacheIcon = {
 		height : 30
 	}
 };
-var Cache = new (require('controls/cache.adapter'))();
+
+var Cache = require('controls/cache.adapter');
 
 exports.schema = {
 	properties : {
@@ -867,7 +868,7 @@ exports.recents = {
 		"longpress" : function(event) {
 			var item = event.section.getItemAt(event.itemIndex);
 			event.section.deleteItemsAt(event.itemIndex, 1);
-			Cache.deleteFile(JSON.parse(event.itemId).url);
+			Cache.deleteURL(JSON.parse(event.itemId).url);
 		}
 	},
 	childTemplates : [{
