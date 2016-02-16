@@ -15,6 +15,7 @@ var Module = function() {
 		var station = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 		var KEY = "CACHEDPLAN_DAYSTAMP_" + station;
 		var today = Moment().format('YYYYMMDD');
+
 		var lastday = Ti.App.Properties.getString(KEY, '');
 		if (lastday != today) {
 			Ti.UI.createNotification({
@@ -25,6 +26,20 @@ var Module = function() {
 			var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
 			//Ti.App.Properties.removeProperty(KEY);
 			//});
+
+		var key = 'LASTPLANDAY_' + Ti.App.Properties.getString('LAST_STATION', 'dlf');
+		var lastday = Ti.App.Properties.getString(key, '');
+		//	console.log(lastday +' ======= ' + today + '  '  + key);
+		if (lastday != today && (Ti.App.Properties.getString('LAST_STATION', 'dlf') != 'drw')) {
+			Ti.UI.createNotification({
+				message : 'Sendeplan wird neu geholt.'
+			}).show();
+			//Ti.App.Properties.setString('LASTDAY', today);
+			['dlf', 'drk'].forEach(function(station) {
+				var url = Model[station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
+				Ti.App.Properties.removeProperty("DAYPLAN#" + station);
+			});
+
 		}
 	});
 	return this;
