@@ -64,7 +64,6 @@ Module.prototype = {
             icon : Ti.App.Android.R.drawable.appicon,
             sound : Ti.Filesystem.getResRawDirectory() + 'kkj', //Set a custom sound to play
         };
-        console.log(alarm);
         alarmManager.addAlarmNotification(alarm);
         alarmManager.addAlarmNotification({
             requestCode : 1, // must be INT to identify the alarm

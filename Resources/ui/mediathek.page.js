@@ -1,6 +1,7 @@
 var Favs = new (require('controls/favorites.adapter'))(),
-    Model = require('model/stations');
-CurrentTransmission = new (require('controls/rss.adapter'))();
+    Model = require('model/stations'),
+    Schema = require('controls/rss.adapter');
+
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
@@ -82,7 +83,7 @@ module.exports = function(_args) {
 			self.topBox.setTop(8);
 			self.bottomView.setTop(HEIGHT_OF_TOPBOX * .66);
 		} else {
-			var currentItem = CurrentTransmission.getCurrentOnAir({
+			var currentItem = Schema.getCurrentOnAir({
 				station : _args.station
 			});
 			if (currentItem) {
@@ -134,20 +135,20 @@ module.exports = function(_args) {
 							days : Moment.unix(item.killtime).diff(Moment(), 'days'),
 							weeks : Moment.unix(item.killtime).diff(Moment(), 'weeks'),
 							years : Moment.unix(item.killtime).diff(Moment(), 'years'),
-							
+
 						};
 						switch (true) {
-							case depub.days<15:
-								depub.str =  depub.days + ' Tagen';
+						case depub.days<15:
+							depub.str = depub.days + ' Tagen';
 							break;
-							case (depub.days>=15 && depub.days<730):
-								depub.str =  depub.weeks + ' Wochen';
+						case (depub.days>=15 && depub.days<730):
+							depub.str = depub.weeks + ' Wochen';
 							break;
-							default:
-								depub.str =  depub.years + ' Jahren';
-							
+						default:
+							depub.str = depub.years + ' Jahren';
+
 						}
-						
+
 						dataitems.push({
 							properties : {
 								accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
@@ -221,7 +222,6 @@ module.exports = function(_args) {
 	else
 		clearInterval(self.cron);
 	var locked = false;
-	console.log(_args.window);
 	self.bottomList.addEventListener('itemclick', _args.window.onitemclickFunc);
 	if (_args.station != 'drw')
 		setInterval(self.updateCurrentinTopBox, 5000);

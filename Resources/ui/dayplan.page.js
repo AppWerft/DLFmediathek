@@ -1,5 +1,5 @@
 var Model = require('model/stations'),
-    RSS = new (require('controls/rss.adapter'))(),
+    Schema = require('controls/rss.adapter'),
     Moment = require('vendor/moment');
 
 module.exports = function(station) {
@@ -84,12 +84,12 @@ module.exports = function(station) {
     });
 	
     var cron = setInterval(function() {
-        RSS.getRSS({
+        Schema.getRSS({
             station : station,
             done : updateListFunc
         });
     }, 30000);
-    RSS.getRSS({
+    Schema.getRSS({
         station : station,
         done : updateListFunc
     });
@@ -124,10 +124,8 @@ module.exports = function(station) {
 
     });
     self.addEventListener('scrollstart',function(_e){
-    	console.log(_e.firstVisibleItemIndex);
     });
      self.addEventListener('scrollend',function(_e){
-    	console.log(_e.firstVisibleItemIndex);
     });
     return self;
 };

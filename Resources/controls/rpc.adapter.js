@@ -6,14 +6,12 @@ if (!Ti.App.Properties.hasProperty('LAST_STATION'))
 
 module.exports = function(_args) {
 	if (_args.station != Ti.App.Properties.getString('LAST_STATION')) {
-		console.log('Warning: no same station');
 		_args.onload(null);
 		return;
 	}
 	var onloadFunc = function() {
 		var start = new Date().getTime();
 		var entries = require('controls/aodlistaudio.rpc').parseXMLDoc(this.responseXML.documentElement);
-		console.log('Info: time for mediathekparsing= ' + (new Date().getTime() - start) + '  ' + entries.length + ' Beiträge');
 		var result = {
 			hash : Ti.Utils.md5HexDigest(this.responseText + 'geheim'),
 			live : entries
@@ -70,7 +68,6 @@ module.exports = function(_args) {
 		onload : onloadFunc
 	});
 	xhr.open('GET', url);
-	console.log(url);
 	xhr.setRequestHeader('User-Agent', 'Das%20DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0');
 	xhr.send();
 };

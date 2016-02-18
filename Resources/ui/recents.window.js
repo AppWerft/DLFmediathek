@@ -1,7 +1,8 @@
 var Model = require('model/stations'),
     Recents = new (require('controls/recents.adapter'))(),
     Moment = require('vendor/moment'),
-    АктйонБар = require('com.alcoapps.actionbarextras');
+    
+АктйонБар = require('com.alcoapps.actionbarextras');
 
 String.prototype.toHHMMSS = function() {
 	var sec_num = parseInt(this, 10);
@@ -28,8 +29,10 @@ module.exports = function() {
 	var self = Ti.UI.createWindow({
 		fullscreen : false,
 	});
+	
+	require('de.manumaticx.crouton').info("Langes Pressen löscht Beitrag.");
 	self.list = Ti.UI.createListView({
-		top:72,
+		top : 72,
 		height : Ti.UI.FILL,
 		templates : {
 			'recents' : require('TEMPLATES').recents,
@@ -106,7 +109,7 @@ module.exports = function() {
 		}
 	});
 	self.addEventListener('focus', self.updateList);
-	
+
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
 		АктйонБар.subtitle = 'Letztgehörtes/Unvollständiges';

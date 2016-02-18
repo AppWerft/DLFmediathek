@@ -57,7 +57,6 @@ function loadPage(_i, _onload) {
 		}
 	});
 	var url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'http%3A%2F%2Fdradiowissen.de%2Fearly-bird%2Fp" + _i + "'%20and%20xpath%3D'%2F%2Ffigure'&format=json";
-	//console.log(url);
 	xhr.open('GET', url, true);
 	xhr.send(null);
 }

@@ -864,11 +864,16 @@ exports.recents = {
 		height : Ti.UI.SIZE,
 		backgroundColor : 'white',
 	},
-	events : {    
+	events : {
 		"longpress" : function(event) {
 			var item = event.section.getItemAt(event.itemIndex);
 			event.section.deleteItemsAt(event.itemIndex, 1);
-			Cache.deleteURL(JSON.parse(event.itemId).url);
+			Cache.deleteURL({
+				url : JSON.parse(event.itemId).url,
+				station :  JSON.parse(event.itemId).station
+			});
+			var Recents = new (require('controls/recents.adapter'))();
+			Recents.removeRecent(JSON.parse(event.itemId).url);
 		}
 	},
 	childTemplates : [{

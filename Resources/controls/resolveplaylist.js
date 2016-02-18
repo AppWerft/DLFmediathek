@@ -3,8 +3,9 @@ module.exports = function(args) {
         args.onload(args.stream);
     } else {
         if (Ti.App.Properties.hasProperty(args.playlist)) {
-            console.log('Info: cached radiostream');
-            args.onload(Ti.App.Properties.getString(args.playlist));
+        	var url = Ti.App.Properties.getString(args.playlist);
+        	console.log('Info: using of cached URL '+ url);
+            args.onload(url);
             return;
         }
         var uri_pattern = /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))/ig;

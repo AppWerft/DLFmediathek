@@ -14,7 +14,8 @@ module.exports = function(_args) {
 			'template' : require('TEMPLATES').earlybird,
 		},
 		defaultItemTemplate : 'template',
-		sections : sections
+		sections : sections,
+		top	 : 70
 	});
 	self.list.addEventListener('itemclick', function(_e) {
 		var data = JSON.parse(_e.itemId);

@@ -47,6 +47,11 @@ Module.prototype = {
 		//link.execute('UPDATE recents SET progress=duration,lastaccess=? WHERE url =?', Moment().toISOString(), this.url);
 		link.close();
 	},
+	removeRecent : function(url) {
+		var link = Ti.Database.open(DB);
+		link.execute('DELETE FROM recents WHERE url=?',url);
+		link.close();
+	},
 	getAllRecents : function() {
 		var link = Ti.Database.open(DB);
 		var recents = [];

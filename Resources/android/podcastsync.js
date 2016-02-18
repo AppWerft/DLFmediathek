@@ -2,7 +2,7 @@
 
 var alarmManager = require('bencoding.alarmmanager').createAlarmManager(),
     PodcastMirror = new (require('controls/feed.adapter'))(),
-    PlaylistMirror = new (require('controls/rss.adapter'))();
+    PlaylistMirror = require('controls/rss.adapter');
 
 var mirrorPodcasts = function() {
     PodcastMirror.mirrorAllFeeds({

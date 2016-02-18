@@ -62,7 +62,6 @@ Module.prototype = {
 
             });
         } else {
-            console.log('START GEO LOOKING');
             var xhr = Ti.Network.createHTTPClient({
                 onload : function() {
                     var coords = JSON.parse(this.responseText);

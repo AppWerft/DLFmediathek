@@ -26,7 +26,6 @@ var Player = function() {
 	});
 	var that = this;
 	this._player.addEventListener('progress', function(_e) {
-		console.log(_e.progress);
 	//	that._progress.setValue(_e.progress / 1000);
 	//	that._duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + that.duration);
 	//	that._Recents.setProgress(Math.round(_e.progress / 1000));
@@ -66,7 +65,6 @@ var Player = function() {
 				opacity : 1,
 				duration : 700
 			});
-			console.log('PLAYING');
 			//that._control.setImage('/images/pause.png');
 			break;
 		}
@@ -188,18 +186,14 @@ Player.prototype = {
 		this._progress.setValue(0);
 		this._player.setUrl(args.url + '?_=' + Math.random());
 		var progress = this._Recents.getProgress() * 1000;
-		console.log(progress);
 		progress && Ti.UI.createNotification({
 			duration : 2000,
 			message : 'Setzte Wiedergabe am Zeitpunkt ' + ('' + progress).toHHMMSS() + ' fort.'
 		}).show();
 		this._player.setTime(progress);
 		this._title.setText(args.title);
-		console.log('203  ' + args.duration);
 		//this._duration.setText(('' + args.duration).toHHMMSS());
 		//this._view.add(this._equalizer);
-		console.log('205');
-		console.log('STARTPlayer');
 		this._player.start();
 	},
 	stopPlayer : function(args) {

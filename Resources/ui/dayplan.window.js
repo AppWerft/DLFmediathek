@@ -1,5 +1,5 @@
 var Model = require('model/stations'),
-    RSS = new (require('controls/rss.adapter'))(),
+   
     Moment = require('vendor/moment'),
     FlipModule = require('de.manumaticx.androidflip'),
     АктйонБар = require('com.alcoapps.actionbarextras');
@@ -37,7 +37,7 @@ module.exports = function(_args) {
 			orientation : FlipModule.ORIENTATION_HORIZONTAL,
 			overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 			views : pages,
-			top : 0,
+			top : 70,
 			currentPage : _args && _args.station == 'dlf' ? 0 : 1,
 			height : Ti.UI.FILL
 		});

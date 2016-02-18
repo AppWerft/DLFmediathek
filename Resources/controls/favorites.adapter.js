@@ -23,7 +23,6 @@ Module.prototype = {
         link.close();
     },
     killFav : function(_item) {
-        console.log(_item);
         var link = Ti.Database.open(DB);
         var sql = 'delete from fav where station="' + _item.station + '" and pubdate="' + _item.datetime + '"';
         link.execute(sql);
@@ -31,10 +30,8 @@ Module.prototype = {
     },
     toggleFav : function(_item) {
         if (this.isFav(_item)) {
-            console.log('is fav');
             this.killFav(_item);
         } else {
-            console.log('isstill not fav');
             this.addFav(_item);
         }
         return this.isFav(_item);
@@ -48,7 +45,6 @@ Module.prototype = {
             item.pubdate = rows.fieldByName('pubdate');
             item.station = rows.fieldByName('station');
             item.count = rows.fieldByName('count');
-            console.log(item.station + '   '+ item.pubdate + '   ' + item.duration);
             if (item.duration && item.pubdate && item.station) {
                 items.push(item);
             }   

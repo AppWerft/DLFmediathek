@@ -10,6 +10,5 @@ module.exports = function(item) {
     self.addEventListener('click',function(){
        Ti.App.fireEvent('app:play',item); 
     });
-    console.log(item);
 
 };

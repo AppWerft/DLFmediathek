@@ -7,22 +7,7 @@ var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
 var Moment = require('vendor/moment');
 
-var cron;
-function startCron() {
-	var cronJob = function() {
-
-		Ti.App.fireEvent('daychanged');
-	};
-	cron && clearInterval(cron);
-	cron = setInterval(cronJob, 1000 * 60);
-	cronJob();
-}
-
-function stopCron() {
-	console.log('stopCron: ==========================');
-	cron && clearInterval(cron);
-}
-
+var playIcon;
 
 var startAudioStreamer = function(m3u) {
 	var status = AudioStreamer.getStatus();
@@ -35,7 +20,7 @@ var startAudioStreamer = function(m3u) {
 		require('controls/resolveplaylist')({
 			playlist : m3u,
 			onload : function(_icyUrl) {
-				АктйонБар.setSubtitle('Playerinfo: Erwarte Radiotext …');
+				АктйонБар.setSubtitle('Verbindung mit RadioServer');
 				AudioStreamer.play(_icyUrl + '?' + Math.random());
 			}
 		});
@@ -97,15 +82,16 @@ module.exports = function(_event) {
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", function() {
 				/* Handling of PlayIcon*/
-				var menuitem = _menuevent.menu.findItem(PLAY);
+				//var menuitem = _menuevent.menu.findItem(PLAY);
 				if (AudioStreamer.getStatus() == PLAYING) {
 					AudioStreamer.stop();
 					return;
 				}
 				if (Ti.Network.online) {
-					menuitem.setVisible(false);
+					playIcon.setVisible(false);
 					startAudioStreamer(stations[currentStation].stream);
 				} else {
+					АктйонБар.setSubtitle('kein Netz, LiveR	adio unmöglich');
 					Ti.UI.createNotification({message:'Gerät ist nicht online.\nProbleme mit der Radiowiedergabe.'}).show;
 				}
 			});
@@ -161,9 +147,10 @@ module.exports = function(_event) {
 					require('ui/pdf.window')().open();
 				});
 			}, 7000);
-
+			
 			/* Handling of Playerevents */
-			var menuitem = _menuevent.menu.findItem(PLAY);
+			playIcon = _menuevent.menu.findItem(PLAY);
+			/* in meta data event is radiotext */
 			AudioStreamer.addEventListener('metadata', function(_e) {
 				var message = _e.title;
 				Ti.App.fireEvent('radiotext', {
@@ -176,30 +163,37 @@ module.exports = function(_event) {
 						message : message,
 						duration : 5000
 					}).show();
-				АктйонБар.setSubtitle(_e.title);
+				//АктйонБар.setSubtitle(_e.title);
 			});
+			/* player changed the status */
 			AudioStreamer.addEventListener('change', function(_e) {
 				STATUS = _e.status;
 				console.log('AAS: ' + _e.status);
 				switch (_e.status) {
 				case BUFFERING:
-					menuitem.setVisible(true);
-					menuitem.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
+					playIcon.setVisible(true);
+					АктйонБар.setSubtitle('Zwischenspeicherung …');
+					playIcon.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
 					break;
 				case PLAYING:
-					menuitem.setVisible(true);
-					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
+					playIcon.setVisible(true);
+					АктйонБар.setSubtitle('Radio ist aktiv');
+					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
 					break;
 				case STOPPED:
 					Ti.App.fireEvent('radiotext', {
 						message : null
 					});
-					АктйонБар.setSubtitle('Mediathek');
-					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+					АктйонБар.setSubtitle('Radio gestoppt.');
+					setTimeout(function(){
+						АктйонБар.setSubtitle('Mediathek');
+					},3000);
+					playIcon.setVisible(true);
+					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					break;
 				case STREAMERROR:
 					AudioStreamer.stop();
-					АктйонБар.setSubtitle('Fehler, Internet kaputt?');
+					АктйонБар.setSubtitle('Fehler beim Radiostreaming');
 					Ti.UI.createNotification({
 						message : 'Fehler beim Zugriff auf den AudioStreamerserver.',
 						duration : 7000
@@ -222,7 +216,7 @@ module.exports = function(_event) {
 						message : null
 					});
 					currentStation = _e.station;
-					menuitem.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					activity.actionBar.logo = '/images/' + currentStation + '.png';
 					АктйонБар.setTitle(Model[currentStation].name);
 					Ti.App.Properties.setString('LAST_STATION', currentStation);
@@ -240,16 +234,14 @@ module.exports = function(_event) {
 			Ti.App.addEventListener('app:play', function(_event) {
 				AudioStreamer.stop();
 			});
+			playIcon = _menuevent.menu.findItem(PLAY);
 		};
 		activity && activity.invalidateOptionsMenu();
 		require('vendor/versionsreminder')();
-		activity.onStart = startCron;
-		activity.onPause = stopCron;
 		activity.onResume = function() {
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
 			АктйонБар.setStatusbarColor(Model[currentStation].color);
-			startCron();
 		};
 	}
 };
