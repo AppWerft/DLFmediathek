@@ -3,15 +3,18 @@ const RECENT = 0,
     MYPODS = 2,
     MYPLAYLIST = 3,
     PLAY = 4;
+    
 var AudioStreamer = require('com.woohoo.androidaudiostreamer');
 AudioStreamer.setAllowBackground(true);
+
 var Moment = require('vendor/moment');
 
+/* timeout for stream requesting */
 const NETTIMEOUT = 30000;
 
-var playIcon;
-var bufferingTimer;
-var radioShouldPlay = false;
+var playIcon;  
+var bufferingTimer; // timer for  timeout for stream requesting
+var radioShouldPlay = false; // should play to detect loosing of connection
 var lastOnlineState = Ti.Network.online;
 
 var startAudioStreamer = function(m3u, doRestart) {
@@ -24,31 +27,26 @@ var startAudioStreamer = function(m3u, doRestart) {
 		playlist : m3u,
 		onload : function(_icyUrl) {
 			АктйонБар.setSubtitle('Verbindung mit RadioServer');
-			console.log('Info: streamer status = ' + STATUS);
 			if (AudioStreamer.getStatus() == PLAYING) {
-				console.log('AAS: was playing => stop');
 				AudioStreamer.stop();
 			}
 			AudioStreamer.play(_icyUrl);
-			if (radioShouldPlay) {
+			if (radioShouldPlay) { // try to restart with ugly trick
 				radioShouldPlay = false;
 				Ti.UI.createNotification({
 					message : 'Verbindung verloren.\nVersuche Wiederanknüpfung.'
 				}).show();
 				setTimeout(function() {
-					console.log('AAS: interiem stopped');
 					AudioStreamer.stop(_icyUrl);
 				}, 10);
 				setTimeout(function() {
-					console.log('AAS: second started');
 					AudioStreamer.play(_icyUrl);
 					radioShouldPlay = true;
 				}, 20);
 			}
 			radioShouldPlay = true;
-
+			/* test of succesful streaming: */
 			bufferingTimer = setTimeout(function() {
-				return;
 				AudioStreamer.stop();
 				АктйонБар.setSubtitle('Mediathek');
 				playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
