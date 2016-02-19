@@ -73,8 +73,8 @@ var startAudioStreamer = function(m3u, doRestart) {
 					setTimeout(function() {
 						AudioStreamer.play(_icyUrl);
 						radioShouldPlay = true;
-					}, 120);
-				}, 520);
+					}, 50);
+				}, 50);
 
 			}
 			radioShouldPlay = true;
