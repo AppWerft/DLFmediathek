@@ -17,7 +17,7 @@ module.exports = function() {
 		templates : {
 			'mypodcasts' : require('TEMPLATES').mypodcasts,
 		},
-		top:72,
+		top:80,
 		defaultItemTemplate : 'mypodcasts',
 		sections : [Ti.UI.createListSection({})]
 	});

@@ -26,7 +26,7 @@ module.exports = function() {
 			item.fav.opacity = isfav ? 0.8 : 0.5;
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else if (_e.bindId && _e.bindId == 'share') {
-			
+
 			var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
 			Ti.UI.createNotification({
 				message : 'Verkürze URL des Beirags.\nEinen Augenblick …'
@@ -39,7 +39,7 @@ module.exports = function() {
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			Ti.App.fireEvent('app:stopAudioStreamer');
 			var data = JSON.parse(_e.itemId);
-			
+
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.url,
@@ -65,7 +65,7 @@ module.exports = function() {
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
-		top:110,
+		top : 117,
 		currentPage : stations[Ti.App.Properties.getString('LAST_STATION', 'dlf')],
 		height : Ti.UI.FILL
 	});
@@ -90,13 +90,13 @@ module.exports = function() {
 			state : true
 		});
 		/*Ti.App.fireEvent('app:tab', {
-			subtitle : 'Mediathek',
-			title : Ti.App.Properties.getString('LAST_STATION'),
-			icon : 'drk'
+		subtitle : 'Mediathek',
+		title : Ti.App.Properties.getString('LAST_STATION'),
+		icon : 'drk'
 		});*/
-/*		self.onFlippedFunc({
-			station : Ti.App.Properties.getString('LAST_STATION', 'dlf'),
-			forced : true
+		/*		self.onFlippedFunc({
+		station : Ti.App.Properties.getString('LAST_STATION', 'dlf'),
+		forced : true
 		});*/
 		// initial
 	};
@@ -108,5 +108,9 @@ module.exports = function() {
 			state : false
 		});
 	});
+	Ti.Gesture.addEventListener('orientationchange', function() {
+		self.FlipViewCollection && self.FlipViewCollection.setTop(Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth ? 115 : 65);
+	});
+
 	return self;
 };

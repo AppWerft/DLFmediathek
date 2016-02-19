@@ -32,7 +32,7 @@ module.exports = function() {
 	
 	require('de.manumaticx.crouton').info("Langes Pressen löscht Beitrag.");
 	self.list = Ti.UI.createListView({
-		top : 72,
+		top : 80,
 		height : Ti.UI.FILL,
 		templates : {
 			'recents' : require('TEMPLATES').recents,
@@ -112,11 +112,11 @@ module.exports = function() {
 
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
-		АктйонБар.subtitle = 'Letztgehörtes/Unvollständiges';
+		АктйонБар.subtitle = 'Letztes/Unvollständiges/Offline';
 		АктйонБар.titleFont = "Aller Bold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');
-
+		АктйонБар.setStatusbarColor('#444444');
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function(_menuevent) {

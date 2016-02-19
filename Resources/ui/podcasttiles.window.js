@@ -83,7 +83,7 @@ module.exports = function() {
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
-		top : 120,
+		top : 127,
 
 		height : Ti.UI.FILL,
 		width : Ti.UI.FILL
@@ -96,5 +96,8 @@ module.exports = function() {
 	});
 	self.add(self.FlipViewCollection);
 	self.addEventListener('focus',flipTo);
+	Ti.Gesture.addEventListener('orientationchange', function() {
+		self.FlipViewCollection && self.FlipViewCollection.setTop(Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth ? 127 : 67);
+	});
 	return self;
 };

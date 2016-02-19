@@ -15,7 +15,7 @@ module.exports = function(_args) {
 		},
 		defaultItemTemplate : 'template',
 		sections : sections,
-		top	 : 70
+		top : 70
 	});
 	self.list.addEventListener('itemclick', function(_e) {
 		var data = JSON.parse(_e.itemId);
@@ -58,19 +58,20 @@ module.exports = function(_args) {
 			activity.invalidateOptionsMenu();
 		}
 		require('controls/earlybird.adapter')(function(_i, _res) {
-			self.list.sections[_i].items = _res.map(function(bird) {
-				return {
-					properties : {
-						itemId : JSON.stringify(bird)
-					},
-					image : {
-						image : encodeURI(bird.image)
-					},
-					description : {
-						text : bird.title
-					}
-				};
-			});
+			if (self && self.list && self.list[i])
+				self.list.sections[_i].items = _res.map(function(bird) {
+					return {
+						properties : {
+							itemId : JSON.stringify(bird)
+						},
+						image : {
+							image : encodeURI(bird.image)
+						},
+						description : {
+							text : bird.title
+						}
+					};
+				});
 		});
 	});
 	return self;

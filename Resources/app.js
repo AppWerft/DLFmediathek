@@ -17,9 +17,9 @@
 	});
 	$.addEventListener('open', require('ui/streamer.menu'));
 	$.open();
+	require('vendor/versionsreminder')();
 	
-	/*
-	self.addEventListener("android:back", function(_e) {
+	$.addEventListener("android:back", function(_e) {
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({
 			action : Ti.Android.ACTION_MAIN,
@@ -28,5 +28,5 @@
 		intent.addCategory(Ti.Android.CATEGORY_HOME);
 		Ti.Android.currentActivity.startActivity(intent);
 		return false;
-	});*/
+	});
 }();
