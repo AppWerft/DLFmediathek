@@ -18,6 +18,7 @@ function loadPage(_i, _onload) {
 		_onload(Ti.App.Properties.getList('EARLYBIRD_'+_i));
 	}
 	var xhr = Ti.Network.createHTTPClient({
+		validatesSecureCertificate : false,
 		timeout : 40000,
 		onload : function() {
 			var figures = JSON.parse(this.responseText).query.results.figure;

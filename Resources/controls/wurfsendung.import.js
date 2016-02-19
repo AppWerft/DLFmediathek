@@ -15,6 +15,7 @@ module.exports = function(channelid) {
 
 function loadChannel(channelid, onload) {
 	var xhr = Ti.Network.createHTTPClient({
+		validatesSecureCertificate : false,
 		onload : function() {
 			var body = JSON.parse(this.responseText).query.results.body;
 			var title = body.div[1].div[1].div[0].div[0].h1.split(/\r\n    /gm);

@@ -58,9 +58,7 @@ module.exports = function() {
 	};
 	var args = arguments[0] || {};
 	var color = 'silver';
-	var self = Ti.UI.createWindow({
-		fullscreen : true
-	});
+	var self = Ti.UI.createWindow();
 	self.addEventListener('focus', function() {
 		self.list = Ti.UI.createListView({
 			templates : {
@@ -79,7 +77,8 @@ module.exports = function() {
 			height : Ti.UI.FILL,
 			width : Ti.UI.FILL,
 			backgroundColor : '#8CB5C0',
-			refreshing : true
+			refreshing : true,
+			top : 70
 		});
 		self.container.addEventListener('refreshing', function() {
 			Ti.UI.createNotification({
@@ -107,7 +106,7 @@ module.exports = function() {
 		});
 		self.list.addEventListener('itemclick', function(_e) {
 			var data = JSON.parse(_e.itemId);
-			
+
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.url,
@@ -126,6 +125,8 @@ module.exports = function() {
 		АктйонБар.setSubtitle('Suche nach „' + args.needle + '“');
 		АктйонБар.setFont("Aller");
 		АктйонБар.setBackgroundColor('#444444');
+		АктйонБар.setStatusBarColor('#444444');
+		
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function(_menuevent) {

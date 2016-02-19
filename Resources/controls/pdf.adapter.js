@@ -4,6 +4,7 @@ var Adapter = function(done) {
 	if (Ti.App.Properties.hasProperty('PDF'))
 		done(Ti.App.Properties.getList('PDF'));
 	var $ = Ti.Network.createHTTPClient({
+		validatesSecureCertificate : false,
 		onload : function() {
 			var json = JSON.parse(this.responseText);
 			var dlf = json.query.results.div[1].p;

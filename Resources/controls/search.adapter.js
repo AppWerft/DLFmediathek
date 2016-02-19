@@ -19,6 +19,7 @@ module.exports = function() {
 	var args = arguments[0] || {};
 	if (args.where == 'mediathek') {
 		var xhr = Ti.Network.createHTTPClient({
+			validatesSecureCertificate : false,
 			timeout : 30000,
 			onload : function() {
 				var payload = new XMLTools(this.responseXML).toObject();

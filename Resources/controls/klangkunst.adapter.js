@@ -16,6 +16,7 @@ Module.prototype = {
         }
         var that = this;
         var xhr = Ti.Network.createHTTPClient({
+        	validatesSecureCertificate : false,
             onload : function() {
                 var page = this.responseText.replace(/\n/mg, ' '),
                     pattern = new RegExp('<article class="drk\-articlesmall">(.*?)</article>', 'gmi'),

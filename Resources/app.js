@@ -1,6 +1,4 @@
 ! function() {
-	var Moment = require('vendor/moment');
-	Ti.UI.backgroundImage='#00cc00';
 	var self = Ti.UI.createTabGroup({
 		fullscreen : false,
 		swipeable : false,
@@ -17,19 +15,20 @@
 		})]
 	});
 	self.addEventListener('open', require('ui/streamer.menu'));
-
+	self.open();
+	
 	['podcasttiles'].forEach(function(win, ndx) {
 		setTimeout(function() {
 			self.tabs[ndx + 1].setWindow(require('ui/'+ win+ '.window')());
 		}, ndx * 5000);
 	});
-	setInterval(function() {
+	/*setInterval(function() {
 		Ti.App.fireEvent('daychanged');
-	}, 1000 * 6);
-	self.open();
+	}, 1000 * 6);*/
+	
 	self.setActiveTab(0);
 	/* start background service: */
-	require('vendor/cronservice.trigger')();
+	//require('vendor/cronservice.trigger')();
 	//listen for the back-button-tap event
 	self.addEventListener("android:back", function(_e) {
 		_e.cancelBubble = true;

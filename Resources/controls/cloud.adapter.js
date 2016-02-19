@@ -63,6 +63,7 @@ Module.prototype = {
             });
         } else {
             var xhr = Ti.Network.createHTTPClient({
+            	validatesSecureCertificate : false,
                 onload : function() {
                     var coords = JSON.parse(this.responseText);
                     coords.station = _station;

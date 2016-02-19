@@ -1,6 +1,6 @@
 var RecentsModule = require('controls/recents.adapter'),
     CacheAdapter = require('controls/cache.adapter'),
-    playerViewModule = require('ui/player.widget');
+    playerViewModule = require('ui/audioplayer.widget');
 
 String.prototype.toHHMMSS = function() {
 	var sec_num = parseInt(this, 10);
@@ -124,9 +124,11 @@ AudioPlayer.prototype = {
 	createWindow : function() {
 		this.color = (this.options.color) ? this.options.color : 'black';
 		this._window = Ti.UI.createWindow({
-			fullscreen : true,
 			backgroundColor : 'transparent',
-			theme : 'Theme.NoActionBar'
+			//theme : 'Theme.NoActionBar'
+		});
+		this._window.addEventListener('open',function(_e){
+			_e.source.activity.actionBar.hide();	
 		});
 		this._view = playerViewModule.getView(this.options);
 		this._window.add(this._view);
@@ -135,14 +137,16 @@ AudioPlayer.prototype = {
 			Ti.API.error('Info: background of player clicked');
 			that.stopPlayer();
 		});
+		console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 		this._window.open({
 			activityEnterAnimation : Ti.Android.R.anim.fade_in,
 			//				activityExitAnimation : Ti.Android.R.anim.fade_out
 		});
+		console.log('????????????????????????????????????????????????????');
 	},
 	startPlayer : function() {
 		var url = CacheAdapter.getURL(this.options);
-		Ti.App.fireEvent('app:stop');
+		
 		this._view.setVisible(true);
 		var that = this;
 		this._view.container.animate({

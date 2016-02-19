@@ -129,6 +129,7 @@ exports.getRSS = function(_args) {
 			}
 			downloadlocked = true;
 			var xhr = Ti.Network.createHTTPClient({
+				validatesSecureCertificate : false,
 				onerror : function() {
 					console.log("Warning: http error with " + url);
 					downloadlocked = false;

@@ -10,8 +10,8 @@ module.exports = function(_args) {
 		return;
 	}
 	var onloadFunc = function() {
-		var start = new Date().getTime();
-		var entries = require('controls/aodlistaudio.rpc').parseXMLDoc(this.responseXML.documentElement);
+		var entries = require('controls/rpc.parser').parseXMLDoc(this.responseXML.documentElement);
+		console.log('END RPC MEMORY= ' + Ti.Platform.availableMemory / 1000000);
 		var result = {
 			hash : Ti.Utils.md5HexDigest(this.responseText + 'geheim'),
 			live : entries
@@ -51,19 +51,20 @@ module.exports = function(_args) {
 			}
 			result.mediathek = mediathek;
 		}
+		entries =null;
 		Ti.App.Properties.setString(url, JSON.stringify(result));
 		_args.onload(result);
 	};
-
+	console.log('START RPC MEMORY= ' + Ti.Platform.availableMemory / 1000000);
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
 	if (!_args.nocache && Ti.App.Properties.hasProperty(url)) {
 		_args.onload(JSON.parse(Ti.App.Properties.getString(url)));
 		return null;
 	}
 	var xhr = Ti.Network.createHTTPClient({
-		timeout : 30000,
+		timeout : 3000,
 		onerror : function(e) {
-			console.log('ServerantwortCode: ' + e.status);
+			console.log('ServerantwortCode: ' + e.error);
 		},
 		onload : onloadFunc
 	});

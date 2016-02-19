@@ -26,16 +26,7 @@ module.exports = function() {
 			item.fav.opacity = isfav ? 0.8 : 0.5;
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else if (_e.bindId && _e.bindId == 'share') {
-			/*
-			 require('ui/sharing.chooser')(function(_type) {
-			 var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
-			 console.log(message);
-			 require('vendor/socialshare')({
-			 type : _type,
-			 message : message,
-			 url : JSON.parse(_e.itemId).url,
-			 });
-			 });*/
+			
 			var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
 			Ti.UI.createNotification({
 				message : 'Verkürze URL des Beirags.\nEinen Augenblick …'
@@ -46,7 +37,9 @@ module.exports = function() {
 				url : JSON.parse(_e.itemId).url,
 			});
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
+			Ti.App.fireEvent('app:stopAudioStreamer');
 			var data = JSON.parse(_e.itemId);
+			
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.url,
@@ -92,19 +85,19 @@ module.exports = function() {
 		});
 	};
 	self.onFocusFunc = function() {
-		self.FlipViewCollection.peakNext(true);
+		///self.FlipViewCollection.peakNext(true);
 		Ti.App.fireEvent('app:state', {
 			state : true
 		});
-		Ti.App.fireEvent('app:tab', {
+		/*Ti.App.fireEvent('app:tab', {
 			subtitle : 'Mediathek',
 			title : Ti.App.Properties.getString('LAST_STATION'),
 			icon : 'drk'
-		});
-		self.onFlippedFunc({
+		});*/
+/*		self.onFlippedFunc({
 			station : Ti.App.Properties.getString('LAST_STATION', 'dlf'),
 			forced : true
-		});
+		});*/
 		// initial
 	};
 	self.FlipViewCollection.addEventListener('flipped', self.onFlippedFunc);

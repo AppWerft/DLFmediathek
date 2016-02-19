@@ -1,6 +1,7 @@
 var Moment = require('vendor/moment');
+
 var banneradded = false;
-var Module = function(_args) {
+var $ = function(_args) {
 	this._view = Ti.UI.createScrollView({
 		scrollType : 'vertical',
 		contentHeight : Ti.UI.SIZE,
@@ -67,12 +68,10 @@ var Module = function(_args) {
 	this._view.add(this._view.radiotext);
 	this._view.add(this._view.description);
 	var that = this;
-	Ti.App.addEventListener('radiotext', function(_e) {
-		if (_e.message == null) {
-			that._view.radiotext.setText('');
-		} else {
-			that._view.radiotext.setText(_e.message);
-		}
+	//console.log('TOPINFO MEMORY= ' + Ti.Platform.availableMemory / 1000000);
+	Ti.App.addEventListener('app:setRadiotext', function(_e) {
+	//	console.log('TOPINFO SETRADIOTEXT MEMORY= ' + Ti.Platform.availableMemory / 1000000);
+		that._view.radiotext.setText(_e.message);
 	});
 	this._view.addEventListener('click', function() {
 		if (_args.station == 'drw')
@@ -85,7 +84,7 @@ var Module = function(_args) {
 	return this;
 };
 
-Module.prototype = {
+$.prototype = {
 	createView : function(_args) {
 		this._view.setTop(-_args.height);
 		this._view.title.setColor(_args.color);
@@ -122,4 +121,4 @@ Module.prototype = {
 	}
 };
 
-module.exports = Module;
+module.exports = $;

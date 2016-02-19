@@ -217,17 +217,14 @@ module.exports = function(_args) {
 		});
 	};
 
-	if (self.date.isSame(Moment().startOf('day')))
-		self.cron = setInterval(self.updateMediathekList, 300000);
-	else
-		clearInterval(self.cron);
 	var locked = false;
 	self.bottomList.addEventListener('itemclick', _args.window.onitemclickFunc);
 	if (_args.station != 'drw')
-		setInterval(self.updateCurrentinTopBox, 5000);
+		setInterval(self.updateCurrentinTopBox, 60000);
 	Ti.App.addEventListener('app:state', function(_payload) {
 		activityworking = _payload.state;
 	});
 	self.updateMediathekList();
+	self.updateCurrentinTopBox();
 	return self;
 };

@@ -149,6 +149,7 @@ Module.prototype = {
 		var faved = 0;
 		var that = this;
 		var xhr = Ti.Network.createHTTPClient({
+			validatesSecureCertificate : false,
 			onload : function() {
 				var channel = new XMLTools(this.responseXML).toObject().channel;
 				if (channel.item && !Array.isArray(channel.item)) {
