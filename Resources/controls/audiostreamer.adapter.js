@@ -28,7 +28,7 @@ function onPlayerChange(_e) {
 		clearTimeout(timeoutTimer);
 		timeoutTimer = null;
 	}
-	
+
 	switch (status) {
 	case BUFFERING:
 		callbackFn({
@@ -104,3 +104,6 @@ exports.stop = function() {
 	Ti.App.AudioStreamer.stop();
 };
 
+exports.isPlaying = function() {
+	return Ti.App.AudioStreamer.getStatus() == PLAYING ? true : false;
+}; 

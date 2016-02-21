@@ -29,8 +29,12 @@ function onCallbackFn(_payload) {
 		playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 		АктйонБар.setSubtitle('Radio angehalten');
 		Ti.App.fireEvent('app:setRadiotext', {
-				message : ''
-			});
+			message : ''
+		});
+		onAir=false;
+		setTimeout(function() {
+			АктйонБар.setSubtitle('Mediathek');
+		}, 3000);
 		break;
 	case 'BUFFERING':
 		playIcon.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
@@ -172,11 +176,16 @@ module.exports = function(_event) {
 				playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				activity.actionBar.logo = '/images/' + currentStation + '.png';
 				АктйонБар.setTitle(Model[currentStation].name);
-				if (onAir)
+				if (onAir == true)
 					AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
 			});
 			Ti.App.addEventListener('app:stopAudioStreamer', function(_event) {
-				audioStreamer.stop();
+				if (AudioStreamer.isPlaying()) {
+					AudioStreamer.stop();
+					Ti.UI.createNotification({
+						message : L('START_MEDIATHEK_TOAST')
+					}).show();
+				}
 			});
 		};
 		//activity && activity.invalidateOptionsMenu();
