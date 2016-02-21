@@ -65,7 +65,7 @@ module.exports = function() {
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
-		top : 117,
+		top : 120,
 		currentPage : stations[Ti.App.Properties.getString('LAST_STATION', 'dlf')],
 		height : Ti.UI.FILL
 	});
@@ -109,7 +109,7 @@ module.exports = function() {
 		});
 	});
 	Ti.Gesture.addEventListener('orientationchange', function() {
-		self.FlipViewCollection && self.FlipViewCollection.setTop(Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth ? 115 : 65);
+		self.FlipViewCollection && self.FlipViewCollection.setTop(Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth ? 120 : 65);
 	});
 
 	return self;

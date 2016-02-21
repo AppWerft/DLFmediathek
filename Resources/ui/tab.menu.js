@@ -18,11 +18,19 @@ function onCallbackFn(_payload) {
 	switch(_payload.status) {
 	case 'PLAYING':
 		playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
-		_payload.message && АктйонБар.setSubtitle('Radio ist onAir');
+		if (_payload.message) {
+			АктйонБар.setSubtitle('Radio ist onAir');
+			Ti.App.fireEvent('app:setRadiotext', {
+				message : _payload.message
+			});
+		}
 		break;
 	case 'STOPPED':
 		playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 		АктйонБар.setSubtitle('Radio angehalten');
+		Ti.App.fireEvent('app:setRadiotext', {
+				message : ''
+			});
 		break;
 	case 'BUFFERING':
 		playIcon.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
@@ -164,13 +172,8 @@ module.exports = function(_event) {
 				playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				activity.actionBar.logo = '/images/' + currentStation + '.png';
 				АктйонБар.setTitle(Model[currentStation].name);
-				return;
-				// only if radio is active we switch to other station:
-				if (Ti.App.AudioStreamer.getStatus() == PLAYING) {
-					radioShouldPlay = false;
-					Ti.App.AudioStreamer.stop();
-					setTimeout(startAudioStreamer, 3000);
-				}
+				if (onAir)
+					AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
 			});
 			Ti.App.addEventListener('app:stopAudioStreamer', function(_event) {
 				audioStreamer.stop();
