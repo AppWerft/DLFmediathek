@@ -15,4 +15,4 @@ name: androidaudiostreamer
 moduleid: com.woohoo.androidaudiostreamer
 guid: 1f81e1bf-afd5-4075-a219-d2c51accde23
 platform: android
-minsdk: 3.1.2.GA
+minsdk: 5.1.2.GA

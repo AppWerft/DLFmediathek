@@ -1,8 +1,9 @@
 ! function() {
+	
 	var $ = Ti.UI.createTabGroup({
 		fullscreen : false,
 		swipeable : false,
-		backgroundColor:'transparent',
+		backgroundColor : 'transparent',
 		exitOnClose : true,
 		smoothScrollOnTabClick : true,
 		tabs : [Ti.UI.createTab({
@@ -15,10 +16,11 @@
 			ndx : 1,
 		})]
 	});
-	$.addEventListener('open', require('ui/streamer.menu'));
+	$.addEventListener('open', require('ui/tab.menu'));
 	$.open();
 	require('vendor/versionsreminder')();
-	
+	//require('vendor/mod')();
+
 	$.addEventListener("android:back", function(_e) {
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({
@@ -29,4 +31,4 @@
 		Ti.Android.currentActivity.startActivity(intent);
 		return false;
 	});
-}();
+}(); 

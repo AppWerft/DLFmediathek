@@ -78,7 +78,7 @@ module.exports = function() {
 			width : Ti.UI.FILL,
 			backgroundColor : '#8CB5C0',
 			refreshing : true,
-			top : 70
+			top : 80
 		});
 		self.container.addEventListener('refreshing', function() {
 			Ti.UI.createNotification({
@@ -125,8 +125,7 @@ module.exports = function() {
 		АктйонБар.setSubtitle('Suche nach „' + args.needle + '“');
 		АктйонБар.setFont("Aller");
 		АктйонБар.setBackgroundColor('#444444');
-		АктйонБар.setStatusBarColor('#444444');
-		
+		АктйонБар.setStatusbarColor('#444444');
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function(_menuevent) {

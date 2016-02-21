@@ -37,7 +37,7 @@ module.exports = function(_args) {
 			orientation : FlipModule.ORIENTATION_HORIZONTAL,
 			overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 			views : pages,
-			top : 70,
+			top : 80,
 			currentPage : _args && _args.station == 'dlf' ? 0 : 1,
 			height : Ti.UI.FILL
 		});
