@@ -8,15 +8,39 @@ const RECENT = 0,
 
 var Moment = require('vendor/moment');
 
-
 var playIcon;
 
 var lastOnlineState = Ti.Network.online;
 
+var onAir = false;
+
+function onCallbackFn(_payload) {
+	switch(_payload.status) {
+	case 'PLAYING':
+		playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_stop_' + currentStation]);
+		_payload.message && АктйонБар.setSubtitle('Radio ist onAir');
+		break;
+	case 'STOPPED':
+		playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+		АктйонБар.setSubtitle('Radio angehalten');
+		break;
+	case 'BUFFERING':
+		playIcon.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
+		_payload.message && АктйонБар.setSubtitle('Lade Puffer …');
+		break;
+	}
+}
+
 function onPlayStopClickFn() {
-	AudioStreamer.play(stations[currentStation].icyurl[0],function(_e){
-		
-	});
+	if (onAir == false) {
+		AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
+		console.log('AAS onAir was false now setting  to true');
+		onAir = true;
+	} else {
+		AudioStreamer.stop(onCallbackFn);
+		console.log('AAS onAir was true now setting  to false');
+		onAir = false;
+	}
 };
 
 var Model = require('model/stations'),
@@ -66,7 +90,6 @@ module.exports = function(_event) {
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", onPlayStopClickFn);
 			playIcon = _menuevent.menu.findItem(PLAY);
-
 
 			searchMenu = _menuevent.menu.add({
 				title : L('MENU_SEARCH'),
@@ -129,7 +152,6 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				return;
 				if (!_e.station)
 					return;
 				currentStation = _e.station;
@@ -142,6 +164,7 @@ module.exports = function(_event) {
 				playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				activity.actionBar.logo = '/images/' + currentStation + '.png';
 				АктйонБар.setTitle(Model[currentStation].name);
+				return;
 				// only if radio is active we switch to other station:
 				if (Ti.App.AudioStreamer.getStatus() == PLAYING) {
 					radioShouldPlay = false;
@@ -183,5 +206,4 @@ Ti.Network.addEventListener('change', function(event) {
 Ti.Android.currentActivity.onRestart = function() {
 	playIcon.setVisible(Ti.Network.online);
 };
-
 

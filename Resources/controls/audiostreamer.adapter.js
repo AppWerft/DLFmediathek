@@ -32,13 +32,11 @@ function onPlayerChange(_e) {
 	switch (status) {
 	case BUFFERING:
 		callbackFn({
-			message : '',
 			status : 'BUFFERING'
 		});
 		break;
 	case PLAYING:
 		callbackFn({
-			message : '',
 			status : 'PLAYING'
 		});
 		break;
@@ -88,7 +86,7 @@ exports.play = function(_icyurl, _callbackFn) {
 	if (_icyurl != undefined && typeof _icyurl == 'string') {
 		shouldStream = _icyurl;
 		/* was playing: we stop, wait og stop is finished a try to start again */
-		console.log('AAS ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
+		console.log('AAS status after start method = ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
 		if (Ti.App.AudioStreamer.getStatus() == PLAYING) {
 			console.log('AAS: was playing => forced stopp');
 			shouldStop = true;
