@@ -9,10 +9,11 @@ const STOPPED = 0,
     BUFFERING = 1,
     PLAYING = 2,
     STREAMERROR = 3,
-    STATUS = ['STOPPED', 'BUFFERING', 'PLAYING', 'STREAMERROR'];
+    TIMEOUT =4,
+    STATUS = ['STOPPED', 'BUFFERING', 'PLAYING', 'STREAMERROR','TIMEOUT'];
 
 var timeoutTimer = null;
-const TIMEOUT = 10000;
+const TIMEOUTVALUE = 10000;
 
 /* is callback function with payload:
  * String message
@@ -44,17 +45,15 @@ function onPlayerChange(_e) {
 		shouldStopp = false;
 		if (shouldStream) {
 			console.log('AAS: play in STOP event node, timeouttimer started');
-			timeoutTimer = setTimeout(onTimeout, TIMEOUT);
+			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
 			Ti.App.AudioStreamer.play(shouldStream);
 		}
 		callbackFn({
-			message : '',
 			status : 'STOPPED'
 		});
 		break;
 	case STREAMERROR:
 		callbackFn({
-			message : '',
 			status : 'STREAMERROR'
 		});
 		L('LOST_CONNECTION_TOAST') && Ti.UI.createNotification({
@@ -76,6 +75,10 @@ function onTimeout() {
 	L('OFFLINE_RADIO_TOAST') && Ti.UI.createNotification({
 		message : L('OFFLINE_RADIO_TOAST')
 	}).show();
+	callbackFn({
+		status : 'TIMEOUT'
+	});
+
 }
 
 Ti.App.AudioStreamer.addEventListener('metadata', onMetaData);
@@ -106,4 +109,4 @@ exports.stop = function() {
 
 exports.isPlaying = function() {
 	return Ti.App.AudioStreamer.getStatus() == PLAYING ? true : false;
-}; 
+};

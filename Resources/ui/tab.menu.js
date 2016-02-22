@@ -25,18 +25,27 @@ function onCallbackFn(_payload) {
 			});
 		}
 		break;
+	case 'TIMEOUT':
+		onAir = false;
+		playIcon.setVisible(Ti.Network.online);
+		Ti.App.fireEvent('app:setRadiotext', {
+			message : ''
+		});
+		break;
 	case 'STOPPED':
+		playIcon.setVisible(Ti.Network.online);
 		playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 		АктйонБар.setSubtitle('Radio angehalten');
 		Ti.App.fireEvent('app:setRadiotext', {
 			message : ''
 		});
-		onAir=false;
+		onAir = false;
 		setTimeout(function() {
 			АктйонБар.setSubtitle('Mediathek');
 		}, 3000);
 		break;
 	case 'BUFFERING':
+		playIcon.setVisible(true);
 		playIcon.setIcon(Ti.App.Android.R.drawable.ic_action_loading);
 		_payload.message && АктйонБар.setSubtitle('Lade Puffer …');
 		break;
@@ -44,6 +53,7 @@ function onCallbackFn(_payload) {
 }
 
 function onPlayStopClickFn() {
+	playIcon.setVisible(false);
 	if (onAir == false) {
 		AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
 		console.log('AAS onAir was false now setting  to true');
@@ -97,12 +107,11 @@ module.exports = function(_event) {
 			_menuevent.menu.add({
 				title : 'Start live Radio',
 				itemId : PLAY,
-				visible : Ti.Network.online ? true : false,
+				visible : false,
 				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", onPlayStopClickFn);
 			playIcon = _menuevent.menu.findItem(PLAY);
-
 			searchMenu = _menuevent.menu.add({
 				title : L('MENU_SEARCH'),
 				visible : false,
@@ -124,6 +133,7 @@ module.exports = function(_event) {
 				searchIcon : "/images/search.png"
 			});
 			setTimeout(function() {
+				playIcon.setVisible(Ti.Network.online ? true : false);
 				_menuevent.menu.add({
 					title : L('MENU_FAV'),
 					itemId : MYFAVS,
@@ -201,17 +211,14 @@ module.exports = function(_event) {
 	}
 };
 
+var lastOnlineState = Ti.Network.online;
 Ti.Network.addEventListener('change', function(event) {
-	return;
-	console.log('Info: AAS Network changed');
 	var onlineState = Ti.Network.online;
 	playIcon && playIcon.setVisible(onlineState);
 	if (lastOnlineState != onlineState) {
 		lastOnlineState = onlineState;
-		console.log('Info: NetStatus=' + Ti.Network.online + ' && Ti.App.AudioStreamer.status=' + Ti.App.AudioStreamer.getStatus() + ' && shouldPlay=' + radioShouldPlay);
-		if (Ti.Network.online && Ti.App.AudioStreamer.getStatus() == STOPPED && radioShouldPlay == true) {
-			startAudioStreamer(stations[currentStation].stream, true);
-		}
+		if (onlineState == false)
+			playIcon && playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 	}
 });
 
