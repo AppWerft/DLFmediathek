@@ -1,5 +1,7 @@
 var AudioStreamer = require('controls/audiostreamer.adapter');
 
+
+
 const RECENT = 0,
     MYFAVS = 1,
     MYPODS = 2,
@@ -12,6 +14,7 @@ var playIcon;
 
 var lastOnlineState = Ti.Network.online;
 
+var autoSwitch = false;
 var onAir = false;
 
 function onCallbackFn(_payload) {
@@ -24,10 +27,15 @@ function onCallbackFn(_payload) {
 				message : _payload.message
 			});
 		}
+		onAir = true;
 		break;
 	case 'TIMEOUT':
+		console.log('AAS  event TIMEOUT');
 		onAir = false;
 		playIcon.setVisible(Ti.Network.online);
+		Ti.UI.createNotification({
+			message : L('OFFLINE_RADIO_TOAST')
+		}).show();
 		Ti.App.fireEvent('app:setRadiotext', {
 			message : ''
 		});
@@ -178,16 +186,23 @@ module.exports = function(_event) {
 					return;
 				currentStation = _e.station;
 				Ti.App.Properties.setString('LAST_STATION', currentStation);
-				console.log('Info: AAS onStationChanged   ≠≠≠≠≠≠≠≠≠≠≠');
+				console.log('AAS onStationChanged   ≠≠≠≠≠≠≠≠≠≠≠ onAir=' + onAir);
 				АктйонБар.setStatusbarColor(Model[currentStation].color);
 				Ti.App.fireEvent('app:setRadiotext', {
 					message : ''
 				});
-				playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
-				activity.actionBar.logo = '/images/' + currentStation + '.png';
 				АктйонБар.setTitle(Model[currentStation].name);
-				if (onAir == true)
-					AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
+				if (onAir == false) {
+					console.log('AAS: radio was offline ==> changing color of playbotton');
+					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+				}
+				if (autoSwitch == true) {
+					console.log('AAS: autoSwitch ==> try to switch station');
+					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+					activity.actionBar.logo = '/images/' + currentStation + '.png';
+					if (onAir == true)
+						AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
+				}
 			});
 			Ti.App.addEventListener('app:stopAudioStreamer', function(_event) {
 				if (AudioStreamer.isPlaying()) {

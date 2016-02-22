@@ -1,5 +1,21 @@
 Ti.App.AudioStreamer = require('com.woohoo.androidaudiostreamer');
 
+function LOG() {
+	//console.log('AAS: ' + arguments[0]);
+}
+
+function pingNet(onSuccess, onError) {
+	if (Ti.Network.online == false)
+		onError();
+	else {
+		var xhr = Ti.Network.createHTTPClient({
+			onload : onSuccess
+		});
+		xhr.open('HEAD', 'https://google.com/'), xhr.send();
+	}
+
+}
+
 var shouldStream = null;
 // null or URL (string)
 var shouldStopp = false;
@@ -9,8 +25,8 @@ const STOPPED = 0,
     BUFFERING = 1,
     PLAYING = 2,
     STREAMERROR = 3,
-    TIMEOUT =4,
-    STATUS = ['STOPPED', 'BUFFERING', 'PLAYING', 'STREAMERROR','TIMEOUT'];
+    TIMEOUT = 4,
+    STATUS = ['STOPPED', 'BUFFERING', 'PLAYING', 'STREAMERROR', 'TIMEOUT'];
 
 var timeoutTimer = null;
 const TIMEOUTVALUE = 10000;
@@ -23,9 +39,8 @@ var callbackFn;
 
 function onPlayerChange(_e) {
 	var status = _e.status;
-	if (status != PLAYING)
-		console.log('Info: AAS onPlayerChange ' + STATUS[status]);
-	if (timeoutTimer !== null) {
+	if (timeoutTimer) {
+		LOG('stopping watchdog timer by player event	');
 		clearTimeout(timeoutTimer);
 		timeoutTimer = null;
 	}
@@ -42,9 +57,14 @@ function onPlayerChange(_e) {
 		});
 		break;
 	case STOPPED:
+		if (!shouldStopp) {
+			LOG('stopping by offline');
+			Ti.App.AudioStreamer.stop();
+		}
 		shouldStopp = false;
-		if (shouldStream) {
-			console.log('AAS: play in STOP event node, timeouttimer started');
+		LOG('event STOPPED FROM streamer');
+		if (shouldStream && Ti.Network.online) {
+			LOG('play in STOP event node, timeouttimer started');
 			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
 			Ti.App.AudioStreamer.play(shouldStream);
 		}
@@ -64,6 +84,7 @@ function onPlayerChange(_e) {
 }
 
 function onMetaData(_e) {
+	console.log(_e);
 	var message = _e.title;
 	callbackFn({
 		message : message,
@@ -72,9 +93,6 @@ function onMetaData(_e) {
 }
 
 function onTimeout() {
-	L('OFFLINE_RADIO_TOAST') && Ti.UI.createNotification({
-		message : L('OFFLINE_RADIO_TOAST')
-	}).show();
 	callbackFn({
 		status : 'TIMEOUT'
 	});
@@ -87,21 +105,25 @@ Ti.App.AudioStreamer.addEventListener('change', onPlayerChange);
 exports.play = function(_icyurl, _callbackFn) {
 	callbackFn = _callbackFn;
 	if (_icyurl != undefined && typeof _icyurl == 'string') {
+		LOG('≠≠≠≠≠≠≠ PLAY');
 		shouldStream = _icyurl;
 		/* was playing: we stop, wait og stop is finished a try to start again */
-		console.log('AAS status after start method = ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
+		LOG('status after start method = ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
 		if (Ti.App.AudioStreamer.getStatus() == PLAYING) {
-			console.log('AAS: was playing => forced stopp');
+			LOG('was playing => forced stopp');
 			shouldStop = true;
 			Ti.App.AudioStreamer.stop();
 		} else {
-			timeoutTimer = setTimeout(onTimeout, TIMEOUT);
+			LOG('timeout watcher started, statsu was ' + STATUS[Ti.App.AudioStreamer.getStatus()]);
+			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
 			Ti.App.AudioStreamer.play(_icyurl);
+			LOG('PLAY STARTED');
 		}
 	}
 };
 
 exports.stop = function() {
+	LOG('≠≠≠≠≠≠≠ STOP');
 	shouldStream = null;
 	shoudStopp = true;
 	Ti.App.AudioStreamer.stop();
