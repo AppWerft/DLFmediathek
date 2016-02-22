@@ -77,6 +77,7 @@ module.exports = function(_args) {
 	var lastPubDate = null;
 	var currentMediathekHash = null;
 	self.updateCurrentinTopBox = function(_forced) {
+		console.log('self.updateCurrentinTopBox');
 		if (_args.station == 'drw') {
 			TopBoxWidget.addBanner();
 			// ratio = 40/11

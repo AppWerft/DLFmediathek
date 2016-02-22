@@ -1,22 +1,30 @@
 var AudioStreamer = require('controls/audiostreamer.adapter');
 
 
+function LOG() {
+	//console.log('ABMENU: ' + arguments[0]);
+}
 
+
+/* constants for menuItems */
 const RECENT = 0,
     MYFAVS = 1,
     MYPODS = 2,
     MYPLAYLIST = 3,
     PLAY = 4;
 
-var Moment = require('vendor/moment');
-
+/* Reference to Play icon to control it outside the callback */
 var playIcon;
 
 var lastOnlineState = Ti.Network.online;
 
+/* if after station changing the live radio should switch */
 var autoSwitch = false;
+
+/* saves the status of live raddio */
 var onAir = false;
 
+/* logic for callbacks from audiostreamer module */
 function onCallbackFn(_payload) {
 	switch(_payload.status) {
 	case 'PLAYING':
@@ -30,7 +38,7 @@ function onCallbackFn(_payload) {
 		onAir = true;
 		break;
 	case 'TIMEOUT':
-		console.log('AAS  event TIMEOUT');
+		LOG('event TIMEOUT');
 		onAir = false;
 		playIcon.setVisible(Ti.Network.online);
 		Ti.UI.createNotification({
@@ -64,11 +72,11 @@ function onPlayStopClickFn() {
 	playIcon.setVisible(false);
 	if (onAir == false) {
 		AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
-		console.log('AAS onAir was false now setting  to true');
+		LOG('onAir was false now setting  to true');
 		onAir = true;
 	} else {
 		AudioStreamer.stop(onCallbackFn);
-		console.log('AAS onAir was true now setting  to false');
+		LOG('onAir was true now setting  to false');
 		onAir = false;
 	}
 };
@@ -95,6 +103,7 @@ searchView.addEventListener('submit', function(_e) {
 	searchMenu.collapseActionView();
 });
 
+/* INTERFACE */
 module.exports = function(_event) {
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
@@ -107,10 +116,10 @@ module.exports = function(_event) {
 	if (activity) {
 		activity.actionBar.logo = '/images/' + currentStation + '.png';
 		activity.onPrepareOptionsMenu = function() {
-			console.log('Info: AAS onPrepareOptionsMenu');
+			LOG('onPrepareOptionsMenu');
 		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
-			console.log('Info: AAS onCreateOptionsMenu');
+			LOG('onCreateOptionsMenu');
 			_menuevent.menu.clear();
 			_menuevent.menu.add({
 				title : 'Start live Radio',
@@ -186,18 +195,18 @@ module.exports = function(_event) {
 					return;
 				currentStation = _e.station;
 				Ti.App.Properties.setString('LAST_STATION', currentStation);
-				console.log('AAS onStationChanged   ≠≠≠≠≠≠≠≠≠≠≠ onAir=' + onAir);
+				LOG('onStationChanged   ≠≠≠≠≠≠≠≠≠≠≠ onAir=' + onAir);
 				АктйонБар.setStatusbarColor(Model[currentStation].color);
 				Ti.App.fireEvent('app:setRadiotext', {
 					message : ''
 				});
 				АктйонБар.setTitle(Model[currentStation].name);
 				if (onAir == false) {
-					console.log('AAS: radio was offline ==> changing color of playbotton');
+					LOG('radio was offline ==> changing color of playbotton');
 					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 				}
 				if (autoSwitch == true) {
-					console.log('AAS: autoSwitch ==> try to switch station');
+					LOG('autoSwitch ==> try to switch station');
 					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
 					activity.actionBar.logo = '/images/' + currentStation + '.png';
 					if (onAir == true)
@@ -215,7 +224,7 @@ module.exports = function(_event) {
 		};
 		//activity && activity.invalidateOptionsMenu();
 		activity.onResume = function() {
-			console.log('Info: AAS onResume');
+			LOG('AAS onResume');
 			playIcon && playIcon.setVisible(Ti.Network.online);
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
