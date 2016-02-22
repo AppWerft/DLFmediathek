@@ -1,19 +1,30 @@
+/* Init */
 Ti.App.AudioStreamer = require('com.woohoo.androidaudiostreamer');
+
+const TICK = 3000;
+
+var wasLastPingSuccessful = false;
 
 function LOG() {
 	//console.log('AAS: ' + arguments[0]);
 }
 
-function pingNet(onSuccess, onError) {
+function pingNet() {
 	if (Ti.Network.online == false)
-		onError();
+		wasLastPingSuccessful = false;
 	else {
 		var xhr = Ti.Network.createHTTPClient({
-			onload : onSuccess
+			timeout : TICK,
+			onload : function() {
+				wasLastPingSuccessful=  (xhr.status==302) ? true: false;
+			},
+			onerror : function() {
+				wasLastPingSuccessful = false;
+			}
 		});
-		xhr.open('HEAD', 'https://google.com/'), xhr.send();
+		xhr.setAutoRedirect(false);
+		xhr.open('HEAD', 'https://facebook.com/'), xhr.send();
 	}
-
 }
 
 var shouldStream = null;
@@ -38,6 +49,9 @@ const TIMEOUTVALUE = 10000;
 var callbackFn;
 
 function onPlayerChange(_e) {
+	pingNet(function(_e) {
+		console.log(_e);
+	});
 	var status = _e.status;
 	if (timeoutTimer) {
 		LOG('stopping watchdog timer by player event	');
@@ -132,3 +146,16 @@ exports.stop = function() {
 exports.isPlaying = function() {
 	return Ti.App.AudioStreamer.getStatus() == PLAYING ? true : false;
 };
+
+exports.isOnline = function() {
+	return wasLastPingSuccessful;
+};
+
+
+/* every click */
+var watchDog = setInterval(function() {
+	/* if should play we test conenctivity */
+	if (shouldStream != null)
+		pingNet(); // set module variable wasLastPingSuccessful
+}, TICK);
+
