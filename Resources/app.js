@@ -12,7 +12,7 @@
 			window : require('ui/mediathek.window')()
 		}), Ti.UI.createTab({
 			title : 'Podcasts',
-			window : require('ui/podcasttiles.window')(),
+			window : require('ui/podcastcardviews.window')(),
 			ndx : 1,
 		})]
 	});
