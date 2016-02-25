@@ -4,11 +4,22 @@ var Model = require('model/stations'),
     Podcast = new (require('controls/feed.adapter'))(),
     stations = ['dlf', 'drk', 'drw'];
 
-function getTilewidth() {
+function getTileDims() {
 	var screenwidth = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor,
 	    screenheight = Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor;
-	var tilewidth = Math.min(screenwidth, screenheight)/2;
-	return tilewidth;
+	var tilewidth = Math.min(screenwidth, screenheight) / 2;
+	if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
+		tilewidth = '50%';
+		tileheight = screenwidth / 2;
+
+	} else {
+		tilewidth = '25%';
+		tileheight = screenwidth / 4;
+	}
+	return {
+		width : tilewidth,
+		height : tileheight
+	};
 }
 
 module.exports = function() {
@@ -53,11 +64,10 @@ module.exports = function() {
 				url : (p.a) ? p.a.href : p.href,
 			};
 			var backgroundImage = ndx == 2 ? '/images/podcasts/' + p.img.src : '/images/' + stations[ndx] + 'tile.png';
-			console.log(backgroundImage);
 			var cv = Ti.UI.Android.createCardView({
 				padding : 0,
-				width : getTilewidth(),
-				height : getTilewidth(),
+				width : getTileDims().width,
+				height : getTileDims().height,
 				top : 0,
 				itemId : JSON.stringify(itemId),
 				borderRadius : 10,
@@ -102,7 +112,36 @@ module.exports = function() {
 	self.add(self.FlipViewCollection);
 	self.addEventListener('focus', flipTo);
 	Ti.Gesture.addEventListener('orientationchange', function() {
-		self.FlipViewCollection && self.FlipViewCollection.setTop(Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth ? 132 : 67);
+		var currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
+		if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
+			self.FlipViewCollection && self.FlipViewCollection.setTop(130);
+		} else {
+			self.FlipViewCollection && self.FlipViewCollection.setTop(80);
+		}
+		tilewidth = getTileDims().width;
+		tileheight = getTileDims().height;
+		pages[0].children.forEach(function(view) {
+			view.hide();
+			view.setWidth(tilewidth), view.setHeight(tileheight);
+			view.show({
+				animated : currentStation == stations[0] ?true :false
+			});
+		});
+		pages[1].children.forEach(function(view) {
+			view.hide();
+			view.setWidth(tilewidth), view.setHeight(tileheight);
+			view.show({
+				animated :  currentStation == stations[1] ?true :false
+			});
+		});
+		pages[2].children.forEach(function(view) {
+			view.hide();
+			view.setWidth(tilewidth), view.setHeight(tileheight);
+			view.show({
+				animated :  currentStation == stations[2] ?true :false
+			});
+		});
+		
 	});
 	return self;
 };

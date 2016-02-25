@@ -85,6 +85,7 @@ var _updateTimestamps = function(_args) {
 
 /* I N T E R F A C E */
 exports.getCurrentOnAir = function(_args) {
+	_updateTimestamps(_args);
 	var items = getValidSchemaByStation(_args.station);
 	if (items != null) {
 		// test if new one (daychange)
@@ -98,6 +99,7 @@ exports.getCurrentOnAir = function(_args) {
 		return currentonair;
 	} else {
 		// try to get new
+		console.log('Warning: items in currentOnAir was null');
 		exports.getRSS(_args);
 		return {};
 	}

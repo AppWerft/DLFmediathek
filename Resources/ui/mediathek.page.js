@@ -87,6 +87,7 @@ module.exports = function(_args) {
 			var currentItem = Schema.getCurrentOnAir({
 				station : _args.station
 			});
+			console.log(currentItem);
 			if (currentItem) {
 				lastPubDate = currentItem.pubDate;
 				self.topBox.setTop(8);

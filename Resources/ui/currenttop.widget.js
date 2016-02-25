@@ -68,9 +68,7 @@ var $ = function(_args) {
 	this._view.add(this._view.radiotext);
 	this._view.add(this._view.description);
 	var that = this;
-	//console.log('TOPINFO MEMORY= ' + Ti.Platform.availableMemory / 1000000);
 	Ti.App.addEventListener('app:setRadiotext', function(_e) {
-	//	console.log('TOPINFO SETRADIOTEXT MEMORY= ' + Ti.Platform.availableMemory / 1000000);
 		that._view.radiotext.setText(_e.message);
 	});
 	this._view.addEventListener('click', function() {
