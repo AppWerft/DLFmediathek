@@ -61,10 +61,8 @@ Module.prototype = {
 					}
 				}
 			}
-
 			loadfeed();
 		}
-
 		loadfeeds();
 	},
 	getAllFavedFeeds : function() {
@@ -229,6 +227,7 @@ Module.prototype = {
 					return parseInt(a.timestamp) > parseInt(b.timestamp);
 				});
 				channel.item.forEach(function(item) {
+					var pubdate = Moment(item.pubDate).toISOString();
 					link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
 					_args.url, //
 					item.title, //
@@ -240,7 +239,7 @@ Module.prototype = {
 					item.enclosure.type, //
 					item['itunes:author'], //
 					item['itunes:duration'], //
-					Moment(item.pubDate).toISOString(), //
+					pubdate, //
 					0 //watched
 					);
 				});

@@ -17,6 +17,7 @@ var stations = {
 
 module.exports = function() {
 	var args = arguments[0] || {};
+
 	if (args.where == 'mediathek') {
 		var xhr = Ti.Network.createHTTPClient({
 			validatesSecureCertificate : false,
@@ -27,7 +28,6 @@ module.exports = function() {
 				if (items && toType(items) != 'array') {
 					items = [items];
 				}
-				console.log(items);
 				if (items == undefined) {
 					args.done({
 						items : [],
@@ -36,6 +36,7 @@ module.exports = function() {
 					return;
 				}
 				args.done({
+					section : args.section,
 					items : items.map(function(item) {
 						return {
 							pubdate : Moment(item.datetime).format('DD.MM.YYYY HH:mm'),
@@ -48,8 +49,7 @@ module.exports = function() {
 							duration : item.duration,
 							color : Model[stations[item.station]].color
 						};
-					}),
-					section : args.section
+					})
 				});
 			}
 		});
@@ -57,11 +57,13 @@ module.exports = function() {
 		xhr.send();
 	} else {
 		var link = Ti.Database.open(DB);
-		var res = link.execute('SELECT *,'//
+		var sql = 'SELECT *,'//
 		+ '(SELECT title FROM feeds WHERE feeds.url=items.channelurl) AS podcast,'//
 		+ '(SELECT image FROM feeds WHERE feeds.url=items.channelurl) AS channelimage,'//
 		+ '(SELECT station FROM feeds WHERE feeds.url=items.channelurl) AS station '//
-		+ ' FROM items WHERE title LIKE "%' + args.needle + '%" OR description LIKE "%' + args.needle + '%" ORDER BY pubdate DESC LIMIT 500');
+		+ ' FROM items WHERE title LIKE "%' + args.needle + '%" OR description LIKE "%' + args.needle + '%" ORDER BY pubdate DESC LIMIT 500';
+		console.log(sql);
+		var res = link.execute(sql);
 		var items = [];
 		while (res.isValidRow()) {
 			var parts = res.getFieldByName('duration').split(':');
@@ -82,7 +84,7 @@ module.exports = function() {
 			var match = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
 			if (match) {
 				item.image = match[1];
-				item.desription =match[3];
+				item.desription = match[3];
 				item.copyright = match[2];
 			} else
 				description = undefined;
@@ -91,6 +93,7 @@ module.exports = function() {
 		}
 		res.close();
 		link.close();
+		console.log(items);
 		args.done({
 			items : items,
 			section : args.section

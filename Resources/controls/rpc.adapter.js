@@ -51,7 +51,7 @@ module.exports = function(_args) {
 			}
 			result.mediathek = mediathek;
 		}
-		entries =null;
+		entries = null;
 		Ti.App.Properties.setString(url, JSON.stringify(result));
 		_args.onload(result);
 	};

@@ -1,9 +1,7 @@
-
-
 module.exports = function() {
     var Moment = require('vendor/moment');
     var today = Moment().format('YYMMDD');
-    if (Ti.App.Properties.getString('LASTSYNC', '') != today) {
+   // if (Ti.App.Properties.getString('LASTSYNC', '') != today) {
         var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
         Ti.App.Properties.setString('LASTSYNC', today);
         var nextsynctime = Moment().add(100, 'sec');
@@ -22,5 +20,5 @@ module.exports = function() {
             repeat : 'daily',
             interval : 3600 * 24 * 1000
         });
-    }
+   // }
 };

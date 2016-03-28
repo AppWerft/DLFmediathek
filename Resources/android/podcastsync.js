@@ -1,8 +1,8 @@
 //https://gist.github.com/manumaticx/6239830
 
 var alarmManager = require('bencoding.alarmmanager').createAlarmManager(),
-    PodcastMirror = new (require('controls/feed.adapter'))(),
-    PlaylistMirror = require('controls/rss.adapter');
+    PodcastMirror = new (require('controls/feed.adapter'))();
+//   PlaylistMirror = require('controls/rss.adapter');
 
 var mirrorPodcasts = function() {
     PodcastMirror.mirrorAllFeeds({
@@ -34,4 +34,4 @@ var mirrorPlaylists = function() {
 
 // our tasks:
 mirrorPodcasts();
-mirrorPlaylists();
+//mirrorPlaylists();

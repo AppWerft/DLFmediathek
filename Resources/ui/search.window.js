@@ -6,6 +6,7 @@ var Model = require('model/stations'),
 module.exports = function() {
 	function setDataintoSection(_res) {
 		var total = _res.items.length;
+		console.log(_res);
 		self.container.setRefreshing(false);
 		if (total > 0) {
 			Ti.UI.createNotification({
@@ -38,8 +39,9 @@ module.exports = function() {
 					}
 				});
 			});
-			self.list.sections[_res.section].setItems(items);
+			self.list.sections[1].setItems(items);
 		} else {
+			return;
 			АктйонБар.setSubtitle('Wurfsendung');
 			Ti.UI.createNotification({
 				duration : 5000,
@@ -52,8 +54,8 @@ module.exports = function() {
 				width : Ti.UI.FILL,
 				height : 'auto'
 			}));
-			require('controls/wurfsendung.adapter')();
-			self.children[0].addEventListener('click', require('controls/wurfsendung.adapter'));
+			//require('controls/wurfsendung.adapter')();
+			//self.children[0].addEventListener('click', require('controls/wurfsendung.adapter'));
 		}
 	};
 	var args = arguments[0] || {};

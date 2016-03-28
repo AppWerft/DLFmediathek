@@ -142,6 +142,9 @@ exports.getRSS = function(_args) {
 						channel.item = [channel.item];
 					}
 					Ti.App.Properties.setString(KEY, JSON.stringify(channel.item));
+					Ti.App.fireEvent('app:message', {
+						message : 'Tagesübersicht synchronisiert ' + Model[_args.station].name
+					});
 					console.log('Info: new schema  found => saved to locale storage _________ ' + KEY);
 					downloadlocked = false;
 					var result = {

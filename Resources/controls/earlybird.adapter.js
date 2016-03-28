@@ -1,63 +1,39 @@
-module.exports = function(_onload) {
-	var page = 0;
-	function nextPage(page) {
-		loadPage(page + 1, function(res) {
-			_onload(page, res);
-			if (page < 10) {
-				page++;
-				nextPage(page);
-			}
-		});
+module.exports = function(_container, _i, _onload) {
+	if (Ti.App.Properties.hasProperty('EARLYBIRDWEB_' + _i)) {
+		_onload(Ti.App.Properties.getList('EARLYBIRDWEB_' + _i));
 	}
-	// START
-	nextPage(0);
-};
-
-function loadPage(_i, _onload) {
-	if (Ti.App.Properties.hasProperty('EARLYBIRD_'+_i)) {
-		_onload(Ti.App.Properties.getList('EARLYBIRD_'+_i));
-	}
-	var xhr = Ti.Network.createHTTPClient({
-		validatesSecureCertificate : false,
-		timeout : 40000,
-		onload : function() {
-			var figures = JSON.parse(this.responseText).query.results.figure;
-			
-			if (Array.isArray(figures) && typeof figures[0] == 'object') {
-				var items = [];
-				figures.forEach(function(f) {
-					if (f['class'] == "teaser__image") {
-						if (f.button) {
-							var title = f.button['data-title'].replace('Early Bird - ', '').replace(/(\([\d:]+\))/, '');
-							var res = f.button['data-title'].match(/\(([\d:]+)\)/, '');
-							if (res)
-								var duration = parseInt(res[1].split(':')[0]) * 60 + parseInt(res[1].split(':')[1]);
-							items.push({
-								mp3 : f.button['data-mp3'],
-								title : title,
-								duration : res ? duration : '', // in sec.
-								image : f.a.img.src,
-								alt : f.a.img.alt,
-								copy : f.div ? f.div.a.span : 'k.A.',
-							});
-						} else {
-
-						}
-					}
-				});
-				_onload(items);
-				// renew list
-				Ti.App.Properties.setList('EARLYBIRD_'+_i,items);
-
-			} else {
-				console.log('Warning: yql-result is invalide' + this.responseText);
-			}
-		},
-		onerror : function(_e) {
-			console.log('Error: ' + _e);
-		}
+	var url = 'http://dradiowissen.de/early-bird/p' + (_i + 1);
+	var dummywebView = Ti.UI.createWebView({
+		url : url,
+		opacity : 0,
+		width : 1,
+		height : 1,
+		borderRadius : 1
 	});
-	var url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'http%3A%2F%2Fdradiowissen.de%2Fearly-bird%2Fp" + _i + "'%20and%20xpath%3D'%2F%2Ffigure'&format=json";
-	xhr.open('GET', url, true);
-	xhr.send(null);
-}
+	_container.add(dummywebView);
+	function onLoad() {
+		var res = dummywebView.evalJS("JSON.stringify($('figure.teaser__image').map(function(){var item={mp3:$(this).find('button').attr('data-mp3'),title:$(this).find('button').attr('data-title'),image:$(this).find('a img').attr('src')}; return item;}));");
+		var items = JSON.parse(res);
+		var resultlist = [];
+		if (items && typeof items == 'object') {
+			Object.getOwnPropertyNames(items).forEach(function(key) {
+				var item = items[key];
+				if (item.image && item.title) {
+					var match = item.title.match(/\(([\d][\d]:[\d][\d])\)/);
+					if (match && Array.isArray(match)) {
+						item.duration = parseInt(match[1].split(':')[0]) * 60 + parseInt(match[1].split(':')[1]);
+						item.title = item.title.replace(/\(([\d][\d]:[\d][\d])\)/, '').replace('Early Bird - ','');
+						resultlist.push(item);
+					}
+				}
+			});
+			Ti.App.Properties.setList('EARLYBIRDWEB_' + _i, resultlist);
+			_onload(resultlist);
+		}
+		_container.remove(dummywebView);
+		dummywebView = null;
+	}
+
+
+	dummywebView.addEventListener('load', onLoad);
+};
