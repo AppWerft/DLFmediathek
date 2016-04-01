@@ -9,6 +9,7 @@ module.exports = function() {
 		smoothScrollOnTabClick : true
 
 	});
+
 	$.addTab(Ti.UI.createTab({
 		title : 'Mediathek',
 		ndx : 0,
@@ -19,14 +20,20 @@ module.exports = function() {
 		window : require('ui/podcastcardviews.window')(),
 		ndx : 1,
 	}));
+	
+
 	$.addEventListener('open', require('ui/tab.menu'));
-	var TiPermissions = require('ti.permissions');
-	TiPermissions.requestPermissions(['android.permission.READ_PHONE_STATE', 'android.permission.WRITE_EXTERNAL_STORAGE'], function(e) {
-		e.success && $.open();
-		e.success || alert('Sie müssen den Berechtigungsanfragen zustimmen damit das Radio bei eingehenden Telefon stummschaltet und damit Beiträge auf der SD-Karte abgespeichert werden können.');
+	
+	var TiPermissions = require('vendor/permissions');
+	
+	TiPermissions.requestPermissions(['READ_PHONE_STATE', 'WRITE_EXTERNAL_STORAGE'], function(success) {
+		success && $.open();
+		success || alert('Sie müssen den Berechtigungen zustimmen damit das Radio bei eingehenden Telefon stummschaltet und damit Beiträge auf der SD-Karte abgespeichert werden können.');
 	});
-	//require('vendor/versionsreminder')();
-	//require('vendor/cronservice.trigger')();
+	
+	require('vendor/versionsreminder')();
+
+	
 	$.addEventListener("android:back", function(_e) {
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({
@@ -37,4 +44,5 @@ module.exports = function() {
 		Ti.Android.currentActivity.startActivity(intent);
 		return false;
 	});
+	
 };

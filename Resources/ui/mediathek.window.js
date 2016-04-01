@@ -8,6 +8,7 @@ var FlipModule = require('de.manumaticx.androidflip'),
     Favs = new (require('controls/favorites.adapter'))();
 
 var MediathekPage = require('ui/mediathek.page');
+var currentStation = Ti.App.Properties.hasProperty('LAST_STATION') ? Ti.App.Properties.getString('LAST_STATION') : 'dlf';
 
 module.exports = function() {
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
@@ -39,7 +40,7 @@ module.exports = function() {
 			});
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			Ti.App.fireEvent('app:stopAudioStreamer');
-			var data = JSON.parse(_e.itemId);	
+			var data = JSON.parse(_e.itemId);
 
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
@@ -54,9 +55,9 @@ module.exports = function() {
 		}
 	};
 	var pages = [];
-	
+
 	for (var station in Model) {
-		pages.push(new MediathekPage({
+		pages.push(MediathekPage({
 			station : station,
 			window : self,
 			color : Model[station].color,
@@ -68,12 +69,15 @@ module.exports = function() {
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
 		top : 120,
-		currentPage : stations[Ti.App.Properties.getString('LAST_STATION', 'dlf')],
+		currentPage : stations[currentStation],
 		height : Ti.UI.FILL
 	});
 	self.onFlippedFunc = function(_e) {
+		console.log('#####################\nstationIndex'+_e.index);
+		currentStation= _e.index != undefined ? pages[_e.index].station : _e.station;
+		currentStation && Ti.App.Properties.setString('LAST_STATION', currentStation);
 		Ti.App.fireEvent('app:station', {
-			station : _e.index != undefined ? pages[_e.index].station : _e.station,
+			station : currentStation,
 			page : 'mediathek'
 		});
 		pages.forEach(function(page, ndx) {
@@ -91,16 +95,7 @@ module.exports = function() {
 		Ti.App.fireEvent('app:state', {
 			state : true
 		});
-		/*Ti.App.fireEvent('app:tab', {
-		subtitle : 'Mediathek',
-		title : Ti.App.Properties.getString('LAST_STATION'),
-		icon : 'drk'
-		});*/
-		/*		self.onFlippedFunc({
-		station : Ti.App.Properties.getString('LAST_STATION', 'dlf'),
-		forced : true
-		});*/
-		// initial
+
 	};
 	self.FlipViewCollection.addEventListener('flipped', self.onFlippedFunc);
 	self.addEventListener('focus', self.onFocusFunc);

@@ -105,6 +105,7 @@ searchView.addEventListener('submit', function(_e) {
 
 /* INTERFACE */
 module.exports = function(_event) {
+	require('vendor/cronservice.trigger')();
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
@@ -191,16 +192,19 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				if (!_e.station)
+				
+				if (!_e.station) {
+					console.log('Warning: no station');	
 					return;
+				}
+				
 				currentStation = _e.station;
-				Ti.App.Properties.setString('LAST_STATION', currentStation);
-				LOG('onStationChanged   ≠≠≠≠≠≠≠≠≠≠≠ onAir=' + onAir);
 				АктйонБар.setStatusbarColor(Model[currentStation].color);
+				Ti.App.Properties.setString('LAST_STATION', currentStation);
+				АктйонБар.setTitle(Model[currentStation].name);
 				Ti.App.fireEvent('app:setRadiotext', {
 					message : ''
 				});
-				АктйонБар.setTitle(Model[currentStation].name);
 				if (onAir == false) {
 					LOG('radio was offline ==> changing color of playbotton');
 					playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
@@ -224,14 +228,14 @@ module.exports = function(_event) {
 		};
 		//activity && activity.invalidateOptionsMenu();
 		activity.onResume = function() {
-			LOG('AAS onResume');
 			playIcon && playIcon.setVisible(Ti.Network.online);
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
+			try {
 			АктйонБар.setStatusbarColor(Model[currentStation].color);
+			} catch(E) {}
 		};
-		activity.onPause = function() {
-		};
+		
 	}
 };
 
@@ -247,6 +251,6 @@ Ti.Network.addEventListener('change', function(event) {
 });
 
 Ti.Android.currentActivity.onRestart = function() {
-	playIcon.setVisible(Ti.Network.online);
+	playIcon && playIcon.setVisible(Ti.Network.online);
 };
 

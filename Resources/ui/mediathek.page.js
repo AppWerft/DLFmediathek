@@ -116,7 +116,7 @@ module.exports = function(_args) {
 		if (activityworking == false) {
 			return;
 		}
-		require('controls/rpc.adapter')({
+		require('controls/mediathek.adapter')({
 			url : _args.mediathek,
 			station : _args.station,
 			nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,

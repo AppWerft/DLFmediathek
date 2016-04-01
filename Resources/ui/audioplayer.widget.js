@@ -3,16 +3,16 @@ var createView = function(args) {
 	if (!args)
 		args = {};
 	var color = (args.color) ? args.color : 'black',
-	    self = Ti.UI.createView({
+	    $ = Ti.UI.createView({
 		visible : false
 	});
-	self.add(Ti.UI.createView({
+	$.add(Ti.UI.createView({
 		opacity : 0.5,
 		touchEnabled : false,
 		backgroundColor : color
 	}));
 	if (args.image) {
-		self.add(Ti.UI.createImageView({
+		$.add(Ti.UI.createImageView({
 			touchEnabled : false,
 			bottom : 130,
 			width : '60%',
@@ -22,20 +22,20 @@ var createView = function(args) {
 			image : args.image
 		}));
 	}
-	self.add(Ti.UI.createView({
+	$.add(Ti.UI.createView({
 		opacity : 0.3,
 		touchEnabled : false,
 		backgroundColor : 'black'
 	}));
-	self.container = Ti.UI.createView({
+	$.container = Ti.UI.createView({
 		bubbleParent : false,
 		touchEnabled : false,
 		height : 230,
 		bottom : -230,
 		backgroundColor : 'white'
 	});
-	self.add(self.container);
-	self.progress = Ti.UI.createProgressBar({
+	$.add($.container);
+	$.progress = Ti.UI.createProgressBar({
 		bottom : 120,
 		left : 80,
 		right : 10,
@@ -44,7 +44,7 @@ var createView = function(args) {
 		min : 0,
 		max : 100
 	});
-	self.duration = Ti.UI.createLabel({
+	$.duration = Ti.UI.createLabel({
 		bottom : 102,
 		bubbleParent : false,
 		touchEnabled : false,
@@ -54,7 +54,7 @@ var createView = function(args) {
 		color : color,
 		right : 10,
 	});
-	self.title = Ti.UI.createLabel({
+	$.title = Ti.UI.createLabel({
 		top : 8,
 		bubbleParent : false,
 		touchEnabled : false,
@@ -71,7 +71,7 @@ var createView = function(args) {
 		},
 		left : 10,
 	});
-	self.subtitle = Ti.UI.createLabel({
+	$.subtitle = Ti.UI.createLabel({
 		top : 36,
 		bubbleParent : false,
 		touchEnabled : false,
@@ -88,7 +88,7 @@ var createView = function(args) {
 		left : 10,
 		right : 15
 	});
-	self.control = Ti.UI.createImageView({
+	$.control = Ti.UI.createImageView({
 		width : 50,
 		height : 50,
 		bubbleParent : false,
@@ -96,7 +96,7 @@ var createView = function(args) {
 		image : '/images/play.png',
 		bottom : 115
 	});
-	self.spinner = Ti.UI.createActivityIndicator({
+	$.spinner = Ti.UI.createActivityIndicator({
 		width : 50,
 		height : 50,
 		style: Ti.UI.ActivityIndicatorStyle.BIG,
@@ -105,8 +105,8 @@ var createView = function(args) {
 		left : 10,
 		bottom : 115
 	});
-	self.spinner.show();
-	self.equalizer = Ti.UI.createWebView({
+	$.spinner.show();
+	/*$.equalizer = Ti.UI.createWebView({
 		borderRadius : 1,
 		width : 250,
 		height : 40,
@@ -118,14 +118,25 @@ var createView = function(args) {
 		left : 80,
 		opacity : 0,
 		enableZoomControls : false
-	});
-	self.container.add(self.progress);
-	self.container.add(self.duration);
-	self.container.add(self.title);
-	self.container.add(self.subtitle);
-	self.container.add(self.control);
-	self.container.add(self.spinner);
-	return self;
+	});*/
+		$.equalizer  = require('com.miga.gifview').createGifView({
+			width : 300,
+			height : 77,
+			bubbleParent : false,
+			touchEnabled : false,
+			image : '/images/equalizer.gif',
+			bottom : 20,
+			left : 60,
+			opacity : 0,
+			autoStart:true
+		});
+	$.container.add($.progress);
+	$.container.add($.duration);
+	$.container.add($.title);
+	$.container.add($.subtitle);
+	$.container.add($.control);
+	$.container.add($.spinner);
+	return $;
 };
 exports.getView = createView;
 

@@ -1,5 +1,4 @@
 module.exports = function() {
-	console.log('start intro');
 	var $ = Ti.UI.createWindow({
 		theme : 'Theme.TranslucentNoTitleBar',
 		width : Ti.UI.FILL,
@@ -9,8 +8,8 @@ module.exports = function() {
 	});
 	$.container = Ti.UI.createView({
 		width : Ti.UI.SIZE,
-		height : 60,
-		bottom : 30,
+		height : 50,
+		bottom : 100,
 		backgroundColor : '#3000',
 		left : 10,
 		right : 10,
@@ -18,7 +17,7 @@ module.exports = function() {
 	});
 	$.add($.container);
 	$.progressView = Ti.UI.createView({
-		height : 60,
+		height : 50,
 		opacity:0.2,
 		backgroundColor : '#000',
 		width : '1%'
@@ -31,11 +30,11 @@ module.exports = function() {
 	});
 	$.container.add($.progressView);
 	$.container.add(Ti.UI.createLabel({
-		text : 'Hole Programmdetails vom Radioserver',
+		text : ' Hole Programmdetails vom Radioserver ',
 		height : Ti.UI.SIZE,
 		textAlign : 'center',
 		font : {
-			fontSize : 22,
+			fontSize : 20,
 			fontFamily : 'ScalaSans'
 		}
 	}));

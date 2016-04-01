@@ -6,12 +6,14 @@ if (!Ti.App.Properties.hasProperty('LAST_STATION'))
 
 module.exports = function(_args) {
 	if (_args.station != Ti.App.Properties.getString('LAST_STATION')) {
+		console.log('RPC: not visible station');
 		_args.onload(null);
 		return;
 	}
+	
+	var DEPOTKEY = 'MEDIATHEK_'+ _args.station +'_'+ Moment().format('DD.MM.YYYY');
 	var onloadFunc = function() {
-		var entries = require('controls/rpc.parser').parseXMLDoc(this.responseXML.documentElement);
-		console.log('END RPC MEMORY= ' + Ti.Platform.availableMemory / 1000000);
+		var entries = require('controls/mediathek.parser').parseXMLDoc(this.responseXML.documentElement);
 		var result = {
 			hash : Ti.Utils.md5HexDigest(this.responseText + 'geheim'),
 			live : entries
@@ -52,13 +54,14 @@ module.exports = function(_args) {
 			result.mediathek = mediathek;
 		}
 		entries = null;
-		Ti.App.Properties.setString(url, JSON.stringify(result));
+		Ti.App.Properties.setString(DEPOTKEY, JSON.stringify(result));
 		_args.onload(result);
 	};
-	console.log('START RPC MEMORY= ' + Ti.Platform.availableMemory / 1000000);
+	// today: no _DATE_
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
-	if (!_args.nocache && Ti.App.Properties.hasProperty(url)) {
-		_args.onload(JSON.parse(Ti.App.Properties.getString(url)));
+	console.log('RPC: ' + url);
+	if (!_args.nocache && Ti.App.Properties.hasProperty(DEPOTKEY)) {
+		_args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
 		return null;
 	}
 	var xhr = Ti.Network.createHTTPClient({
