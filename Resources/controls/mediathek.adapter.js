@@ -6,12 +6,10 @@ if (!Ti.App.Properties.hasProperty('LAST_STATION'))
 
 module.exports = function(_args) {
 	if (_args.station != Ti.App.Properties.getString('LAST_STATION')) {
-		console.log('RPC: not visible station');
 		_args.onload(null);
 		return;
 	}
-	
-	var DEPOTKEY = 'MEDIATHEK_'+ _args.station +'_'+ Moment().format('DD.MM.YYYY');
+	var DEPOTKEY = 'MEDIATHEK_' + _args.station + '_' + Moment().format('DD.MM.YYYY');
 	var onloadFunc = function() {
 		var entries = require('controls/mediathek.parser').parseXMLDoc(this.responseXML.documentElement);
 		var result = {
@@ -59,19 +57,22 @@ module.exports = function(_args) {
 	};
 	// today: no _DATE_
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
-	console.log('RPC: ' + url);
-	if (!_args.nocache && Ti.App.Properties.hasProperty(DEPOTKEY)) {
-		_args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
-		return null;
-	}
+
+	/*if (!_args.nocache && Ti.App.Properties.hasProperty(DEPOTKEY)) {
+	 _args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
+	 return null;
+	 }*/
 	var xhr = Ti.Network.createHTTPClient({
-		timeout : 3000,
+		timeout : 5000,
 		onerror : function(e) {
-			console.log('ServerantwortCode: ' + e.error);
+			Ti.UI.createNotification({
+				message : 'Bitte Internetverbindung überprüfen.\nDerweil gibt es eine ältere Version der Mediathek.'
+			}).show();
+			 _args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
 		},
 		onload : onloadFunc
 	});
-	xhr.open('GET', url);
+	xhr.open('GET', url + '&_____=' + Math.random());
 	xhr.setRequestHeader('User-Agent', 'Das%20DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0');
 	xhr.send();
 };

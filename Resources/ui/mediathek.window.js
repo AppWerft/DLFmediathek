@@ -106,7 +106,7 @@ module.exports = function() {
 		});
 	});
 	Ti.Gesture.addEventListener('orientationchange', function() {
-		self.FlipViewCollection && self.FlipViewCollection.setTop(Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth ? 120 : 65);
+		self.FlipViewCollection && self.FlipViewCollection.setTop(Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth ? 124 : 74);
 	});
 
 	return self;

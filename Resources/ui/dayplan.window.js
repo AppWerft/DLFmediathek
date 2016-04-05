@@ -18,10 +18,8 @@ module.exports = function(_args) {
 		АктйонБар.setStatusbarColor(Model[_args.station].color);
 		var activity = _event.source.getActivity();
 		if (activity) {
-
 			activity.onCreateOptionsMenu = function(_menuevent) {
 				activity.actionBar.displayHomeAsUp = true;
-
 				activity.actionBar.onHomeIconItemSelected = function() {
 					self.close();
 				};
@@ -32,7 +30,6 @@ module.exports = function(_args) {
 		stations.forEach(function(station) {
 			pages.push(require('ui/dayplan.page')(station));
 		});
-
 		self.FlipViewCollection = FlipModule.createFlipView({
 			orientation : FlipModule.ORIENTATION_HORIZONTAL,
 			overFlipMode : FlipModule.OVERFLIPMODE_GLOW,

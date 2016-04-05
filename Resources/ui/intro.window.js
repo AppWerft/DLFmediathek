@@ -9,7 +9,7 @@ module.exports = function() {
 	$.container = Ti.UI.createView({
 		width : Ti.UI.SIZE,
 		height : 50,
-		bottom : 100,
+		bottom : 50,
 		backgroundColor : '#3000',
 		left : 10,
 		right : 10,

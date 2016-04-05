@@ -6,10 +6,9 @@ module.exports = function() {
 		swipeable : false,
 		backgroundColor : 'transparent',
 		exitOnClose : true,
-		smoothScrollOnTabClick : true
-
+		smoothScrollOnTabClick : true,
+		theme:'Theme:Dlrmediathek'
 	});
-
 	$.addTab(Ti.UI.createTab({
 		title : 'Mediathek',
 		ndx : 0,

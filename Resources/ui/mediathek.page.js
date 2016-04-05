@@ -5,7 +5,7 @@ var Favs = new (require('controls/favorites.adapter'))(),
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
-const HEIGHT_OF_TOPBOX = 110;
+const HEIGHT_OF_TOPBOX = 120;
 
 module.exports = function(_args) {
 	var activityworking = true;
@@ -20,7 +20,6 @@ module.exports = function(_args) {
 			//	stream : _args.stream
 		},
 	});
-
 	Ti.App.addEventListener('daychanged', function() {
 		self.date = Moment().startOf('day');
 	});
@@ -48,7 +47,6 @@ module.exports = function(_args) {
 	}));
 	self.bottomList = Ti.UI.createListView({
 		top : 7,
-		height : Ti.UI.FILL,
 		backgroundColor : _args.color,
 		templates : {
 			'mediathek' : require('TEMPLATES').mediathek,
@@ -58,8 +56,6 @@ module.exports = function(_args) {
 	});
 	self.bottomView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 		view : self.bottomList,
-		height : Ti.UI.FILL,
-		width : Ti.UI.FILL,
 		backgroundColor : '#444'
 	});
 	self.bottomView.addEventListener('refreshing', function() {
@@ -69,7 +65,7 @@ module.exports = function(_args) {
 			}).show();
 		setTimeout(function() {
 			self.bottomView.setRefreshing(false);
-		}, 5000);
+		}, 2000);
 		self.updateMediathekList();
 	});
 	self.add(self.bottomView);
@@ -77,7 +73,6 @@ module.exports = function(_args) {
 	var lastPubDate = null;
 	var currentMediathekHash = null;
 	self.updateCurrentinTopBox = function(_forced) {
-		console.log('self.updateCurrentinTopBox');
 		if (_args.station == 'drw') {
 			TopBoxWidget.addBanner();
 			// ratio = 40/11
@@ -87,7 +82,6 @@ module.exports = function(_args) {
 			var currentItem = Schema.getCurrentOnAir({
 				station : _args.station
 			});
-			console.log(currentItem);
 			if (currentItem) {
 				lastPubDate = currentItem.pubDate;
 				self.topBox.setTop(8);
@@ -131,13 +125,13 @@ module.exports = function(_args) {
 				self.bottomList.sections = [];
 				_sendungen.mediathek.forEach(function(sendung) {
 					var dataitems = [];
+					console.log(sendung.subs[0]);
 					sendung.subs.forEach(function(item) {
 						item.title = sendung.name;
 						var depub = {
 							days : Moment.unix(item.killtime).diff(Moment(), 'days'),
 							weeks : Moment.unix(item.killtime).diff(Moment(), 'weeks'),
 							years : Moment.unix(item.killtime).diff(Moment(), 'years'),
-
 						};
 						switch (true) {
 						case depub.days<15:
@@ -148,9 +142,7 @@ module.exports = function(_args) {
 							break;
 						default:
 							depub.str = depub.years + ' Jahren';
-
 						}
-
 						dataitems.push({
 							properties : {
 								accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
@@ -218,7 +210,6 @@ module.exports = function(_args) {
 			}
 		});
 	};
-
 	var locked = false;
 	self.bottomList.addEventListener('itemclick', _args.window.onitemclickFunc);
 	if (_args.station != 'drw')
