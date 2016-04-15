@@ -12,41 +12,44 @@ module.exports = function(_args) {
 	var self = Ti.UI.createView({
 		backgroundColor : '#444',
 		station : _args.station,
-		date : Moment().startOf('day'),
+		date : _args.date ? _args.date : Moment().startOf('day'),
 		itemId : {
 			name : _args.station,
 			mediathek : _args.mediathek,
-			//	live : _args.live,
-			//	stream : _args.stream
+
 		},
 	});
 	Ti.App.addEventListener('daychanged', function() {
-		self.date = Moment().startOf('day');
+		//	self.date = Moment().startOf('day');
 	});
-	setTimeout(function() {
-		self.calendarView = require('ui/calendar.widget')({
-			self : self,
+	if (_args.archiv != true) {
+		setTimeout(function() {
+			self.calendarView = require('ui/calendar.widget')({
+				self : self,
+				color : _args.color,
+				station : _args.station,
+				date : self.date
+			});
+			self.add(self.calendarView);
+		}, 3000);
+
+		var TopBoxWidget = new (require('ui/currenttop.widget'))({
+			station : _args.station
+		});
+		self.topBox = TopBoxWidget.createView({
+			height : HEIGHT_OF_TOPBOX,
 			color : _args.color
 		});
-		self.add(self.calendarView);
-	}, 3000);
 
-	var TopBoxWidget = new (require('ui/currenttop.widget'))({
-		station : _args.station
-	});
-	self.topBox = TopBoxWidget.createView({
-		height : HEIGHT_OF_TOPBOX,
-		color : _args.color
-	});
-
-	self.add(self.topBox);
+		self.add(self.topBox);
+	}
 	self.add(Ti.UI.createView({
 		top : 0,
 		height : 7,
 		backgroundColor : _args.color
 	}));
 	self.bottomList = Ti.UI.createListView({
-		top : 7,
+		top : (_args.archiv==true) ? 79 : 7,
 		backgroundColor : _args.color,
 		templates : {
 			'mediathek' : require('TEMPLATES').mediathek,
@@ -56,10 +59,11 @@ module.exports = function(_args) {
 	});
 	self.bottomView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 		view : self.bottomList,
+		top : _args.archiv ? 70 : 0,
 		backgroundColor : '#444'
 	});
 	self.bottomView.addEventListener('refreshing', function() {
-		if (Math.random() > 0.97)
+		if (Math.random() > 0.99)
 			Ti.UI.createNotification({
 				message : 'Sehr gut, Medienkompetenz=1!\nAber bitte nicht allzuoft hier ziehen. Empfehlung: so alle fünf Minuten – sonst leierst aus …'
 			}).show();
@@ -73,7 +77,7 @@ module.exports = function(_args) {
 	var lastPubDate = null;
 	var currentMediathekHash = null;
 	self.updateCurrentinTopBox = function(_forced) {
-		if (_args.station == 'drw') {
+		if (_args.station == 'drw' && !_args.archiv) {
 			TopBoxWidget.addBanner();
 			// ratio = 40/11
 			self.topBox.setTop(8);
@@ -84,16 +88,18 @@ module.exports = function(_args) {
 			});
 			if (currentItem) {
 				lastPubDate = currentItem.pubDate;
-				self.topBox.setTop(8);
-				self.bottomView.setTop(HEIGHT_OF_TOPBOX);
-				TopBoxWidget.setProgress(currentItem.progress);
-				TopBoxWidget.setPubDate(currentItem.pubDate);
-				TopBoxWidget.setTitle(currentItem.title);
-				TopBoxWidget.setDescription(currentItem.description);
-				self.bottomView.animate({
-					top : HEIGHT_OF_TOPBOX,
-					duration : 700
-				});
+				if (_args.archiv != true) {
+					self.topBox.setTop(8);
+					self.bottomView.setTop(HEIGHT_OF_TOPBOX);
+					TopBoxWidget.setProgress(currentItem.progress);
+					TopBoxWidget.setPubDate(currentItem.pubDate);
+					TopBoxWidget.setTitle(currentItem.title);
+					TopBoxWidget.setDescription(currentItem.description);
+					self.bottomView.animate({
+						top : HEIGHT_OF_TOPBOX,
+						duration : 700
+					});
+				}
 			}
 		}
 	};
@@ -113,6 +119,7 @@ module.exports = function(_args) {
 		require('controls/mediathek.adapter')({
 			url : _args.mediathek,
 			station : _args.station,
+			archiv : _args.archiv,
 			nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
 			date : self.date.format('DD.MM.YYYY'),
 			onload : function(_sendungen) {
@@ -194,18 +201,17 @@ module.exports = function(_args) {
 					itemIndex : 0
 				});
 				self.bottomList.addEventListener('marker', function(e) {
-					self.topBox.animate({
-						top : -HEIGHT_OF_TOPBOX,
-					});
-					self.bottomView.animate({
-						top : 8,
-						duration : 600
-					});
+					if (_args.archiv != true) {
+						self.topBox.animate({
+							top : -HEIGHT_OF_TOPBOX,
+						});
+						self.bottomView.animate({
+							top : 8,
+							duration : 600
+						});
+					}
 					return;
-					self.bottomList.setMarker({
-						sectionIndex : 0,
-						itemIndex : 0
-					});
+
 				});
 			}
 		});

@@ -24,8 +24,32 @@ module.exports = function() {
 		}, 700);
 		if (_e.bindId && _e.bindId == 'fav') {
 			var item = _e.section.getItemAt(_e.itemIndex);
-			var isfav = Favs.toggleFav(JSON.parse(item.properties.itemId));
+			var payload = JSON.parse(item.properties.itemId);
+			var isfav = Favs.toggleFav(payload);
 			item.fav.image = isfav ? '/images/fav.png' : '/images/favadd.png';
+			if (isfav)
+				require('ui/download.dialog')(function() {
+					if (true == Ti.App.Properties.getBool('OFFLINE_DECISION')) {
+						/* init the download*/
+						var CacheAdapter = require('controls/cache.adapter');
+						console.log(payload);
+						/*
+						 {
+						 	"author":"Lindner, Nadine",
+						 	"start":"15:10",
+						    "subtitle":"Nachrichtenlexikon - Was macht der BND?",
+						    "station":"drk",
+						     "url":"http://ondemand-mp3.dradio.de/file/dradio/2016/04/13/drk_20160413_1510_8bc4ad75.mp3",
+						     "datetime":"2016-04-13 15:10:50",
+						     "killtime":"1476969050",
+						     "pubdate":"2016-04-13 15:10:50",
+						     "duration":"60",
+						     "title":"Kakadu",
+						     "isfav":true}
+						  */
+						CacheAdapter.cacheURL(payload);
+					}
+				});
 			item.fav.opacity = isfav ? 0.8 : 0.5;
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else if (_e.bindId && _e.bindId == 'share') {
@@ -73,8 +97,8 @@ module.exports = function() {
 		height : Ti.UI.FILL
 	});
 	self.onFlippedFunc = function(_e) {
-		console.log('#####################\nstationIndex'+_e.index);
-		currentStation= _e.index != undefined ? pages[_e.index].station : _e.station;
+		console.log('#####################\nstationIndex' + _e.index);
+		currentStation = _e.index != undefined ? pages[_e.index].station : _e.station;
 		currentStation && Ti.App.Properties.setString('LAST_STATION', currentStation);
 		Ti.App.fireEvent('app:station', {
 			station : currentStation,

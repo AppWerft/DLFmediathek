@@ -10,10 +10,8 @@
 		<item name="android:fitsSystemWindows">false</item>
 		<item name="android:windowTranslucentNavigation">false</item>
 	</style>
-	<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat.Translucent">
-		<item name="android:windowNoTitle">true</item>
-		<item name="android:windowIsTranslucent">true</item>
-		</style>
+	<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat.Translucent.NoTitleBar">
+	</style>
 	<style name="Theme.Dlrmediathek" parent="@style/Theme.AppCompat.Light.DarkActionBar">
 		<item name="actionBarItemBackground">@drawable/selectable_background_dlrmediathek</item>
 		<item name="popupMenuStyle">@style/PopupMenu.Dlrmediathek</item>

@@ -99,37 +99,24 @@ var createView = function(args) {
 	$.spinner = Ti.UI.createActivityIndicator({
 		width : 50,
 		height : 50,
-		style: Ti.UI.ActivityIndicatorStyle.BIG,
+		style : Ti.UI.ActivityIndicatorStyle.BIG,
 		bubbleParent : true,
-		touchEnabled:false,
+		touchEnabled : false,
 		left : 10,
 		bottom : 115
 	});
 	$.spinner.show();
-	/*$.equalizer = Ti.UI.createWebView({
-		borderRadius : 1,
-		width : 250,
-		height : 40,
+	$.equalizer = require('com.miga.gifview').createGifView({
+		width : 300,
+		height : 77,
 		bubbleParent : false,
 		touchEnabled : false,
-		scalesPageToFit : true,
-		url : '/images/equalizer.gif',
-		bottom : 30,
-		left : 80,
+		image : '/images/equalizer.gif',
+		bottom : 20,
+		left : 60,
 		opacity : 0,
-		enableZoomControls : false
-	});*/
-		$.equalizer  = require('com.miga.gifview').createGifView({
-			width : 300,
-			height : 77,
-			bubbleParent : false,
-			touchEnabled : false,
-			image : '/images/equalizer.gif',
-			bottom : 20,
-			left : 60,
-			opacity : 0,
-			autoStart:true
-		});
+		autoStart : true
+	});
 	$.container.add($.progress);
 	$.container.add($.duration);
 	$.container.add($.title);

@@ -107,7 +107,6 @@ exports.getCurrentOnAir = function(_args) {
 
 exports.getRSS = function(_args) {
 	var KEY = "SCHEMA_" + _args.station;
-	console.log('Info: getRSS for KEY ' + KEY + ' ======');
 	var items = getValidSchemaByStation(_args.station);
 	if (items != null) {
 

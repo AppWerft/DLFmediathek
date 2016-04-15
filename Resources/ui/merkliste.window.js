@@ -68,7 +68,7 @@ module.exports = function(station) {
     });
     
     self.head.add(playtrigger);
-    self.head.add(downloadtrigger);
+   // self.head.add(downloadtrigger);
     
     self.list = Ti.UI.createListView({
         top : 50,
@@ -93,16 +93,9 @@ module.exports = function(station) {
         if (dataItems.length) {
             var item = JSON.parse(dataItems[0].properties.itemId);
             var url = item.url;
-            // url = '/kkj.mp3';
-            console.log('Info: player started with: ' + url);
-            /*self.Player = Ti.Media.createAudioPlayer({
-             allowBackground : true,
-             url : url
-             });*/
             self.Player.setUrl(url);
             self.Player.setTime(item.count);
             progressview.setWidth(0);
-            //  self.Player.setUrl(url);
             self.Player.start();
         } else
             self.close();
@@ -165,12 +158,10 @@ module.exports = function(station) {
         }
     });
     self.Player.addEventListener('complete', function(_e) {
-        console.log('Info: completing succeded ' + _e.success);
         self.Player.release();
         equalizer.hide();
         Favs.killFav(JSON.parse(dataItems[0].properties.itemId));
         console.log('last played audio deleted from model');
-        // self.list.sections[0].deleteItemsAt(0, 1);
         console.log('last played audio deleted from view');
         updateList();
         startPlayer();

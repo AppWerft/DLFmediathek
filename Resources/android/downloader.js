@@ -1,4 +1,6 @@
 var alarmManager = require('bencoding.alarmmanager').createAlarmManager();
+var DownloadManager = require('dk.napp.downloadmanager');
+
 const FOLDER = 'RadioCache';
 
 var service = Titanium.Android.currentService;
@@ -11,26 +13,28 @@ if (Ti.Filesystem.isExternalStoragePresent())
 	var DEPOT = Ti.Filesystem.externalStorageDirectory;
 else
 	var DEPOT = Ti.Filesystem.applicationDataDirectory;
-var $ = Ti.Network.createHTTPClient({
-	onload : function() {
-		Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, options.filename).write(this.responseData);
-		console.log('Info: media saved !!!!!!!!!' + options.url);
-		var duration = Math.round((new Date().getTime() - start) / 1000);
-		var mb = (this.responseData.length / 1000000).toFixed(1);
-		var speed = this.responseData.length / (new Date().getTime() - start);
-		alarmManager.addAlarmNotification({
-			requestCode : 3,
-			second : 1,
-			contentTitle : 'DLR Mediathek',
-			contentText : 'Beitrag synchronisiert (' + mb + ' MB / ' + duration + ' sec.)',
-			playSound : true,
-			icon : Ti.App.Android.R.drawable.appicon,
-			sound : Ti.Filesystem.getResRawDirectory() + 'kkj',
-		});
-		//intent.close();
-	}
-});
 
-$.open('GET', options.url);
-$.send();
+DownloadManager.permittedNetworkTypes = DownloadManager.NETWORK_TYPE_ANY;
+DownloadManager.maximumSimultaneousDownloads = 4;
+DownloadManager.deleteItem(options.url);
+DownloadManager.addDownload({
+	name : 'RadioBeitrag',
+	url : options.url,
+	filePath : Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, options.filename).nativePath,
+	priority : DownloadManager.DOWNLOAD_PRIORITY_LOW
+});
+DownloadManager.addEventListener('completed', handleEvent);
+
+function handleEvent(e) {
+	alarmManager.addAlarmNotification({
+		requestCode : Math.round(Math.random() * 256),
+		second : 1,
+		contentTitle : options.title,
+		contentText : '„' + options.subtitle + '“ runtergeholt (' + (e.bps / 1000000).toFixed(1) + ' Mbit/s)',
+		playSound : true,
+		icon :  Ti.App.Android.R.drawable.appicon,
+		largeIcon :  Ti.App.Android.R.drawable.appicon,
+		sound : Ti.Filesystem.getResRawDirectory() + 'kkj',
+	});
+}
 

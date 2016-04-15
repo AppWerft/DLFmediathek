@@ -10,6 +10,7 @@ module.exports = function(_args) {
 		return;
 	}
 	var DEPOTKEY = 'MEDIATHEK_' + _args.station + '_' + Moment().format('DD.MM.YYYY');
+
 	var onloadFunc = function() {
 		var entries = require('controls/mediathek.parser').parseXMLDoc(this.responseXML.documentElement);
 		var result = {
@@ -57,13 +58,8 @@ module.exports = function(_args) {
 	};
 	// today: no _DATE_
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
-
-	/*if (!_args.nocache && Ti.App.Properties.hasProperty(DEPOTKEY)) {
-	 _args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
-	 return null;
-	 }*/
 	var xhr = Ti.Network.createHTTPClient({
-		timeout : 5000,
+		timeout : 10000,
 		onerror : function(e) {
 			Ti.UI.createNotification({
 				message : 'Bitte Internetverbindung überprüfen.\nDerweil gibt es eine ältere Version der Mediathek.'

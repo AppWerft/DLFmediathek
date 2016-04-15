@@ -8,8 +8,8 @@ if (!folder.exists()) {
 	folder.createDirectory();
 }
 
-exports.getTree = function(){
-	
+exports.getTree = function() {
+
 };
 
 exports.isCached = function(options) {
@@ -25,7 +25,7 @@ exports.isCached = function(options) {
 	return file.exists() ? true : false;
 };
 
-exports.deleteURL =function(options) {
+exports.deleteURL = function(options) {
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {
 		folder.createDirectory();
@@ -36,9 +36,9 @@ exports.deleteURL =function(options) {
 	if (file.exists()) {
 		file.deleteFile();
 	}
-	
+
 };
-exports.cacheURL= function(options) {
+exports.cacheURL = function(options) {
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {
 		folder.createDirectory();
@@ -52,12 +52,15 @@ exports.cacheURL= function(options) {
 			cached : true
 		};
 	} else {
+		console.log('Info: URL should save ' + options.url);
 		var intent = Ti.Android.createServiceIntent({
 			url : 'downloader.js'
 		});
 		intent.putExtra('options', JSON.stringify({
 			url : options.url,
 			station : options.station,
+			title : options.title.length > options.subtitle.length ? options.subtitle : options.title,
+			subtitle : options.title.length < options.subtitle.length ? options.subtitle : options.title,
 			filename : filename
 		}));
 		Ti.Android.createService(intent).start();
@@ -66,7 +69,7 @@ exports.cacheURL= function(options) {
 			cached : false
 		};
 	}
-	
+
 };
 
 exports.getURL = function(options) {
