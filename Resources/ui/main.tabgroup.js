@@ -33,7 +33,7 @@ module.exports = function() {
 	require('vendor/versionsreminder')();
 
 	
-	$.addEventListener("android:back", function(_e) {
+	/*$.addEventListener("android:back", function(_e) {
 		_e.cancelBubble = true;
 		var intent = Ti.Android.createIntent({
 			action : Ti.Android.ACTION_MAIN,
@@ -42,6 +42,6 @@ module.exports = function() {
 		intent.addCategory(Ti.Android.CATEGORY_HOME);
 		Ti.Android.currentActivity.startActivity(intent);
 		return false;
-	});
+	});*/
 	
 };

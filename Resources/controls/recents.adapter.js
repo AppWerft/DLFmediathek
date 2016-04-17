@@ -37,7 +37,7 @@ Module.prototype = {
 	setProgress : function(_args) {
 		var link = Ti.Database.open(DB);
 		link.execute('UPDATE recents SET progress=?,lastaccess=? WHERE url=?', //
-		Math.floor(_args.progress / 1000), //
+		Math.floor(_args.progress), //
 		Moment().toISOString(), //
 		_args.url || this.url);
 		link.close();
@@ -47,9 +47,10 @@ Module.prototype = {
 		//link.execute('UPDATE recents SET progress=duration,lastaccess=? WHERE url =?', Moment().toISOString(), this.url);
 		link.close();
 	},
+
 	removeRecent : function(url) {
 		var link = Ti.Database.open(DB);
-		link.execute('DELETE FROM recents WHERE url=?',url);
+		link.execute('DELETE FROM recents WHERE url=?', url);
 		link.close();
 	},
 	getAllRecents : function() {
@@ -77,6 +78,17 @@ Module.prototype = {
 		res.close();
 		link.close();
 		return recents;
+	},
+	isComplete : function(_url) {
+		var link = Ti.Database.open(DB);
+		var res = link.execute('SELECT progress/duration AS ratio FROM recents  WHERE url=?', this.url || _url);
+		var ratio = 0.0;
+		if (res.isValidRow()) {
+			ratio = res.getFieldByName('ratio');
+			res.close();
+		}
+		link.close();
+		return ratio>0.99 ? true :false;
 	},
 	getProgress : function(_url) {
 		if (_url) {

@@ -1,9 +1,9 @@
-var RecentsModule = require('controls/recents.adapter'),
+var RecentsAdapter = require('controls/recents.adapter'),
     CacheAdapter = require('controls/cache.adapter'),
     playerViewModule = require('ui/audioplayer.widget');
 
 String.prototype.toHHMMSS = function() {
-	var sec_num = parseInt(this, 10);
+	var sec_num = parseInt(this / 1000, 10);
 	// don't forget the second param
 	var hours = Math.floor(sec_num / 3600);
 	var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
@@ -18,10 +18,152 @@ String.prototype.toHHMMSS = function() {
 	return time;
 };
 
+var singletonPlayer = require('com.kcwdev.audio').createAudioPlayer({
+	allowBackground : true,
+	volume : 1
+});
+
+var alertactive = false;
 /* ********************************************************* */
-var AudioPlayer = function(options) {
+var $ = function(options) {
+	if (singletonPlayer.playing)
+		singletonPlayer.release();
+	this.onSliderChangeFn = function(_e) {
+		that._view.progress.setValue(_e.value);
+		that._view.duration.setText(('' + _e.value).toHHMMSS() + ' / ' + ('' + that.options.duration * 1000).toHHMMSS());
+	};
+	this.onProgressFn = function(_e) {
+		that._view.progress.setValue(_e.progress);
+		that._view.slider.setValue(_e.progress);
+		that._view.duration.setText(('' + _e.progress ).toHHMMSS() + ' / ' + ('' + that.options.duration * 1000).toHHMMSS());
+		/* saving to model */
+		that._Recents.setProgress({
+			progress : _e.progress / 1000,
+			url : that.options.url
+		});
+	};
+	this.onCompleteFn = function(_e) {
+		if (that._view)
+			that._view.setVisible(false);
+		that._Recents.setComplete();
+		that.onStatusChangeFn({
+			description : 'stopped'
+		});
+
+	};
+	this.onStatusChangeFn = function(_e) {
+		switch (_e.description) {
+		case 'stopped':
+			if (this.onProgressFn && typeof this.onProgressFn == 'function')
+				singletonPlayer.removeEventListener('progress', this.onProgressFn);
+			if (this.onCompleteFn && typeof this.onCompleteFn == 'function')
+				singletonPlayer.removeEventListener('complete', this.onCompleteFn);
+			if (this.onStatusChangeFn && typeof this.onStatusChangeFn == 'function')
+				singletonPlayer.removeEventListener('change', this.onStatusChangeFn);
+			that._view.remove(that._view.equalizer);
+			that._view.equalizer.opacity = 0;
+			that._view.control.image = '/images/play.png';
+			if (that._window) {
+				that._window.removeEventListener('close', that.stopPlayer);
+				that._window.removeAllChildren();
+				that._window.close();
+			}
+			break;
+		case 'stopping':
+			break;
+		case 'starting':
+			setTimeout(function() {
+				CacheAdapter.cacheURL(options);
+			}, 5000);
+			//that._view.control.image = '/images/leer.png';
+			break;
+		case 'paused':
+			that._view.subtitle.ellipsize = false;
+			that._view.equalizer.opacity = 0;
+			that._view.control.image = '/images/play.png';
+			that._view.slider.show();
+			that._view.progress.hide();
+			that._view.slider.addEventListener('change', that.onSliderChangeFn);
+			break;
+		case 'playing':
+			if (alertactive === true)
+				return;
+			that._view.slider.removeEventListener('change', that.onSliderChangeFn);
+			that._view.progress.show();
+			that._view.slider.hide();
+			that._view.spinner.hide();
+			that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+			that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+			that._view.equalizer.animate({
+				opacity : 1,
+				duration : 2000
+			});
+			that._view.control.image = '/images/pause.png';
+			break;
+		}
+	};
+	this.stopPlayer = function() {
+		singletonPlayer.seek(0);
+		singletonPlayer.stop();
+		singletonPlayer.release();
+
+	};
+	this.startPlayer = function() {
+		var that = this;
+		var url = CacheAdapter.getURL(this.options);
+		this._view.setVisible(true);
+		this._view.container.animate({
+			bottom : -90
+		}, function() {
+			that._view.container.animate({
+				bottom : -100,
+				duration : 10
+			});
+		});
+		var maxRange = this.options.duration * 1000;
+		this._view.progress.setMax(maxRange);
+		this._view.slider.setMax(maxRange);
+		this._view.progress.setValue(0);
+		this._view.slider.setValue(0);
+		this._view.title.setText(this.options.title);
+		this._view.title.setColor(this.options.color);
+		this._view.subtitle.setText(this.options.subtitle);
+		this._view.duration.setText(('' + this.options.duration * 1000).toHHMMSS());
+		this._view.add(this._view.equalizer);
+		singletonPlayer.seek(0);
+		singletonPlayer.setUrl(url.url);
+		singletonPlayer.start();
+	};
+	this.createWindow = function() {
+		this.color = (this.options.color) ? this.options.color : 'black';
+		this._window = Ti.UI.createWindow({
+			backgroundColor : 'transparent',
+			theme : 'Theme.NoActionBar',
+			fullscreen : true
+		});
+		var that = this;
+		setTimeout(function() {
+			that._view = playerViewModule.getView(that.options);
+			that._window.add(that._view);
+			that._view.control.addEventListener('longpress', function() {
+				that.stopPlayer();
+			});
+			that._view.control.addEventListener('singletap', function() {
+				if (singletonPlayer.playing)
+					singletonPlayer.pause();
+				else {
+					that.progress = that._view.slider.getValue();
+					singletonPlayer.seek(that.progress);
+					singletonPlayer.play();
+				}
+			});
+			that.startPlayer();
+		}, 100);
+		this._window.open();
+		this._window.addEventListener('close', this.stopPlayer);
+	};
 	this.options = options;
-	this._Recents = new RecentsModule({
+	this._Recents = new RecentsAdapter({
 		url : this.options.url,
 		title : this.options.title,
 		subtitle : this.options.subtitle,
@@ -31,149 +173,45 @@ var AudioPlayer = function(options) {
 		station : this.options.station,
 		pubdate : this.options.pubdate
 	});
-	this.progress = this._Recents.getProgress(this.options.url);
+	this.progress = this._Recents.getProgress(this.options.url) * 1000;
 	this.createWindow();
 	var that = this;
-	this.createPlayerFunc = function() {
-		that._player = Ti.Media.createAudioPlayer({
-			allowBackground : true,
-			volume : 1
+
+	if (CacheAdapter.isCached(this.options) && !this._Recents.isComplete(this.options.url)) {
+		alertactive = true;
+		var dialog = Ti.UI.createAlertDialog({
+			cancel : 1,
+			buttonNames : ['Neustart', 'Weiter'],
+			message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
+			title : 'Weiterhören'
 		});
-		that._player.addEventListener('progress', function(_e) {
-			that._view.progress.setValue(_e.progress / 1000);
-			that._view.duration.setText(('' + _e.progress / 1000).toHHMMSS() + ' / ' + ('' + that.options.duration).toHHMMSS());
-			that._Recents.setProgress({
-				progress : _e.progress,
-				url : that.options.url
-			});
-		});
-		that._player.addEventListener('complete', function(_e) {
-			if (that._view)
-				that._view.setVisible(false);
-			that._Recents.setComplete();
-			that.stopPlayer();
-		});
-		that._player.addEventListener('change', function(_e) {
-			Ti.API.error(_e.state + '    ' + _e.description);
-			switch (_e.description) {
-			case 'initialized':
-				that._view.control.image = '/images/stop.png';
-				Ti.Media.vibrate([1, 0]);
-				break;
-			case 'stopped':
-				that._view.remove(that._view.equalizer);
-				that._view.equalizer.opacity = 0;
-				that._view.control.image = '/images/play.png';
-				that.stopPlayer();
-				break;
-			case 'stopping':
-				that._view.equalizer.opacity = 0;
-				if (that._interval)
-					clearInterval(that._interval, 1000);
-				that._view.control.image = '/images/play.png';
-				that._player.release();
-				that._view.hide();
-				break;
-			case 'starting':
-				that._view.control.image = '/images/leer.png';
-				break;
-			case 'paused':
-				that._view.subtitle.ellipsize = false;
-				that._view.equalizer.opacity = 0;
-				that._view.control.image = '/images/play.png';
-				break;
-			case 'playing':
-				if (that.progress > 10) {
-					var dialog = Ti.UI.createAlertDialog({
-						cancel : 1,
-						buttonNames : ['Neustart', 'Weiter'],
-						message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
-						title : 'Weiter hören'
-					});
-					dialog.addEventListener('click', function(e) {
-						if (e.index != 0) {
-							that._player.playing && that._player.setTime(that.progress * 1000);
-							that.progress && Ti.UI.createNotification({
-								duration : 2000,
-								message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
-							}).show();
-							return;
-						}
-					});
-					dialog.show();
-				} else {
-				}
-				that._view.spinner.hide();
-				that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
-				that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
-				that._view.equalizer.animate({
-					opacity : 1,
-					duration : 2000
-				});
-				that._view.control.image = '/images/pause.png';
-				break;
+		dialog.addEventListener('click', function(e) {
+			alertactive = false;
+			that.startPlayer();
+			if (e.index != 0) {
+				singletonPlayer.playing && singletonPlayer.seek(that.progress);
+				that.progress && Ti.UI.createNotification({
+					duration : 2000,
+					message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
+				}).show();
+				return;
 			}
 		});
-		that.startPlayer();
-	};
-	setTimeout(this.createPlayerFunc, 50);
+		dialog.show();
+	}
+	singletonPlayer.addEventListener('progress', this.onProgressFn);
+	singletonPlayer.addEventListener('complete', this.onCompleteFn);
+	singletonPlayer.addEventListener('change', this.onStatusChangeFn);
+	this._window.addEventListener("android:back", function() {
+		return false;
+	});
 	return this._view;
 };
 
-AudioPlayer.prototype = {
-	createWindow : function() {
-		this.color = (this.options.color) ? this.options.color : 'black';
-		this._window = Ti.UI.createWindow({
-			backgroundColor : 'transparent',
-			//theme : 'Theme.NoActionBar'
-		});
-		this._window.addEventListener('open',function(_e){
-			_e.source.activity.actionBar.hide();	
-		});
-		this._view = playerViewModule.getView(this.options);
-		this._window.add(this._view);
-		var that = this;
-		this._view.control.addEventListener('click', function() {
-			Ti.API.error('Info: background of player clicked');
-			that.stopPlayer();
-		});
-		this._window.open({
-			activityEnterAnimation : Ti.Android.R.anim.fade_in,
-			//				activityExitAnimation : Ti.Android.R.anim.fade_out
-		});
-	},
-	startPlayer : function() {
-		var url = CacheAdapter.getURL(this.options);
-		
-		this._view.setVisible(true);
-		var that = this;
-		this._view.container.animate({
-			bottom : -90
-		}, function() {
-			that._view.container.animate({
-				bottom : -100,
-				duration : 10
-			});
-		});
-		this._view.progress.setMax(this.options.duration);
-		this._view.progress.setValue(0);
-		this._view.title.setText(this.options.title);
-		this._view.title.setColor(this.options.color);
-		this._view.subtitle.setText(this.options.subtitle);
-		this._view.duration.setText(('' + this.options.duration).toHHMMSS());
-		this._view.add(this._view.equalizer);
-		this._player.setUrl(url.url);
-		that._player.start();
-	},
-	stopPlayer : function() {
-		var url = CacheAdapter.cacheURL(this.options);
-		this._player.stop();
-		this._player.release();
-		this._window.removeAllChildren();
-		this._window.close();
-	}
-};
-
 exports.createAndStartPlayer = function(options) {
-	return new AudioPlayer(options);
+	Ti.UI.createNotification({
+		duration : 5000,
+		message : 'Kurzer Klick: Pause/Springen/Weiter\nlanger Klick: vorläufig beenden.'
+	}).show();
+	return new $(options);
 };

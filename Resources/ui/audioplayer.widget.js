@@ -7,7 +7,7 @@ var createView = function(args) {
 		visible : false
 	});
 	$.add(Ti.UI.createView({
-		opacity : 0.5,
+		opacity : 0.8,
 		touchEnabled : false,
 		backgroundColor : color
 	}));
@@ -38,6 +38,16 @@ var createView = function(args) {
 	$.progress = Ti.UI.createProgressBar({
 		bottom : 120,
 		left : 80,
+		right : 10,
+		height : 30,
+		width : Ti.UI.FILL,
+		min : 0,
+		max : 100
+	});
+	$.slider = Ti.UI.createSlider({
+		bottom : 115,
+		left : 80,
+		visible:false,
 		right : 10,
 		height : 30,
 		width : Ti.UI.FILL,
@@ -118,6 +128,7 @@ var createView = function(args) {
 		autoStart : true
 	});
 	$.container.add($.progress);
+	$.container.add($.slider);
 	$.container.add($.duration);
 	$.container.add($.title);
 	$.container.add($.subtitle);
