@@ -13,7 +13,7 @@ exports.getTree = function() {
 };
 
 exports.isCached = function(options) {
-	if (!options.station)
+	if (!options || !options.station)
 		return false;
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {

@@ -343,6 +343,18 @@ exports.mediathek = {
 			width : 27,
 			height : 27
 		}
+	},{
+		type : 'Ti.UI.ImageView',
+		bindId : 'cache',
+		properties : {
+			opacity : 0.5,
+			left : 5,
+			bottom : 5,
+			bubbleParent : true,
+			image : '/images/cloud.png',
+			width : 27,
+			height : 27
+		}
 	}, {
 		type : 'Ti.UI.View',
 		bindId : 'playtrigger',

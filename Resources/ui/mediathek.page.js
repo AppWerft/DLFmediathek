@@ -40,7 +40,6 @@ module.exports = function(_args) {
 			height : HEIGHT_OF_TOPBOX,
 			color : _args.color
 		});
-
 		self.add(self.topBox);
 	}
 	self.add(Ti.UI.createView({
@@ -49,7 +48,7 @@ module.exports = function(_args) {
 		backgroundColor : _args.color
 	}));
 	self.bottomList = Ti.UI.createListView({
-		top : (_args.archiv==true) ? 79 : 7,
+		top : (_args.archiv == true) ? 79 : 7,
 		backgroundColor : _args.color,
 		templates : {
 			'mediathek' : require('TEMPLATES').mediathek,
@@ -121,7 +120,7 @@ module.exports = function(_args) {
 			station : _args.station,
 			archiv : _args.archiv,
 			nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
-			date : self.date.format('DD.MM.YYYY'),
+			date : _args.date ?  _args.date : Moment().format('DD.MM.YYYY'),
 			onload : function(_sendungen) {
 				if (_sendungen == null)
 					return;
@@ -132,7 +131,6 @@ module.exports = function(_args) {
 				self.bottomList.sections = [];
 				_sendungen.mediathek.forEach(function(sendung) {
 					var dataitems = [];
-					console.log(sendung.subs[0]);
 					sendung.subs.forEach(function(item) {
 						item.title = sendung.name;
 						var depub = {
@@ -168,6 +166,9 @@ module.exports = function(_args) {
 							},
 							subtitle : {
 								text : item.subtitle,
+							},
+							cache : {
+								image : item.cached ? 'images/cached.png' : '/images/cloud.png'
 							},
 							fav : {
 								image : item.isfav ? '/images/fav.png' : '/images/favadd.png',

@@ -2,22 +2,6 @@ var RecentsAdapter = require('controls/recents.adapter'),
     CacheAdapter = require('controls/cache.adapter'),
     playerViewModule = require('ui/audioplayer.widget');
 
-String.prototype.toHHMMSS = function() {
-	var sec_num = parseInt(this / 1000, 10);
-	// don't forget the second param
-	var hours = Math.floor(sec_num / 3600);
-	var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-	var seconds = sec_num - (hours * 3600) - (minutes * 60);
-	if (hours < 10)
-		hours = "0" + hours;
-	if (minutes < 10)
-		minutes = "0" + minutes;
-	if (seconds < 10)
-		seconds = "0" + seconds;
-	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
-	return time;
-};
-
 var singletonPlayer = require('com.kcwdev.audio').createAudioPlayer({
 	allowBackground : true,
 	volume : 1
@@ -28,6 +12,15 @@ var alertactive = false;
 var $ = function(options) {
 	if (singletonPlayer.playing)
 		singletonPlayer.release();
+	this.setControlView = function() {
+		if (CacheAdapter.isCached(this.options)) {
+			that._view.control.setImage('/images/pause.png');
+		} else {
+			var sec = Math.round((new Date().getTime() / 1000));
+			that._view.control.setImage(sec % 2 ? '/images/cache.png' : '/images/cache_.png');
+		}
+
+	};
 	this.onSliderChangeFn = function(_e) {
 		that._view.progress.setValue(_e.value);
 		that._view.duration.setText(('' + _e.value).toHHMMSS() + ' / ' + ('' + that.options.duration * 1000).toHHMMSS());
@@ -41,6 +34,8 @@ var $ = function(options) {
 			progress : _e.progress / 1000,
 			url : that.options.url
 		});
+		// updating ControlView
+		that.setControlView();
 	};
 	this.onCompleteFn = function(_e) {
 		if (that._view)
@@ -79,8 +74,9 @@ var $ = function(options) {
 			break;
 		case 'paused':
 			that._view.subtitle.ellipsize = false;
-			that._view.equalizer.opacity = 0;
-			that._view.control.image = '/images/play.png';
+			that._view.equalizer.hide();
+			that._view.equalizer.setOpacity(0);
+			that._view.control.setImage('/images/play.png');
 			that._view.slider.show();
 			that._view.progress.hide();
 			that._view.slider.addEventListener('change', that.onSliderChangeFn);
@@ -94,11 +90,12 @@ var $ = function(options) {
 			that._view.spinner.hide();
 			that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+			that._view.equalizer.show();
 			that._view.equalizer.animate({
 				opacity : 1,
-				duration : 2000
+				duration : 1000
 			});
-			that._view.control.image = '/images/pause.png';
+			that.setControlView();
 			break;
 		}
 	};
@@ -149,19 +146,20 @@ var $ = function(options) {
 				that.stopPlayer();
 			});
 			that._view.control.addEventListener('singletap', function() {
-				if (singletonPlayer.playing)
-					singletonPlayer.pause();
-				else {
-					that.progress = that._view.slider.getValue();
-					singletonPlayer.seek(that.progress);
-					singletonPlayer.play();
+				if (CacheAdapter.isCached(that.options)) {
+					if (singletonPlayer.playing)
+						singletonPlayer.pause();
+					else {
+						that.progress = that._view.slider.getValue();
+						singletonPlayer.seek(that.progress);
+						singletonPlayer.play();
+					}
 				}
 			});
 			that.startPlayer();
-		}, 100);
+		}, 700);
 		this._window.open();
-		this._window.addEventListener('close', this.stopPlayer);
-	};
+		};
 	this.options = options;
 	this._Recents = new RecentsAdapter({
 		url : this.options.url,
@@ -196,7 +194,7 @@ var $ = function(options) {
 				}).show();
 				return;
 			}
-		});
+		});    
 		dialog.show();
 	}
 	singletonPlayer.addEventListener('progress', this.onProgressFn);
@@ -207,11 +205,6 @@ var $ = function(options) {
 	});
 	return this._view;
 };
-
 exports.createAndStartPlayer = function(options) {
-	Ti.UI.createNotification({
-		duration : 5000,
-		message : 'Kurzer Klick: Pause/Springen/Weiter\nlanger Klick: vorläufig beenden.'
-	}).show();
 	return new $(options);
 };
