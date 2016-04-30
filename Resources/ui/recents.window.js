@@ -1,8 +1,8 @@
 var Model = require('model/stations'),
     Recents = new (require('controls/recents.adapter'))(),
     Moment = require('vendor/moment'),
-    
-АктйонБар = require('com.alcoapps.actionbarextras');
+
+    АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function() {
 	var self = Ti.UI.createWindow({
@@ -45,8 +45,8 @@ module.exports = function() {
 					text : 'schon gehört: ' + Math.floor(item.progress * 100) + '%',
 				},
 				duration : {
-					text : (item.duration) ? 'Dauer: ' + ('' + item.duration).toHHMMSS() : '',
-					height : (item.duration) ? Ti.UI.SIZE : 0,
+					text : (item.duration) ? 'Dauer: ' + ('' + item.duration*1000).toHHMMSS() : '',
+					height : (item.duration != 0) ? Ti.UI.SIZE : 0,
 				},
 				pubdate : {
 					text : (item.pubdate) ? 'Sendezeit : ' + require('vendor/smartDate')(item.pubdate) : ''

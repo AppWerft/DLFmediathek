@@ -10,7 +10,7 @@ link.execute('CREATE INDEX IF NOT EXISTS urlindex ON recents (url)');
 
 link.close();
 
-var Module = function() {
+var $ = function() {
 	var args = arguments[0] || {};
 	if (args.url && args.pubdate) {
 		this.url = args.url;
@@ -32,8 +32,7 @@ var Module = function() {
 	return this;
 };
 
-Module.prototype = {
-	/* will called from UI and calls background service */
+$.prototype = {
 	setProgress : function(_args) {
 		var link = Ti.Database.open(DB);
 		link.execute('UPDATE recents SET progress=?,lastaccess=? WHERE url=?', //
@@ -56,10 +55,12 @@ Module.prototype = {
 	getAllRecents : function() {
 		var link = Ti.Database.open(DB);
 		var recents = [];
-		var res = link.execute('SELECT * FROM recents WHERE progress <= duration ORDER BY DATETIME(lastaccess) DESC LIMIT 100');
+		var sql = 'SELECT * FROM recents WHERE progress <= duration ORDER BY DATETIME(lastaccess) DESC LIMIT 100';
+		console.log(sql);
+		var res = link.execute(sql);
 		while (res.isValidRow()) {
 			var station = res.getFieldByName('station');
-			recents.push({
+			var item = {
 				url : res.getFieldByName('url'),
 				image : '/images/' + station + '.png',
 				station : station,
@@ -71,7 +72,9 @@ Module.prototype = {
 				pubdate : res.getFieldByName('pubdate'),
 				author : res.getFieldByName('author'),
 				color : (station ) ? Model[station].color : 'gray'
-			});
+			};
+			console.log(item);
+			recents.push(item);
 			res.next();
 		}
 
@@ -88,7 +91,7 @@ Module.prototype = {
 			res.close();
 		}
 		link.close();
-		return ratio>0.99 ? true :false;
+		return ratio > 0.99 ? true : false;
 	},
 	getProgress : function(_url) {
 		if (_url) {
@@ -126,4 +129,4 @@ Module.prototype = {
 	}
 };
 
-module.exports = Module;
+module.exports = $;

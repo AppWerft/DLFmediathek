@@ -38,6 +38,8 @@ exports.deleteURL = function(options) {
 	}
 
 };
+
+
 exports.cacheURL = function(options) {
 	var folder = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station);
 	if (!folder.exists()) {
@@ -52,7 +54,6 @@ exports.cacheURL = function(options) {
 			cached : true
 		};
 	} else {
-		console.log('Info: URL should save ' + options.url);
 		var intent = Ti.Android.createServiceIntent({
 			url : 'downloader.js'
 		});

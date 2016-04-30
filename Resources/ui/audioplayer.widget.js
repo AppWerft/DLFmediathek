@@ -5,7 +5,7 @@ var $ = function(args) {
 	var color = (args.color) ? args.color : 'white';
 
 	var $ = Ti.UI.createView({
-		visible : true
+		visible : true,bottom:0
 	});
 	color = '#fff';
 	$.add(Ti.UI.createView({
@@ -13,29 +13,26 @@ var $ = function(args) {
 		touchEnabled : false,
 		backgroundColor : 'black'
 	}));
-
-	$.visualizerContainer = Ti.UI.createView({
-		height : Ti.UI.FILL,visible:false
-	});
-	$.add($.visualizerContainer);
 	if (args.image) {
 		$.add(Ti.UI.createImageView({
 			touchEnabled : false,
-			bottom : 130,
+			top : 0,
+			right:0,
 			width : '60%',
-			left : 0,
-
 			height : 'auto',
 			image : args.image
 		}));
 	}
-
+	$.visualizerContainer = Ti.UI.createView({
+		height : Ti.UI.FILL,visible:false
+	});
+	$.add($.visualizerContainer);
 	$.container = Ti.UI.createView({
 		bubbleParent : false,
 		touchEnabled : false,
 		height : 230,
 		zIndex : 99,
-		bottom : -230,
+		bottom : 0,
 	});
 	$.add($.container);
 	$.progress = Ti.UI.createProgressBar({
@@ -119,18 +116,6 @@ var $ = function(args) {
 		bottom : 115
 	});
 	$.spinner.show();
-	$.equalizer = require('com.miga.gifview').createGifView({
-		width : 300,
-		height : 77,
-		bubbleParent : false,
-		touchEnabled : false,
-		image : '/images/equalizer.gif',
-		bottom : 20,
-		left : 60,
-		opacity : 0,
-		autoStart : true,
-		height : 0
-	});
 	$.container.add($.progress);
 	$.container.add($.slider);
 	$.container.add($.duration);

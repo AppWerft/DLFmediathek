@@ -15,17 +15,16 @@ if (singletonPlayer.seek === undefined)
 	singletonPlayer.seek = singletonPlayer.setTime;
 
 var alertactive = false;
+
 /* ********************************************************* */
 var $ = function(options) {
 	if (!options.station)
 		options.station = Ti.App.Properties.getString('LAST_STATION');
-
 	options.color = Stations[options.station].color;
-
-	console.log('STATION=' + options.station);
-	console.log('C O L O R=' + options.color);
+	this.options = options;
 	if (singletonPlayer.playing)
 		singletonPlayer.release();
+
 	this.setControlView = function() {
 		if (CacheAdapter.isCached(this.options)) {
 			that._view.control.setImage('/images/pause.png');
@@ -69,8 +68,6 @@ var $ = function(options) {
 				singletonPlayer.removeEventListener('complete', this.onCompleteFn);
 			if (this.onStatusChangeFn && typeof this.onStatusChangeFn == 'function')
 				singletonPlayer.removeEventListener('change', this.onStatusChangeFn);
-			that._view.remove(that._view.equalizer);
-			that._view.equalizer.opacity = 0;
 			that._view.visualizerContainer.hide();
 			that._view.control.image = '/images/play.png';
 			if (that._window) {
@@ -89,8 +86,6 @@ var $ = function(options) {
 			break;
 		case 'paused':
 			that._view.subtitle.ellipsize = false;
-			that._view.equalizer.hide();
-			that._view.equalizer.setOpacity(0);
 			that._view.control.setImage('/images/play.png');
 			that._view.slider.show();
 			that._view.progress.hide();
@@ -106,19 +101,16 @@ var $ = function(options) {
 			that._view.spinner.hide();
 			that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
-			that._view.equalizer.show();
 			that._view.visualizerContainer.show();
-			that._view.equalizer.animate({
-				opacity : 1,
-				duration : 1000
-			});
 			that.setControlView();
 			break;
 		}
 	};
 	this.stopPlayer = function() {
-		this._view.mVisualizerView.release();
-		this._view.mVisualizerView = null;
+		if (that._view.mVisualizerView) {
+			this._view.mVisualizerView.release();
+			this._view.mVisualizerView = null;
+		}
 		this._view.removeAllChildren();
 		this._view == null;
 		singletonPlayer.seek(0);
@@ -128,16 +120,7 @@ var $ = function(options) {
 	};
 	this.startPlayer = function() {
 		var that = this;
-		var url = CacheAdapter.getURL(this.options);
 		this._view.setVisible(true);
-		this._view.container.animate({
-			bottom : -90
-		}, function() {
-			that._view.container.animate({
-				bottom : -100,
-				duration : 10
-			});
-		});
 		var maxRange = this.options.duration * 1000;
 		this._view.progress.setMax(maxRange);
 		this._view.slider.setMax(maxRange);
@@ -147,13 +130,25 @@ var $ = function(options) {
 		//this._view.title.setColor(this.options.color);
 		this._view.subtitle.setText(this.options.subtitle);
 		this._view.duration.setText(('' + this.options.duration * 1000).toHHMMSS());
-		this._view.add(this._view.equalizer);
 		singletonPlayer.seek(0);
-		singletonPlayer.setUrl(url.url);
-		singletonPlayer.start();
+		var item = CacheAdapter.getURL({
+			station : this.options.station,
+			url : this.options.url
+		});
+		if (item.cached || Ti.Network.online)  {
+			singletonPlayer.setUrl(item.url);
+			singletonPlayer.start();
+			return; 
+		}   
+		Ti.UI.createNotification({
+			message : "Der Beitrag ist noch nicht nicht heruntergeladen und ich sehe Probleme mit dem Internet"
+		}).show();
+		this.stopPlayer(); 
 	};
 	this.createWindow = function() {
-		this.color = (this.options.color) ? this.options.color : 'black';
+		if (!Ti.Network.online && !CacheAdapter.isCached(this.options)) {
+			return false;
+		}
 		this._window = Ti.UI.createWindow({
 			backgroundColor : 'transparent',
 			theme : 'Theme.NoActionBar',
@@ -192,20 +187,26 @@ var $ = function(options) {
 				});
 				that._view.visualizerContainer.add(that._view.mVisualizerView);
 				setTimeout(function() {
-					that._view.mVisualizerView.addBarGraphRenderer({
-						color : options.color,
-						width : 35.0,
-					});
+					if (that._view.mVisualizerView)
+						that._view.mVisualizerView.addBarGraphRenderer({
+							color : options.color,
+							width : 35.0,
+						});
 				}, 100);
 				setTimeout(function() {
-					that._view.mVisualizerView.addLineRenderer();
+					if (that._view.mVisualizerView)
+						that._view.mVisualizerView.addLineRenderer();
+
 				}, 1500);
 				that.startPlayer();
 			});
 		});
 		this._window.open();
+		return true;
 	};
-	this.options = options;
+
+	/* here begins the real code */
+
 	this._Recents = new RecentsAdapter({
 		url : this.options.url,
 		title : this.options.title,
@@ -217,37 +218,39 @@ var $ = function(options) {
 		pubdate : this.options.pubdate
 	});
 	this.progress = this._Recents.getProgress(this.options.url) * 1000;
-	this.createWindow();
-	var that = this;
-
-	if (CacheAdapter.isCached(this.options) && !this._Recents.isComplete(this.options.url)) {
-		alertactive = true;
-		var dialog = Ti.UI.createAlertDialog({
-			cancel : 1,
-			buttonNames : ['Neustart', 'Weiter'],
-			message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
-			title : 'Weiterhören'
+	if (this.createWindow()) {
+		var that = this;
+		if (CacheAdapter.isCached(this.options) && !this._Recents.isComplete(this.options.url)) {
+			console.log('try to continue');
+			alertactive = true;
+			var dialog = Ti.UI.createAlertDialog({
+				cancel : 1,
+				buttonNames : ['Neustart', 'Weiter'],
+				message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
+				title : 'Weiterhören'
+			});
+			dialog.addEventListener('click', function(e) {
+				alertactive = false;
+				that.startPlayer();
+				if (e.index != 0) {
+					singletonPlayer.playing && singletonPlayer.seek(that.progress);
+					that.progress && Ti.UI.createNotification({
+						duration : 2000,
+						message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
+					}).show();
+					return;
+				}
+			});
+			dialog.show();
+		}
+		singletonPlayer.addEventListener('progress', this.onProgressFn);
+		singletonPlayer.addEventListener('complete', this.onCompleteFn);
+		singletonPlayer.addEventListener('change', this.onStatusChangeFn);
+		this._window.addEventListener("android:back", function() {
+			that._view.control.fireEvent('longpress', {});
+			return false;
 		});
-		dialog.addEventListener('click', function(e) {
-			alertactive = false;
-			that.startPlayer();
-			if (e.index != 0) {
-				singletonPlayer.playing && singletonPlayer.seek(that.progress);
-				that.progress && Ti.UI.createNotification({
-					duration : 2000,
-					message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
-				}).show();
-				return;
-			}
-		});
-		dialog.show();
 	}
-	singletonPlayer.addEventListener('progress', this.onProgressFn);
-	singletonPlayer.addEventListener('complete', this.onCompleteFn);
-	singletonPlayer.addEventListener('change', this.onStatusChangeFn);
-	this._window.addEventListener("android:back", function() {
-		return false;
-	});
 	return this._view;
 };
 exports.createAndStartPlayer = function(options) {
