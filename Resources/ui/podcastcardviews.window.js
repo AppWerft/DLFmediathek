@@ -1,3 +1,5 @@
+'use strict';
+
 var Model = require('model/stations'),
     Moment = require('vendor/moment'),
     FlipModule = require('de.manumaticx.androidflip'),
@@ -5,6 +7,8 @@ var Model = require('model/stations'),
     stations = ['dlf', 'drk', 'drw'];
 
 function getTileDims() {
+	var tilewidth,
+	    tileheight;
 	var screenwidth = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor,
 	    screenheight = Ti.Platform.displayCaps.platformHeight / Ti.Platform.displayCaps.logicalDensityFactor;
 	var tilewidth = Math.min(screenwidth, screenheight) / 2;
@@ -35,7 +39,6 @@ module.exports = function() {
 		if (self.FlipViewCollection)
 			self.FlipViewCollection.currentPage = stationindex;
 	}
-
 	for (var ndx = 0; ndx < stations.length; ndx++) {
 		var podcasts = require('model/' + stations[ndx]);
 		var color = podcasts.color;
@@ -49,8 +52,6 @@ module.exports = function() {
 		pages[ndx].addEventListener('click', function(_e) {
 			if (_e.source.itemId) {
 				var item = JSON.parse(_e.source.itemId);
-				console.log(item);
-
 				if (item) {
 					item.color = color;
 					item.station = stations[ndx];
@@ -91,7 +92,6 @@ module.exports = function() {
 					}
 				}));
 			pages[ndx].add(cv);
-
 		});
 	}
 	self.FlipViewCollection = FlipModule.createFlipView({
@@ -99,7 +99,6 @@ module.exports = function() {
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
 		top : 127,
-
 		height : Ti.UI.FILL,
 		width : Ti.UI.FILL
 	});
@@ -118,30 +117,32 @@ module.exports = function() {
 		} else {
 			self.FlipViewCollection && self.FlipViewCollection.setTop(80);
 		}
-		tilewidth = getTileDims().width;
-		tileheight = getTileDims().height;
-		pages[0].children.forEach(function(view) {
-			view.hide();
-			view.setWidth(tilewidth), view.setHeight(tileheight);
-			view.show({
-				animated : currentStation == stations[0] ?true :false
+		var dims = getTileDims();
+		if (dims != undefined) {
+			var tilewidth = dims.width;
+			var tileheight = dims.height;
+			pages[0].children.forEach(function(view) {
+				view.hide();
+				view.setWidth(tilewidth), view.setHeight(tileheight);
+				view.show({
+					animated : currentStation == stations[0] ? true : false
+				});
 			});
-		});
-		pages[1].children.forEach(function(view) {
-			view.hide();
-			view.setWidth(tilewidth), view.setHeight(tileheight);
-			view.show({
-				animated :  currentStation == stations[1] ?true :false
+			pages[1].children.forEach(function(view) {
+				view.hide();
+				view.setWidth(tilewidth), view.setHeight(tileheight);
+				view.show({
+					animated : currentStation == stations[1] ? true : false
+				});
 			});
-		});
-		pages[2].children.forEach(function(view) {
-			view.hide();
-			view.setWidth(tilewidth), view.setHeight(tileheight);
-			view.show({
-				animated :  currentStation == stations[2] ?true :false
+			pages[2].children.forEach(function(view) {
+				view.hide();
+				view.setWidth(tilewidth), view.setHeight(tileheight);
+				view.show({
+					animated : currentStation == stations[2] ? true : false
+				});
 			});
-		});
-		
+		}
 	});
 	return self;
 };

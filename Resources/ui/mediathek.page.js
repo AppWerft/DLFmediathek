@@ -1,3 +1,4 @@
+'use strict';
 var Favs = new (require('controls/favorites.adapter'))(),
     Model = require('model/stations'),
     Schema = require('controls/rss.adapter');
@@ -5,7 +6,7 @@ var Favs = new (require('controls/favorites.adapter'))(),
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
-const HEIGHT_OF_TOPBOX = 120;
+var HEIGHT_OF_TOPBOX = 120;
 
 module.exports = function(_args) {
 	var activityworking = true;
@@ -120,7 +121,7 @@ module.exports = function(_args) {
 			station : _args.station,
 			archiv : _args.archiv,
 			nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
-			date : _args.date ?  _args.date : Moment().format('DD.MM.YYYY'),
+			date : _args.date ?  _args.date.format('DD.MM.YYYY') : Moment().format('DD.MM.YYYY'),
 			onload : function(_sendungen) {
 				if (_sendungen == null)
 					return;

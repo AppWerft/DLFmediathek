@@ -4,32 +4,10 @@ var Model = require('model/stations'),
     
 АктйонБар = require('com.alcoapps.actionbarextras');
 
-String.prototype.toHHMMSS = function() {
-	var sec_num = parseInt(this, 10);
-	// don't forget the second param
-	var hours = Math.floor(sec_num / 3600);
-	var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-	var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-	if (hours < 10) {
-		hours = "0" + hours;
-	}
-	if (minutes < 10) {
-		minutes = "0" + minutes;
-	}
-	if (seconds < 10) {
-		seconds = "0" + seconds;
-	}
-	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
-	return time;
-};
-
-/*   ===================  */
 module.exports = function() {
 	var self = Ti.UI.createWindow({
 		fullscreen : false,
 	});
-	
 	require('de.manumaticx.crouton').info("Langes Pressen löscht Beitrag.");
 	self.list = Ti.UI.createListView({
 		top : 80,
@@ -109,7 +87,6 @@ module.exports = function() {
 		}
 	});
 	self.addEventListener('focus', self.updateList);
-
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
 		АктйонБар.subtitle = 'Letztes/Unvollständiges/Offline';

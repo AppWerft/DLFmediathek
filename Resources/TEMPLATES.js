@@ -114,7 +114,7 @@ exports.podcastlist = {
 		bindId : 'image',
 		properties : {
 			left : 0,
-			top : 0,
+			top : 5,
 			touchEnabled : true,
 			width : 90,
 			height : 90
@@ -670,7 +670,7 @@ exports.mypodcasts = {
 		bindId : 'logo',
 		properties : {
 			left : 0,
-			top : 0,
+			top : 5,
 			bubbleParent : true,
 			image : '',
 			width : 90,

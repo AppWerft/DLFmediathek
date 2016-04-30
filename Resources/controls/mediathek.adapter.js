@@ -1,3 +1,4 @@
+'use strict';
 var Moment = require('vendor/moment'),
     Favs = new (require('controls/favorites.adapter'))(),
     CacheAdapter = require('controls/cache.adapter');
@@ -66,8 +67,10 @@ module.exports = function(_args) {
 		_args.onload(result);
 	};
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
+	console.log(_args);
+	console.log(url);
 	var xhr = Ti.Network.createHTTPClient({
-		timeout : 10000,
+		timeout : 3000,
 		onerror : function(e) {
 			Ti.UI.createNotification({
 				message : 'Bitte Internetverbindung überprüfen.\nDerweil gibt es eine ältere Version der Mediathek.'

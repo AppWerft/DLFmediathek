@@ -1,3 +1,4 @@
+'use strict';
 var Model = require('model/stations'),
     Favs = new (require('controls/favorites.adapter'))(),
     Moment = require('vendor/moment'),

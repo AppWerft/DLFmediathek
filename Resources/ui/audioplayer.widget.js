@@ -1,38 +1,41 @@
 var start = new Date().getTime();
-var createView = function(args) {
+var $ = function(args) {
 	if (!args)
 		args = {};
-	var color = (args.color) ? args.color : 'black',
-	    $ = Ti.UI.createView({
-		visible : false
+	var color = (args.color) ? args.color : 'white';
+
+	var $ = Ti.UI.createView({
+		visible : true
 	});
+	color = '#fff';
 	$.add(Ti.UI.createView({
-		opacity : 0.8,
+		opacity : 0.92,
 		touchEnabled : false,
-		backgroundColor : color
+		backgroundColor : 'black'
 	}));
+
+	$.visualizerContainer = Ti.UI.createView({
+		height : Ti.UI.FILL,visible:false
+	});
+	$.add($.visualizerContainer);
 	if (args.image) {
 		$.add(Ti.UI.createImageView({
 			touchEnabled : false,
 			bottom : 130,
 			width : '60%',
 			left : 0,
-			zIndex : 99,
+
 			height : 'auto',
 			image : args.image
 		}));
 	}
-	$.add(Ti.UI.createView({
-		opacity : 0.3,
-		touchEnabled : false,
-		backgroundColor : 'black'
-	}));
+
 	$.container = Ti.UI.createView({
 		bubbleParent : false,
 		touchEnabled : false,
 		height : 230,
+		zIndex : 99,
 		bottom : -230,
-		backgroundColor : 'white'
 	});
 	$.add($.container);
 	$.progress = Ti.UI.createProgressBar({
@@ -47,7 +50,7 @@ var createView = function(args) {
 	$.slider = Ti.UI.createSlider({
 		bottom : 115,
 		left : 80,
-		visible:false,
+		visible : false,
 		right : 10,
 		height : 30,
 		width : Ti.UI.FILL,
@@ -61,14 +64,14 @@ var createView = function(args) {
 		font : {
 			fontSize : 12
 		},
-		color : color,
+		color : 'white',
 		right : 10,
 	});
 	$.title = Ti.UI.createLabel({
 		top : 8,
 		bubbleParent : false,
 		touchEnabled : false,
-		color : this.color,
+		color : 'white',
 		horizontalWrap : false,
 		width : Ti.UI.FILL,
 		wordWrap : false,
@@ -85,7 +88,7 @@ var createView = function(args) {
 		top : 36,
 		bubbleParent : false,
 		touchEnabled : false,
-		color : '#555',
+		color : 'white',
 		horizontalWrap : false,
 		wordWrap : false,
 		ellipsize : true,
@@ -125,7 +128,8 @@ var createView = function(args) {
 		bottom : 20,
 		left : 60,
 		opacity : 0,
-		autoStart : true
+		autoStart : true,
+		height : 0
 	});
 	$.container.add($.progress);
 	$.container.add($.slider);
@@ -136,5 +140,5 @@ var createView = function(args) {
 	$.container.add($.spinner);
 	return $;
 };
-exports.getView = createView;
+exports.getView = $;
 

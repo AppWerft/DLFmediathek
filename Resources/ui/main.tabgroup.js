@@ -1,6 +1,8 @@
+'use strict';
 // find . -type f -name "*.png" -exec convert {} -strip {} \;
 
 module.exports = function() {
+	
 	var $ = Ti.UI.createTabGroup({
 		fullscreen : false,
 		swipeable : false,

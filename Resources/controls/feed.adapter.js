@@ -1,11 +1,13 @@
+'use strict';
+
 var Moment = require('vendor/moment'),
     XMLTools = require('vendor/XMLTools');
 
-const DB = Ti.App.Properties.getString('DATABASE');
+var DB = Ti.App.Properties.getString('DATABASE');
 
 var Cache = require('controls/cache.adapter');
 
-var Module = function() {
+var $ = function() {
 	this.eventhandlers = {};
 	var link = Ti.Database.open(DB);
 	if (link) {
@@ -18,7 +20,7 @@ var Module = function() {
 	return this;
 };
 
-Module.prototype = {
+$.prototype = {
 	cacheAll : function(channelurl) {
 		var link = Ti.Database.open(DB);
 		var res = link.execute('SELECT items.enclosure_url AS url,feeds.station AS station FROM items,feeds WHERE items.channelurl=? AND items.channelurl=feeds.url', channelurl);
@@ -277,4 +279,4 @@ Module.prototype = {
 	}
 };
 
-module.exports = Module;
+module.exports = $;

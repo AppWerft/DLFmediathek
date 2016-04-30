@@ -1,15 +1,29 @@
+'use strict';
 var RecentsAdapter = require('controls/recents.adapter'),
     CacheAdapter = require('controls/cache.adapter'),
+    Stations = require('model/stations'),
     playerViewModule = require('ui/audioplayer.widget');
 
-var singletonPlayer = require('com.kcwdev.audio').createAudioPlayer({
+var PLAYER = Ti.Media;
+// require('com.kcwdev.audio')
+
+var singletonPlayer = PLAYER['createAudioPlayer']({
 	allowBackground : true,
 	volume : 1
 });
+if (singletonPlayer.seek === undefined)
+	singletonPlayer.seek = singletonPlayer.setTime;
 
 var alertactive = false;
 /* ********************************************************* */
 var $ = function(options) {
+	if (!options.station)
+		options.station = Ti.App.Properties.getString('LAST_STATION');
+
+	options.color = Stations[options.station].color;
+
+	console.log('STATION=' + options.station);
+	console.log('C O L O R=' + options.color);
 	if (singletonPlayer.playing)
 		singletonPlayer.release();
 	this.setControlView = function() {
@@ -57,6 +71,7 @@ var $ = function(options) {
 				singletonPlayer.removeEventListener('change', this.onStatusChangeFn);
 			that._view.remove(that._view.equalizer);
 			that._view.equalizer.opacity = 0;
+			that._view.visualizerContainer.hide();
 			that._view.control.image = '/images/play.png';
 			if (that._window) {
 				that._window.removeEventListener('close', that.stopPlayer);
@@ -79,6 +94,7 @@ var $ = function(options) {
 			that._view.control.setImage('/images/play.png');
 			that._view.slider.show();
 			that._view.progress.hide();
+			that._view.visualizerContainer.hide();
 			that._view.slider.addEventListener('change', that.onSliderChangeFn);
 			break;
 		case 'playing':
@@ -91,6 +107,7 @@ var $ = function(options) {
 			that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._view.equalizer.show();
+			that._view.visualizerContainer.show();
 			that._view.equalizer.animate({
 				opacity : 1,
 				duration : 1000
@@ -100,6 +117,10 @@ var $ = function(options) {
 		}
 	};
 	this.stopPlayer = function() {
+		this._view.mVisualizerView.release();
+		this._view.mVisualizerView = null;
+		this._view.removeAllChildren();
+		this._view == null;
 		singletonPlayer.seek(0);
 		singletonPlayer.stop();
 		singletonPlayer.release();
@@ -123,7 +144,7 @@ var $ = function(options) {
 		this._view.progress.setValue(0);
 		this._view.slider.setValue(0);
 		this._view.title.setText(this.options.title);
-		this._view.title.setColor(this.options.color);
+		//this._view.title.setColor(this.options.color);
 		this._view.subtitle.setText(this.options.subtitle);
 		this._view.duration.setText(('' + this.options.duration * 1000).toHHMMSS());
 		this._view.add(this._view.equalizer);
@@ -136,30 +157,54 @@ var $ = function(options) {
 		this._window = Ti.UI.createWindow({
 			backgroundColor : 'transparent',
 			theme : 'Theme.NoActionBar',
+			orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
 			fullscreen : true
 		});
 		var that = this;
-		setTimeout(function() {
-			that._view = playerViewModule.getView(that.options);
-			that._window.add(that._view);
-			that._view.control.addEventListener('longpress', function() {
-				that.stopPlayer();
-			});
-			that._view.control.addEventListener('singletap', function() {
-				if (CacheAdapter.isCached(that.options)) {
-					if (singletonPlayer.playing)
-						singletonPlayer.pause();
-					else {
-						that.progress = that._view.slider.getValue();
-						singletonPlayer.seek(that.progress);
-						singletonPlayer.play();
-					}
+		that._view = playerViewModule.getView(that.options);
+		that._window.add(that._view);
+		that._view.control.addEventListener('longpress', function() {
+			that.stopPlayer();
+		});
+		that._view.control.addEventListener('singletap', function() {
+			if (CacheAdapter.isCached(that.options)) {
+				if (singletonPlayer.playing)
+					singletonPlayer.pause();
+				else {
+					that.progress = that._view.slider.getValue();
+					singletonPlayer.seek(that.progress);
+					singletonPlayer.play();
 				}
+			}
+		});
+
+		this._window.addEventListener('open', function() {
+			require('vendor/permissions').requestPermissions(['RECORD_AUDIO'], function(_success) {
+				if (_success !== true)
+					return;
+				that._view.mVisualizerView = require('ti.audiovisualizerview').createView({
+					audioSessionId : 0,
+					top : 0,
+					touchEnabled : false,
+					zIndex : 1,
+					lifecycleContainer : that._window,
+					height : Ti.UI.FILL
+				});
+				that._view.visualizerContainer.add(that._view.mVisualizerView);
+				setTimeout(function() {
+					that._view.mVisualizerView.addBarGraphRenderer({
+						color : options.color,
+						width : 35.0,
+					});
+				}, 100);
+				setTimeout(function() {
+					that._view.mVisualizerView.addLineRenderer();
+				}, 1500);
+				that.startPlayer();
 			});
-			that.startPlayer();
-		}, 700);
+		});
 		this._window.open();
-		};
+	};
 	this.options = options;
 	this._Recents = new RecentsAdapter({
 		url : this.options.url,
@@ -194,7 +239,7 @@ var $ = function(options) {
 				}).show();
 				return;
 			}
-		});    
+		});
 		dialog.show();
 	}
 	singletonPlayer.addEventListener('progress', this.onProgressFn);
