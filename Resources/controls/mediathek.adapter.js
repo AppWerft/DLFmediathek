@@ -13,10 +13,15 @@ module.exports = function(_args) {
 	}
 	var start = new Date().getTime();
 	var DEPOTKEY = 'MEDIATHEK_' + _args.station + '_' + _args.date;
-	console.log(DEPOTKEY);
+	console.log("DEPOTKEY="+DEPOTKEY);
 	var onloadFunc = function() {
-		console.log('Info: time for loading of mediathek: ' + (new Date().getTime() -start));
+		console.log('Info: time for loading of mediathek: ' + (new Date().getTime() - start));
 		var startparse = new Date().getTime();
+		if (!this.responseXML || !this.responseXML.documentElement) {
+			console.log('no valid XML');
+			console.log(this.responseText);	
+			return;
+		}
 		var entries = require('controls/mediathek.parser').parseXMLDoc(this.responseXML.documentElement);
 		// little dirty cleaning process:
 		if (_args.date) {
@@ -54,28 +59,24 @@ module.exports = function(_args) {
 					mediathek[sectionndx].subs.push(sub);
 				}
 			}
-
 		}
-		console.log('Info: time for parsing mediathek: ' + (new Date().getTime() -startparse));
 		var result = {
 			mediathek : mediathek,
-			hash :  Ti.Utils.md5HexDigest(JSON.stringify(mediathek))
+			hash : Ti.Utils.md5HexDigest(JSON.stringify(mediathek))
 		};
 		entries = null;
 		Ti.App.Properties.setString(DEPOTKEY, JSON.stringify(result));
-		
+
 		_args.onload(result);
 	};
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
-	console.log(_args);
-	console.log(url);
 	var xhr = Ti.Network.createHTTPClient({
 		timeout : 3000,
 		onerror : function(e) {
 			Ti.UI.createNotification({
 				message : 'Bitte Internetverbindung überprüfen.\nDerweil gibt es eine ältere Version der Mediathek.'
 			}).show();
-			_args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
+			Ti.App.Properties.hasProperty(DEPOTKEY) && _args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
 		},
 		onload : onloadFunc
 	});

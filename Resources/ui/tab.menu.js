@@ -105,7 +105,6 @@ searchView.addEventListener('submit', function(_e) {
 
 /* INTERFACE */
 module.exports = function(_event) {
-	require('vendor/cronservice.trigger')();
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
@@ -113,6 +112,7 @@ module.exports = function(_event) {
 	АктйонБар.subtitleColor = "#ccc";
 	АктйонБар.setStatusbarColor(Model[currentStation].color);
 	searchView.where = _event.source.activeTab.ndx;
+	require('vendor/versionsreminder')();
 	var activity = _event.source.getActivity();
 	if (activity) {
 		activity.actionBar.logo = '/images/' + currentStation + '.png';

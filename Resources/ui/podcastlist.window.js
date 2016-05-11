@@ -52,7 +52,7 @@ module.exports = function(_args) {
 						height : (description) ? Ti.UI.SIZE : 0
 					},
 					duration : {
-						text : (item.duration) ? 'Dauer: ' + ('' + item.duration*1000).toHHMMSS() : '',
+						text : (item.duration) ? 'Dauer: ' + ('' + item.duration * 1000).toHHMMSS() : '',
 						height : (item.duration) ? Ti.UI.SIZE : 0,
 					},
 					author : {
@@ -85,14 +85,14 @@ module.exports = function(_args) {
 		}
 	});
 	self.createAndStartPlayer = function(data) {
-		if (!data.url)  // new since 02/2006 (new feed structur)
+		if (!data.url)// new since 02/2006 (new feed structur)
 			data.url = data.enclosure.url;
 		require('ui/audioplayer.window').createAndStartPlayer({
-			color : '#000',
+			color : Model[data.station].color,
 			url : data.url,
 			duration : data.duration,
-			title : data.title,
-			subtitle : Moment(data.pubdate).format('LLL') + ' Uhr',
+			title : Moment(data.pubdate).format('LLL') + ' Uhr',
+			subtitle : data.title,
 			author : data.author,
 			station : data.station,
 			image : data.image,

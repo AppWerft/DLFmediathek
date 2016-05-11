@@ -5,8 +5,10 @@ var Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function() {
+	var options = arguments[0] || {};
 	var self = Ti.UI.createWindow({
 		fullscreen : false,
+		exitOnClose : options.exitOnClose ? true : false
 	});
 	require('de.manumaticx.crouton').info("Langes Pressen löscht Beitrag.");
 	self.list = Ti.UI.createListView({
@@ -45,7 +47,7 @@ module.exports = function() {
 					text : 'schon gehört: ' + Math.floor(item.progress * 100) + '%',
 				},
 				duration : {
-					text : (item.duration) ? 'Dauer: ' + ('' + item.duration*1000).toHHMMSS() : '',
+					text : (item.duration) ? 'Dauer: ' + ('' + item.duration * 1000).toHHMMSS() : '',
 					height : (item.duration != 0) ? Ti.UI.SIZE : 0,
 				},
 				pubdate : {
@@ -89,7 +91,7 @@ module.exports = function() {
 	self.addEventListener('focus', self.updateList);
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
-		АктйонБар.subtitle = 'Letztes/Unvollständiges/Offline';
+		АктйонБар.subtitle = 'RadioZumMitnehmen';
 		АктйонБар.titleFont = "Aller Bold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');
@@ -97,7 +99,7 @@ module.exports = function() {
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function(_menuevent) {
-				activity.actionBar.displayHomeAsUp = true;
+				activity.actionBar.displayHomeAsUp = options.exitOnClose ? false : true;
 				activity.actionBar.onHomeIconItemSelected = function() {
 					self.close();
 				};

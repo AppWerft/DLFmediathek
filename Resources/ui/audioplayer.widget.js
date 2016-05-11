@@ -5,7 +5,7 @@ var $ = function(args) {
 	var color = (args.color) ? args.color : 'white';
 
 	var $ = Ti.UI.createView({
-		visible : true,bottom:0
+		visible : true
 	});
 	color = '#fff';
 	$.add(Ti.UI.createView({
@@ -32,7 +32,7 @@ var $ = function(args) {
 		touchEnabled : false,
 		height : 230,
 		zIndex : 99,
-		bottom : 0,
+		bottom : -100,
 	});
 	$.add($.container);
 	$.progress = Ti.UI.createProgressBar({
@@ -65,7 +65,7 @@ var $ = function(args) {
 		right : 10,
 	});
 	$.title = Ti.UI.createLabel({
-		top : 8,
+		top : 65,
 		bubbleParent : false,
 		touchEnabled : false,
 		color : 'white',
@@ -75,28 +75,24 @@ var $ = function(args) {
 		ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE,
 		height : 25,
 		font : {
-			fontSize : 20,
-			fontWeight : 'bold',
+			fontSize : 16,
 			fontFamily : 'Aller Bold'
 		},
-		left : 10,
+		left : 80,
 	});
 	$.subtitle = Ti.UI.createLabel({
-		top : 36,
+		top : 5,
 		bubbleParent : false,
 		touchEnabled : false,
-		color : 'white',
-		horizontalWrap : false,
-		wordWrap : false,
-		ellipsize : true,
+		color : '#99ffffff',
 		width : Ti.UI.FILL,
-		height : 20,
+		height : Ti.UI.SIZE,
 		font : {
-			fontSize : 14,
+			fontSize : 34,
 			fontFamily : 'Aller Bold'
 		},
-		left : 10,
-		right : 15
+		left : 5,
+		right : 5
 	});
 	$.control = Ti.UI.createImageView({
 		width : 50,
@@ -120,7 +116,7 @@ var $ = function(args) {
 	$.container.add($.slider);
 	$.container.add($.duration);
 	$.container.add($.title);
-	$.container.add($.subtitle);
+	$.add($.subtitle);
 	$.container.add($.control);
 	$.container.add($.spinner);
 	return $;

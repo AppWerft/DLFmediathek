@@ -151,6 +151,10 @@ $.prototype = {
 		var xhr = Ti.Network.createHTTPClient({
 			validatesSecureCertificate : false,
 			onload : function() {
+				if (!this.responseXML) {
+					console.log(this.responseText);
+					return;
+				}
 				var channel = new XMLTools(this.responseXML).toObject().channel;
 				if (channel.item && !Array.isArray(channel.item)) {
 					channel.item = [channel.item];
@@ -185,6 +189,7 @@ $.prototype = {
 			}
 		});
 		xhr.open('GET', _args.url);
+		console.log(_args.url);
 		xhr.send();
 	},
 	/* load feed from net, args:
@@ -255,6 +260,7 @@ $.prototype = {
 			}
 		});
 		xhr.open('GET', _args.url);
+		console.log(_args.url);
 		xhr.send();
 	}, // standard methods for event/observer pattern
 	fireEvent : function(_event, _payload) {

@@ -8,11 +8,6 @@ var mirrorPodcasts = function() {
 	function getUnix() {
 		return parseInt(Moment().format('X'));
 	}
-
-	if (Ti.App.Properties.hasProperty('LASTPODCAST') && Ti.App.Properties.getInt('LASTPODCAST') - getUnix() < 3600 * 24) {
-		console.log('Warning: sync aborted, last sync is to fresh');
-		return;
-	}
 	PodcastMirror.mirrorAllFeeds({
 		done : function(_args) {
 			alarmManager.addAlarmNotification({
@@ -24,13 +19,17 @@ var mirrorPodcasts = function() {
 				icon : Ti.App.Android.R.drawable.appicon,
 				sound : Ti.Filesystem.getResRawDirectory() + 'kkj',
 			});
+			console.log('FINISH sync SERVICE ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠');
 			Ti.App.Properties.setInt('LASTPODCAST', getUnix());
 			return;
 		}
 	});
 };
 
-var mirrorPlaylists = function() {
+mirrorPodcasts();
+console.log('start sync SERVICE mirr≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠');
+
+/*var mirrorPlaylists = function() {
 	PlaylistMirror.getRSS({
 		station : 'dlf'
 	});
@@ -38,7 +37,6 @@ var mirrorPlaylists = function() {
 		station : 'drk'
 	});
 };
+mirrorPlaylists();
+*/
 
-// our tasks:
-mirrorPodcasts();
-//mirrorPlaylists();

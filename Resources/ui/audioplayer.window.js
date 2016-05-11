@@ -1,8 +1,19 @@
 'use strict';
+
 var RecentsAdapter = require('controls/recents.adapter'),
     CacheAdapter = require('controls/cache.adapter'),
     Stations = require('model/stations'),
-    playerViewModule = require('ui/audioplayer.widget');
+    playerViewModule = require('ui/audioplayer.widget'),
+	VisualizerView = require('ti.audiovisualizerview'),
+	TelephonyManager = require('com.goyya.telephonymanager'),
+	timeout = null,
+	TIMEOUT = 10000;
+	
+	
+
+TelephonyManager.addEventListener('callState',function(_e){
+	if (TelephonyManager.CALL_STATE_RINGING ==  _e.state && singletonPlayer.playing==true) singletonPlayer.pause();
+});
 
 var PLAYER = Ti.Media;
 // require('com.kcwdev.audio')
@@ -11,6 +22,7 @@ var singletonPlayer = PLAYER['createAudioPlayer']({
 	allowBackground : true,
 	volume : 1
 });
+
 if (singletonPlayer.seek === undefined)
 	singletonPlayer.seek = singletonPlayer.setTime;
 
@@ -75,10 +87,15 @@ var $ = function(options) {
 				that._window.removeAllChildren();
 				that._window.close();
 			}
+			singletonPlayer.release();
 			break;
 		case 'stopping':
 			break;
 		case 'starting':
+			if (timeout) {
+				clearTimeout(timeout);
+				timeout=null;
+			}
 			setTimeout(function() {
 				CacheAdapter.cacheURL(options);
 			}, 5000);
@@ -99,7 +116,7 @@ var $ = function(options) {
 			that._view.progress.show();
 			that._view.slider.hide();
 			that._view.spinner.hide();
-			that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+			//that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._view.visualizerContainer.show();
 			that.setControlView();
@@ -130,6 +147,7 @@ var $ = function(options) {
 		//this._view.title.setColor(this.options.color);
 		this._view.subtitle.setText(this.options.subtitle);
 		this._view.duration.setText(('' + this.options.duration * 1000).toHHMMSS());
+		singletonPlayer.release();
 		singletonPlayer.seek(0);
 		var item = CacheAdapter.getURL({
 			station : this.options.station,
@@ -138,6 +156,7 @@ var $ = function(options) {
 		if (item.cached || Ti.Network.online)  {
 			singletonPlayer.setUrl(item.url);
 			singletonPlayer.start();
+			timeout = setTimeout(that.stopPlayer,TIMEOUT);
 			return; 
 		}   
 		Ti.UI.createNotification({
@@ -177,7 +196,7 @@ var $ = function(options) {
 			require('vendor/permissions').requestPermissions(['RECORD_AUDIO'], function(_success) {
 				if (_success !== true)
 					return;
-				that._view.mVisualizerView = require('ti.audiovisualizerview').createView({
+				that._view.mVisualizerView = VisualizerView.createView({
 					audioSessionId : 0,
 					top : 0,
 					touchEnabled : false,
@@ -190,14 +209,15 @@ var $ = function(options) {
 					if (that._view.mVisualizerView)
 						that._view.mVisualizerView.addBarGraphRenderer({
 							color : options.color,
-							width : 35.0,
+							width : 60.0*Ti.Platform.displayCaps.logicalDensityFactor,
+							divisions:16 
 						});
-				}, 100);
+				}, 1000);
 				setTimeout(function() {
 					if (that._view.mVisualizerView)
 						that._view.mVisualizerView.addLineRenderer();
 
-				}, 1500);
+				}, 2500);
 				that.startPlayer();
 			});
 		});

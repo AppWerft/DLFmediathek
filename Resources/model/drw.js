@@ -13,10 +13,10 @@ module.exports = [{
     }
 
 }, {
-    "href" : "http://dradiowissen.de/podcast/eine-stunde-netz",
+    "href" : "http://dradiowissen.de/podcast/eine-stunde-talk",
     "img" : {
-        "alt" : "Eine Stunde Netz",
-        "src" : "netz.png"
+        "alt" : "Eine Stunde Talk",
+        "src" : "talk.png"
     }
 }, {
     "href" : "http://dradiowissen.de/podcast/eine-stunde-medien",
