@@ -109,7 +109,6 @@ exports.getRSS = function(_args) {
 	var KEY = "SCHEMA_" + _args.station;
 	var items = getValidSchemaByStation(_args.station);
 	if (items != null) {
-
 		_args.done && _args.done({
 			ok : true,
 			items : _updateTimestamps({// adding time infos
@@ -136,7 +135,16 @@ exports.getRSS = function(_args) {
 					downloadlocked = false;
 				},
 				onload : function() {
+					console.log(this.responseText.substring(0,1256));
+					if (!this.responseXML) {
+						console.log("Warning: RSS is not valid XML");
+						return;
+					}	
 					var channel = new XMLTools(this.responseXML).toObject().channel;
+					if (!channel) {
+						console.log("Warning: RSS doesn't contain channel");
+						return;
+					}	
 					if (channel.item && !Array.isArray(channel.item)) {
 						channel.item = [channel.item];
 					}
@@ -159,6 +167,7 @@ exports.getRSS = function(_args) {
 
 				}
 			});
+			console.log('RSS='+url);
 			xhr.open('GET', url);
 			xhr.send();
 		}

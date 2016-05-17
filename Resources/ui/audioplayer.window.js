@@ -133,7 +133,8 @@ var $ = function(options) {
 		singletonPlayer.seek(0);
 		singletonPlayer.stop();
 		singletonPlayer.release();
-
+		if (!singletonPlayer.playing) 
+			that._window.close();
 	};
 	this.startPlayer = function() {
 		var that = this;

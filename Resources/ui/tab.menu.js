@@ -1,10 +1,8 @@
 var AudioStreamer = require('controls/audiostreamer.adapter');
 
-
 function LOG() {
-	//console.log('ABMENU: ' + arguments[0]);
+	console.log('ABMENU ≠≠≠≠≠≠≠≠≠≠≠≠≠: ' + arguments[0]);
 }
-
 
 /* constants for menuItems */
 const RECENT = 0,
@@ -104,7 +102,9 @@ searchView.addEventListener('submit', function(_e) {
 });
 
 /* INTERFACE */
+/* =================================================*/
 module.exports = function(_event) {
+	console.log('Info: starting tabmenu ≠≠≠≠≠≠≠≠≠≠');
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
@@ -115,10 +115,6 @@ module.exports = function(_event) {
 	require('vendor/versionsreminder')();
 	var activity = _event.source.getActivity();
 	if (activity) {
-		activity.actionBar.logo = '/images/' + currentStation + '.png';
-		activity.onPrepareOptionsMenu = function() {
-			LOG('onPrepareOptionsMenu');
-		};
 		activity.onCreateOptionsMenu = function(_menuevent) {
 			LOG('onCreateOptionsMenu');
 			_menuevent.menu.clear();
@@ -143,7 +139,7 @@ module.exports = function(_event) {
 			// changing a searchview
 			АктйонБар.setSearchView({
 				searchView : searchView,
-				backgroundColor : '#777',
+				//backgroundColor : '#777',
 				textColor : "white",
 				hintColor : "silver",
 				line : "/images/my_textfield_activated_holo_light.9.png",
@@ -169,7 +165,7 @@ module.exports = function(_event) {
 					require('ui/mypodcasts.window')().open();
 				});
 				_menuevent.menu.add({
-					title : 'Letztgehört …',
+					title : 'RadioZumMitnehmen',
 					itemId : RECENT,
 					icon : Ti.App.Android.R.drawable.ic_action_fav,
 					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
@@ -182,7 +178,7 @@ module.exports = function(_event) {
 				}).addEventListener("click", function(_e) {
 					require('ui/pdf.window')().open();
 				});
-			}, 7000);
+			}, 700);
 			playIcon = _menuevent.menu.findItem(PLAY);
 			activity.actionBar.displayHomeAsUp = false;
 
@@ -192,12 +188,12 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-				
+
 				if (!_e.station) {
-					console.log('Warning: no station');	
+					console.log('Warning: no station');
 					return;
 				}
-				
+
 				currentStation = _e.station;
 				АктйонБар.setStatusbarColor(Model[currentStation].color);
 				Ti.App.Properties.setString('LAST_STATION', currentStation);
@@ -232,11 +228,14 @@ module.exports = function(_event) {
 			currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 			activity.actionBar.logo = '/images/' + currentStation + '.png';
 			try {
-			АктйонБар.setStatusbarColor(Model[currentStation].color);
-			} catch(E) {}
+				АктйонБар.setStatusbarColor(Model[currentStation].color);
+			} catch(E) {
+			}
 		};
+		activity.invalidateOptionsMenu();
+	} else
+		LOG('no activity');
 		
-	}
 };
 
 var lastOnlineState = Ti.Network.online;

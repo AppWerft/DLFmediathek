@@ -93,13 +93,13 @@ $.prototype = {
 		if (!banneradded) {
 			this._view.removeAllChildren();
 			var banner = Ti.UI.createImageView({
-				image : 'http://static.dradiowissen.de/banner/2015_early_bird.jpg',
+				image : '/images/earlybirds.png',
 				top : 0,
 				width : Ti.UI.FILL
 			});
 			this._view.add(banner);
 			banneradded = true;
-		}
+		} else console.log('Info: banner still added');
 	},
 	setPubDate : function(msg) {
 		this._view.pubdate.setText('seit: ' + Moment(msg).format('HH:mm') + ' Uhr');

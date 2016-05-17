@@ -56,7 +56,7 @@ module.exports = function(_args) {
 					};
 					lastsendung = item.sendung;
 				} else {
-					mediathek[sectionndx].subs.push(sub);
+					mediathek[sectionndx] && mediathek[sectionndx].subs.push(sub);
 				}
 			}
 		}

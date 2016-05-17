@@ -3,7 +3,7 @@ const DELAY= 0;
 module.exports = function() {
 	var Moment = require('vendor/moment');
 
-	if (Ti.App.Properties.hasProperty('LASTSYNC') && Ti.App.Properties.getInt('LASTSYNC') - parseInt(Moment().format('X')) < 3600 * 24) {
+	if (!Ti.Network.online || Ti.App.Properties.hasProperty('LASTSYNC') && Ti.App.Properties.getInt('LASTSYNC') - parseInt(Moment().format('X')) < 3600 * 24) {
 		console.log('Warning: sync aborted, last sync is to fresh ≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠≠');
 		return;
 	}
