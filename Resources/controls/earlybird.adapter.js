@@ -1,39 +1,37 @@
+'use strict';
+
+var DEPOT = 'EARLYBIRDWEB∞';
 module.exports = function(_container, _i, _onload) {
-	if (Ti.App.Properties.hasProperty('EARLYBIRDWEB__' + _i)) {
-		_onload(Ti.App.Properties.getList('EARLYBIRDWEB__' + _i));
+	if (Ti.App.Properties.hasProperty(DEPOT + _i)) {
+		_onload(Ti.App.Properties.getList(DEPOT + _i));
 	}
-	var url = 'http://dradiowissen.de/early-bird/p' + (_i + 1);
-	var dummywebView = Ti.UI.createWebView({
-		url : url,
-		opacity : 0,
-		width : 10,
-		height : 10		,
-		borderRadius : 2
-	});
-	_container.add(dummywebView);
-	function onLoad() {
-		var res = dummywebView.evalJS("JSON.stringify($('figure.teaser__image').map(function(){var item={mp3:$(this).find('button').attr('data-mp3'),title:$(this).find('button').attr('data-title'),image:$(this).find('a img').attr('src')}; return item;}));");
-		console.log(res);
-		if (!res) return;
-		var items = JSON.parse(res);
-		var resultlist = [];
-		if (items && typeof items == 'object') {
-			Object.getOwnPropertyNames(items).forEach(function(key) {
-				var item = items[key];
-				if (item.image && item.title) {
+
+	require('de.appwerft.scraper').createScraper({
+		url : 'http://dradiowissen.de/early-bird/p' + (_i + 1),
+		xpath : "//figure[@class=teaser__image]/button/@data-title | //figure[@class=teaser__image]/button/@data-mp3 | //figure[@class=teaser__image]/a/img/@src"
+	}, function(_e) {
+		if (_e.success) {
+			var count = _e.list.length / 3;
+			var items = [];
+			for (var i = 0; i < count; i++) {
+				var item = {
+					title : _e.list[i],
+					mp3 : _e.list[i + count],
+					image : _e.list[i + 2 * count],
+					duration : 0
+				};
+				if (item.title) {
 					var match = item.title.match(/\(([\d][\d]:[\d][\d])\)/);
-					if (match && Array.isArray(match)) {
+					if (match) {
 						item.duration = parseInt(match[1].split(':')[0]) * 60 + parseInt(match[1].split(':')[1]);
-						item.title = item.title.replace(/\(([\d][\d]:[\d][\d])\)/, '').replace('Early Bird - ','');
-						resultlist.push(item);
-					}
+						item.title = item.title.replace(/\(([\d][\d]:[\d][\d])\)/, '').replace('Early Bird - ', '');
+					} ;
 				}
-			});
-			Ti.App.Properties.setList('EARLYBIRDWEB_' + _i, resultlist);
-			_onload(resultlist);
+				items[i] = item;
+			};
+			Ti.App.Properties.setList(DEPOT + _i, items);
+			_onload(items);
 		}
-		_container.remove(dummywebView);
-		dummywebView = null;
-	}
-	dummywebView.addEventListener('load', onLoad);
+	});
+	return;
 };

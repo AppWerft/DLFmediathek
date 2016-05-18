@@ -24,13 +24,11 @@ module.exports = function() {
 		})
 	});
 	$.add($.wheel);
-	
-	var type = Math.floor(Math.random() * 11) % 11;
 	$.spinView = require("de.appwerft.spinkit").createSpinnerView({
 		type : 2,
-		color : '#444444',
-		width : 100,
-		height : 100,
+		color : '#90505050',
+		width : 240,
+		height : 240,
 		center : {
 			x : '50%',
 			y : '70%'
