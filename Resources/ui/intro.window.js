@@ -1,3 +1,5 @@
+var Schema = require('controls/rss.adapter');
+
 module.exports = function() {
 	var $ = Ti.UI.createWindow({
 		theme : 'Theme.TranslucentNoTitleBar',
@@ -35,5 +37,11 @@ module.exports = function() {
 		}
 	});
 	$.add($.spinView);
+	Schema.getRSS({
+		station : "dlf"
+	});
+	Schema.getRSS({
+		station : "drk"
+	});
 	return $;
 };

@@ -17,8 +17,7 @@ var stations = {
 
 module.exports = function() {
 	var args = arguments[0] || {};
-
-	if (args.where == 'mediathek') {
+	if (args.where == 'mediathek') { // remote search
 		var xhr = Ti.Network.createHTTPClient({
 			validatesSecureCertificate : false,
 			timeout : 30000,
@@ -37,6 +36,7 @@ module.exports = function() {
 				}
 				args.done({
 					section : args.section,
+					where: args.where,
 					items : items.map(function(item) {
 						return {
 							pubdate : Moment(item.datetime).format('DD.MM.YYYY HH:mm'),
@@ -55,18 +55,18 @@ module.exports = function() {
 		});
 		xhr.open('GET', url.replace('NEEDLE', encodeURIComponent(args.needle)));
 		xhr.send();
-	} else {
+	} else { // searching in podcasts (local search):
 		var link = Ti.Database.open(DB);
 		var sql = 'SELECT *,'//
 		+ '(SELECT title FROM feeds WHERE feeds.url=items.channelurl) AS podcast,'//
 		+ '(SELECT image FROM feeds WHERE feeds.url=items.channelurl) AS channelimage,'//
 		+ '(SELECT station FROM feeds WHERE feeds.url=items.channelurl) AS station '//
 		+ ' FROM items WHERE title LIKE "%' + args.needle + '%" OR description LIKE "%' + args.needle + '%" ORDER BY pubdate DESC LIMIT 500';
-		console.log(sql);
 		var res = link.execute(sql);
 		var items = [];
 		while (res.isValidRow()) {
 			var parts = res.getFieldByName('duration').split(':');
+			var station =  res.getFieldByName('station') || 'dlf';
 			var item = {
 				title : res.getFieldByName('title'),
 				pubdate : Moment(res.getFieldByName('pubdate')).format('DD. MM. YYYY  HH:ii'),
@@ -77,8 +77,8 @@ module.exports = function() {
 				podcast : res.getFieldByName('podcast'),
 				author : res.getFieldByName('author'),
 				duration : parseInt(parts[0] * 60) + parseInt(parts[1]),
-				station : res.getFieldByName('station'),
-				color : Model[res.getFieldByName('station')].color,
+				station : station,
+				color : Model[station].color,
 				image : res.getFieldByName('channelimage')
 			};
 			var match = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
@@ -93,9 +93,9 @@ module.exports = function() {
 		}
 		res.close();
 		link.close();
-		console.log(items);
 		args.done({
 			items : items,
+			where: args.where,
 			section : args.section
 		});
 	}

@@ -13,24 +13,19 @@ module.exports = function(_args) {
 	}
 	var start = new Date().getTime();
 	var DEPOTKEY = 'MEDIATHEK_' + _args.station + '_' + _args.date;
-	console.log("DEPOTKEY="+DEPOTKEY);
-	var onloadFunc = function() {
-		console.log('Info: time for loading of mediathek: ' + (new Date().getTime() - start));
-		var startparse = new Date().getTime();
-		if (!this.responseXML || !this.responseXML.documentElement) {
-			console.log('no valid XML');
-			console.log(this.responseText);	
-			return;
-		}
-		var entries = require('controls/mediathek.parser').parseXMLDoc(this.responseXML.documentElement);
-		// little dirty cleaning process:
-		if (_args.date) {
+	var onloadFunc = function(_e) {
+		if (_args.date && _e.success) {
+			var entries = _e.items;
 			// sorting bei sendung.name
 			var mediathek = [],
 			    lastsendung = '',
 			    sectionndx = -1;
 			for (var i = 0; i < entries.length; i++) {
 				var item = entries[i];
+				item.station = _args.station;
+				item.datetime = item.datetime.trim();
+				item.author = item.author.trim();
+				item.sendung.author = item.sendung.trim();
 				var sub = {
 					author : ( typeof item.author == 'string') ? item.author : null,
 					start : item.datetime ? item.datetime.split(' ')[1].substr(0, 5) : '',
@@ -66,21 +61,24 @@ module.exports = function(_args) {
 		};
 		entries = null;
 		Ti.App.Properties.setString(DEPOTKEY, JSON.stringify(result));
-
 		_args.onload(result);
 	};
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
-	var xhr = Ti.Network.createHTTPClient({
-		timeout : 3000,
-		onerror : function(e) {
-			Ti.UI.createNotification({
-				message : 'Bitte Internetverbindung überprüfen.\nDerweil gibt es eine ältere Version der Mediathek.'
-			}).show();
-			Ti.App.Properties.hasProperty(DEPOTKEY) && _args.onload(JSON.parse(Ti.App.Properties.getString(DEPOTKEY)));
-		},
-		onload : onloadFunc
-	});
-	xhr.open('GET', url + '&_____=' + Math.random());
-	xhr.setRequestHeader('User-Agent', 'Das%20DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0');
-	xhr.send();
+	require('de.appwerft.scraper').createScraper({
+		url : url + '&_____=' + Math.random(),
+		rootXpath : "//entries",
+		useragent : "Das DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0",
+		subXpaths : {
+			url : "//item/@url",
+			author : "//item/author/text()",
+			title : "//item/title/text()",
+			id : "//item/@id",
+			sendung : "//item/sendung/text()",
+			sendungid : "//item/sendung/@id",
+			duration : "//item/@duration",
+			killtime : "//item/@killtime",
+			deliveryMode : "//item/@deliveryMode",
+			datetime : "//item/datetime/text()"
+		}
+	}, onloadFunc);
 };

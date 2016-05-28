@@ -9,7 +9,8 @@ const RECENT = 0,
     MYFAVS = 1,
     MYPODS = 2,
     MYPLAYLIST = 3,
-    PLAY = 4;
+    PLAY = 4,
+    WURF =5;
 
 /* Reference to Play icon to control it outside the callback */
 var playIcon;
@@ -19,7 +20,7 @@ var lastOnlineState = Ti.Network.online;
 /* if after station changing the live radio should switch */
 var autoSwitch = false;
 
-/* saves the status of live raddio */
+/* saves the status of live radio */
 var onAir = false;
 
 /* logic for callbacks from audiostreamer module */
@@ -34,6 +35,15 @@ function onCallbackFn(_payload) {
 			});
 		}
 		onAir = true;
+		break;
+	case 'STREAMERROR':
+		playIcon.setVisible(Ti.Network.online);
+		playIcon.setIcon(Ti.App.Android.R.drawable['ic_action_play_' + currentStation]);
+		АктйонБар.setSubtitle('Radio hat Störung');
+		Ti.App.fireEvent('app:setRadiotext', {
+			message : ''
+		});
+		onAir = false;
 		break;
 	case 'TIMEOUT':
 		LOG('event TIMEOUT');
@@ -125,6 +135,13 @@ module.exports = function(_event) {
 				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", onPlayStopClickFn);
+			/*_menuevent.menu.add({
+				title : 'Wurfsendung',
+				itemId : WURF,
+				visible : true,
+				icon : Ti.App.Android.R.drawable['wurfsendung'],
+				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+			});*/
 			playIcon = _menuevent.menu.findItem(PLAY);
 			searchMenu = _menuevent.menu.add({
 				title : L('MENU_SEARCH'),
@@ -235,7 +252,7 @@ module.exports = function(_event) {
 		activity.invalidateOptionsMenu();
 	} else
 		LOG('no activity');
-		
+
 };
 
 var lastOnlineState = Ti.Network.online;

@@ -1,5 +1,6 @@
 /* Init */
 Ti.App.AudioStreamer = require('com.woohoo.androidaudiostreamer');
+Ti.App.AudioStreamer.setAllowBackground(true);
 
 const TICK = 3000;
 
@@ -49,9 +50,9 @@ const TIMEOUTVALUE = 10000;
 var callbackFn;
 
 function onPlayerChange(_e) {
-	pingNet(function(_e) {
+	/*pingNet(function(_e) {
 		console.log(_e);
-	});
+	});*/
 	var status = _e.status;
 	if (timeoutTimer) {
 		LOG('stopping watchdog timer by player event	');
@@ -93,12 +94,13 @@ function onPlayerChange(_e) {
 		L('LOST_CONNECTION_TOAST') && Ti.UI.createNotification({
 			message : L('LOST_CONNECTION_TOAST')
 		}).show();
+		shouldStop = true;
+			Ti.App.AudioStreamer.stop();
 		break;
 	};
 }
 
 function onMetaData(_e) {
-	console.log(_e);
 	var message = _e.title;
 	callbackFn({
 		message : message,

@@ -10,7 +10,7 @@ module.exports = function(onstarted) {
 	}
 	var ndx = Math.round((Math.random() * 777777777) % 2500);
 	var url = 'http://wurfsendung.dradio.de/wurf/index.php/de/Home/PlayTrack/TrackId/' + ndx;
-	console.log(url);
+	
 	Player.setUrl(url);
 	Player.play();
 	if (done && typeof done == 'function')

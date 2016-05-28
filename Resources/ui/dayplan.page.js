@@ -34,12 +34,14 @@ module.exports = function(station) {
 		}
 		items = [];
 		_RSSitems.items.forEach(function(item) {
+			
 			var duration = Moment(item.pubDate).diff(laststart, 'seconds');
 			var endtime = Moment(item.pubDate).add(duration, 'seconds');
 			if ( typeof item.link != 'string')
 				item.link = null;
 			if (item.ispast)
 				return;
+			
 			items.push({
 				properties : {
 					accessoryType : (item.link) ? Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
@@ -99,6 +101,8 @@ module.exports = function(station) {
 			var item = _e.section.getItemAt(_e.itemIndex);
 			_e.section.updateItemAt(_e.itemIndex, item);
 		} else {
+			if (!_e.itemId)
+				return;
 			var item = JSON.parse(_e.itemId);
 			var win = require('ui/generic.window')({
 				subtitle : item.title,
@@ -112,9 +116,7 @@ module.exports = function(station) {
 					enableZoomControls : false,
 					url : item.link.replace('.html', '.mhtml')
 				}),
-				height : Ti.UI.FILL,
-				width : Ti.UI.FILL,
-				top : 80
+				top : 79
 			});
 			win.container.setRefreshing(true);
 			win.container.view.addEventListener('load', function() {

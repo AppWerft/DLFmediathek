@@ -8,26 +8,25 @@ var schema = {
 	"drk" : null,
 
 };
-var downloadlocked = false;
 
 /* function for testing if cache is valide and from today: */
 function getValidSchemaByStation(station) {
-	const KEY = 'SCHEMA_' + station;
+	const KEY = 'SCHEMA–' + station;
 	if (!Ti.App.Properties.hasProperty(KEY)) {
 		console.log('Warning: no schema in cache ' + station);
 		return null;
 	}
-	var items = schema[station] ? schema[station] : JSON.parse(Ti.App.Properties.getString(KEY));
+	var items = schema[station] ? schema[station] : Ti.App.Properties.getList(KEY);
 	/* valides JSON ?*/
-	if (!Array.isArray(items) || !items[0].guid || !items[0].guid.text) {
+	if (!Array.isArray(items) || !items[0].schema) {
 		console.log('Warning: we kill old DAYPLAN because has not array');
 		// remove to save time for next step
 		schema[station] = null;
 		Ti.App.Properties.removeProperty(KEY);
 		return null;
 	}
-	//  <guid isPermaLink="false">schema-2016-02-17-05:00+0100</guid>
-	if (items[0].guid.text.replace('schema-', '').substr(0, 10) !== Moment().format('YYYY-MM-DD')) {
+
+	if (items[0].schema !== Moment().format('YYYY-MM-DD')) {
 		// force new:
 		console.log('Warning: we kill old ' + KEY + ' because wrong date');
 		schema[station] = null;
@@ -35,7 +34,7 @@ function getValidSchemaByStation(station) {
 		return null;
 	}
 	schema[station] = items;
-	Ti.App.Properties.setString(KEY, JSON.stringify(items));
+	Ti.App.Properties.setList(KEY, items);
 	return items;
 }
 
@@ -50,8 +49,8 @@ var _sanitizeHTML = function(foo) {
 	return bar;
 };
 var _updateTimestamps = function(_args) {
+	console.log("_updateTimestamps");
 	var items = getValidSchemaByStation(_args.station);
-	//	var url = Model[_args.station].dayplan + '?YYYYMMDD=' + Moment().format('YYYYMMDD');
 	if (items) {
 		var length = items.length;
 		var ndx = 0;
@@ -106,7 +105,8 @@ exports.getCurrentOnAir = function(_args) {
 };
 
 exports.getRSS = function(_args) {
-	var KEY = "SCHEMA_" + _args.station;
+	console.log('getRSS*' + _args.station);
+	var KEY = "SCHEMA–" + _args.station;
 	var items = getValidSchemaByStation(_args.station);
 	if (items != null) {
 		_args.done && _args.done({
@@ -115,63 +115,49 @@ exports.getRSS = function(_args) {
 				station : _args.station
 			})
 		});
-	}
-	/* else we retrieve a new one :*/
-	else {
-		console.log('Info: valid schema did found => retieve new one ');
-		var url = Model[_args.station].dayplan;
+	} else {
+		console.log('>>>>>>>>>>>>>>>Info: valid schema did found => retrieve new one ');
+		var url = Model[_args.station].dayplan + '?_=' + Math.random();
 		if (Model[_args.station].dayplan) {
 			if (Ti.Network.online == false)
 				return;
-			if (downloadlocked == true) {
-				console.log('Warning: HTTPclient is locked, network status =' + Ti.Network.online);
-				return;
-			}
-			downloadlocked = true;
-			var xhr = Ti.Network.createHTTPClient({
-				validatesSecureCertificate : false,
-				onerror : function() {
-					console.log("Warning: http error with " + url);
-					downloadlocked = false;
-				},
-				onload : function() {
-					console.log(this.responseText.substring(0,1256));
-					if (!this.responseXML) {
-						console.log("Warning: RSS is not valid XML");
-						return;
-					}	
-					var channel = new XMLTools(this.responseXML).toObject().channel;
-					if (!channel) {
-						console.log("Warning: RSS doesn't contain channel");
-						return;
-					}	
-					if (channel.item && !Array.isArray(channel.item)) {
-						channel.item = [channel.item];
+			require('de.appwerft.scraper').createScraper({
+				url : url,
+				useragent : "Das DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0",
+				subXpaths : {
+					"title" : "//item/title/text()",
+					"description" : "//item/description/text()",
+					"pubDate" : "//item/pubDate/text()",
+					"schema" : "//item/guid/text()",
+					"link" : "//item/link/text()",
+				}
+			}, function(channel) {
+				if (channel.success && channel.items) {
+					var items = channel.items;
+					for (var i = 0; i < items.length; i++) {
+						var item = items[i];
+						item.pubDate = item.pubDate.trim();
+						item.schema = item.schema.trim().replace('schema-', '').substr(0, 10);
+						item.link = item.link.replace(/\.html$/, '.mhtml');
+						var m = item.link.match(/\.([\d]+)\.de\.html$/);
+						if (m)
+							item.id = m[1];
 					}
-					Ti.App.Properties.setString(KEY, JSON.stringify(channel.item));
+					Ti.App.Properties.setList(KEY, items);
 					Ti.App.fireEvent('app:message', {
 						message : 'Tagesübersicht synchronisiert ' + Model[_args.station].name
 					});
-					console.log('Info: new schema  found => saved to locale storage _________ ' + KEY);
-					downloadlocked = false;
 					var result = {
 						ok : true,
 						items : _updateTimestamps({
 							station : _args.station
 						})
 					};
-					Ti.App.Properties.setString(KEY, Moment().format('YYYYMMDD'));
-					// back to caller
 					_args.done && _args.done(result);
-					// persist
-
 				}
+					
 			});
-			console.log('RSS='+url);
-			xhr.open('GET', url);
-			xhr.send();
 		}
 	}
 };
-// standard methods for event/observer pattern
 
