@@ -28,8 +28,7 @@ module.exports = function(_args) {
 				var description = (res) ? res[3] : null;
 				var copyright = (res) ? res[2] : null;
 				var pubdate = Moment(item.pubdate).format('LLL') + ' Uhr';
-				if (!item.station)
-					item.station = 'dlf';
+		 	   item.station = _args.station ? _args.station : 'dlf';
 				items.push({
 					pubdate : {
 						text : pubdate
@@ -91,7 +90,7 @@ module.exports = function(_args) {
 			color : Model[data.station].color,
 			url : data.url,
 			duration : data.duration,
-			title : Moment(data.pubdate).format('LLL') + ' Uhr',
+			title : _args.title,
 			subtitle : data.title,
 			author : data.author,
 			station : data.station,
@@ -115,7 +114,6 @@ module.exports = function(_args) {
 				activity.actionBar.displayHomeAsUp = true;
 				if (_args.station)
 					activity.actionBar.logo = '/images/' + _args.station + '.png';
-				// _menuevent.menu.clear();
 				_menuevent.menu.add({
 					title : 'Kanal speichern',
 					itemId : 0,

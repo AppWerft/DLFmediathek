@@ -16,12 +16,14 @@ module.exports = function(_args) {
 	var onloadFunc = function(_e) {
 		if (_args.date && _e.success) {
 			var entries = _e.items;
-			// sorting bei sendung.name
+			// sorting by sendung.name
 			var mediathek = [],
 			    lastsendung = '',
 			    sectionndx = -1;
 			for (var i = 0; i < entries.length; i++) {
+				
 				var item = entries[i];
+				console.log("Info: " + JSON.stringify(item));
 				item.station = _args.station;
 				item.datetime = item.datetime.trim();
 				item.author = item.author.trim();
@@ -42,6 +44,7 @@ module.exports = function(_args) {
 					duration : item.duration,
 					title : item.title,
 				};
+				console.log(sub);
 				sub.isfav = Favs.isFav(sub) ? true : false;
 				if (item.sendung != lastsendung) {
 					sectionndx++;
@@ -63,6 +66,8 @@ module.exports = function(_args) {
 		Ti.App.Properties.setString(DEPOTKEY, JSON.stringify(result));
 		_args.onload(result);
 	};
+	
+	if (!_args.url) return;
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
 	require('de.appwerft.scraper').createScraper({
 		url : url + '&_____=' + Math.random(),

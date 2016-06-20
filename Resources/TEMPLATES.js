@@ -14,6 +14,8 @@ var cacheIcon = {
 
 var Cache = require('controls/cache.adapter');
 
+var TITLESIZE = 22;
+
 exports.schema = {
 	properties : {
 		height : Ti.UI.SIZE,
@@ -63,7 +65,7 @@ exports.schema = {
 			properties : {
 				top : 5,
 				font : {
-					fontSize : 22,
+					fontSize : TITLESIZE,
 					fontFamily : 'Aller Bold'
 				},
 				left : 0,
@@ -142,7 +144,7 @@ exports.podcastlist = {
 			properties : {
 				top : 5,
 				font : {
-					fontSize : 22,
+					fontSize : TITLESIZE,
 					fontFamily : 'Aller Bold'
 				},
 				left : 0,
@@ -206,96 +208,7 @@ exports.podcastlist = {
 	}]
 };
 
-exports.klangkunst = {
-	properties : {
-		height : Ti.UI.SIZE,
-		backgroundColor : 'white',
-		itemId : ''
-	},
-	childTemplates : [{
-		type : 'Ti.UI.ImageView',
-		bindId : 'image',
-		properties : {
-			left : 0,
-			top : 0,
-			touchEnabled : false,
-			width : 120,
-			height : 90
-		}
-	}, {
-		type : 'Ti.UI.ImageView',
-		bindId : 'alarm',
-		properties : {
-			left : 80,
-			top : 90,
-			opacity : 0.9,
-			width : 40,
-			height : 40
-		}
-	}, {
-		type : 'Ti.UI.View',
-		properties : {
-			width : Ti.UI.FILL,
-			layout : 'vertical',
-			left : 130,
-			right : 20
-		},
-		childTemplates : [{
-			type : 'Ti.UI.Label',
-			bindId : 'subtitle',
-			properties : {
-				top : 5,
-				font : {
-					fontSize : 20,
-					fontFamily : 'Aller Bold'
-				},
-				left : 0,
-				height : Ti.UI.SIZE,
-				width : Ti.UI.FILL,
-			}
-		}, {
-			type : 'Ti.UI.Label',
-			bindId : 'title',
-			properties : {
-				top : 5,
-				font : {
-					fontSize : 20,
-					fontFamily : 'Aller'
-				},
-				left : 0,
-				width : Ti.UI.FILL,
-			}
 
-		}, {
-			type : 'Ti.UI.Label',
-			bindId : 'description',
-			properties : {
-				left : 0,
-				top : 0,
-				text : '',
-				touchEnabled : false,
-				font : {
-					fontSize : 16,
-					fontFamily : 'Aller'
-				},
-				color : '#333'
-			}
-		}, {
-			type : 'Ti.UI.Label',
-			bindId : 'pubdate',
-			properties : {
-				left : 0,
-				touchEnabled : false,
-				top : 0,
-				color : '#777',
-				font : {
-					fontSize : 16,
-					fontFamily : 'Aller'
-				},
-			}
-		}]
-	}]
-};
 
 /************/
 exports.mediathek = {
@@ -343,7 +256,7 @@ exports.mediathek = {
 			width : 27,
 			height : 27
 		}
-	},{
+	}, {
 		type : 'Ti.UI.ImageView',
 		bindId : 'cache',
 		properties : {
@@ -512,7 +425,7 @@ exports.merkliste = {
 				height : Ti.UI.SIZE,
 				touchEnabled : false,
 				font : {
-					fontSize : 18,
+					fontSize : TITLESIZE,
 					fontFamily : 'Aller Bold'
 				},
 				color : '#555'
@@ -692,7 +605,7 @@ exports.mypodcasts = {
 				color : '#555',
 				top : 5,
 				font : {
-					fontSize : 22,
+					fontSize : TITLESIZE,
 					fontFamily : 'Aller Bold'
 				},
 				left : 0,
@@ -803,10 +716,12 @@ exports.search = {
 			properties : {
 				left : 0,
 				top : 5,
-				height : Ti.UI.SIZE,
+				height : 50,
+				verticalAlign : 'vertical',
 				touchEnabled : false,
+				ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_END,
 				font : {
-					fontSize : 20,
+					fontSize : TITLESIZE,
 					fontFamily : 'Aller Bold'
 				},
 				color : '#333'
@@ -817,7 +732,7 @@ exports.search = {
 			properties : {
 				left : 0,
 				top : 10,
-				height : Ti.UI.SIZE,
+				height : 15,
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
@@ -831,7 +746,7 @@ exports.search = {
 			properties : {
 				left : 0,
 				top : 0,
-				height : Ti.UI.SIZE,
+				height : 15,
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
@@ -845,7 +760,7 @@ exports.search = {
 			properties : {
 				left : 0,
 				top : 0,
-				height : Ti.UI.SIZE,
+				height : 15,
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
@@ -859,7 +774,7 @@ exports.search = {
 			properties : {
 				left : 0,
 				top : 0,
-				height : Ti.UI.SIZE,
+				height : 22,
 				touchEnabled : false,
 				font : {
 					fontSize : 18,
@@ -882,7 +797,7 @@ exports.recents = {
 			event.section.deleteItemsAt(event.itemIndex, 1);
 			Cache.deleteURL({
 				url : JSON.parse(event.itemId).url,
-				station :  JSON.parse(event.itemId).station
+				station : JSON.parse(event.itemId).station
 			});
 			var Recents = new (require('controls/recents.adapter'))();
 			Recents.removeRecent(JSON.parse(event.itemId).url);
@@ -918,7 +833,7 @@ exports.recents = {
 				height : Ti.UI.SIZE,
 				touchEnabled : false,
 				font : {
-					fontSize : 18,
+					fontSize : TITLESIZE,
 					fontFamily : 'Aller Bold'
 				},
 				color : '#333'

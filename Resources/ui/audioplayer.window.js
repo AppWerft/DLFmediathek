@@ -34,7 +34,7 @@ var $ = function(options) {
 		options.station = Ti.App.Properties.getString('LAST_STATION');
 	options.color = Stations[options.station].color;
 	this.options = options;
-	if (singletonPlayer.playing)
+	if (singletonPlayer && singletonPlayer.playing)
 		singletonPlayer.release();
 
 	this.setControlView = function() {
@@ -72,6 +72,7 @@ var $ = function(options) {
 
 	};
 	this.onStatusChangeFn = function(_e) {
+		console.log("Info: AudioPlayer sends " + _e.description);
 		switch (_e.description) {
 		case 'stopped':
 			if (this.onProgressFn && typeof this.onProgressFn == 'function')
@@ -87,7 +88,7 @@ var $ = function(options) {
 				that._window.removeAllChildren();
 				that._window.close();
 			}
-			singletonPlayer.release();
+			singletonPlayer && singletonPlayer.release();
 			break;
 		case 'stopping':
 			break;
@@ -125,14 +126,13 @@ var $ = function(options) {
 	};
 	this.stopPlayer = function() {
 		if (that._view.mVisualizerView) {
-			this._view.mVisualizerView.release();
 			this._view.mVisualizerView = null;
 		}
 		this._view.removeAllChildren();
 		this._view == null;
 		singletonPlayer.seek(0);
 		singletonPlayer.stop();
-		singletonPlayer.release();
+		singletonPlayer && singletonPlayer.release();
 		if (!singletonPlayer.playing) 
 			that._window.close();
 	};
@@ -148,7 +148,7 @@ var $ = function(options) {
 		//this._view.title.setColor(this.options.color);
 		this._view.subtitle.setText(this.options.subtitle);
 		this._view.duration.setText(('' + this.options.duration * 1000).toHHMMSS());
-		singletonPlayer.release();
+		singletonPlayer && singletonPlayer.release();
 		singletonPlayer.seek(0);
 		var item = CacheAdapter.getURL({
 			station : this.options.station,
@@ -242,7 +242,7 @@ var $ = function(options) {
 	if (this.createWindow()) {
 		var that = this;
 		if (CacheAdapter.isCached(this.options) && !this._Recents.isComplete(this.options.url)) {
-			console.log('try to continue');
+			console.log('is chached and not complete ==> try to continue');
 			alertactive = true;
 			var dialog = Ti.UI.createAlertDialog({
 				cancel : 1,
@@ -250,7 +250,9 @@ var $ = function(options) {
 				message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
 				title : 'Weiterhören'
 			});
+			console.log("alert with question created");
 			dialog.addEventListener('click', function(e) {
+				console.log("reaction on alert");
 				alertactive = false;
 				that.startPlayer();
 				if (e.index != 0) {
@@ -260,7 +262,7 @@ var $ = function(options) {
 						message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
 					}).show();
 					return;
-				}
+				} else console.log("Cancel in alert");
 			});
 			dialog.show();
 		}
@@ -268,6 +270,7 @@ var $ = function(options) {
 		singletonPlayer.addEventListener('complete', this.onCompleteFn);
 		singletonPlayer.addEventListener('change', this.onStatusChangeFn);
 		this._window.addEventListener("android:back", function() {
+			console.log('android:back is pressed =>> firing longpress');
 			that._view.control.fireEvent('longpress', {});
 			return false;
 		});

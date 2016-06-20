@@ -17,7 +17,7 @@ var stations = {
 
 module.exports = function() {
 	var args = arguments[0] || {};
-	if (args.where == 'mediathek') { // remote search
+	if (args.where == 'mediathek') {// remote search
 		var xhr = Ti.Network.createHTTPClient({
 			validatesSecureCertificate : false,
 			timeout : 30000,
@@ -36,7 +36,7 @@ module.exports = function() {
 				}
 				args.done({
 					section : args.section,
-					where: args.where,
+					where : args.where,
 					items : items.map(function(item) {
 						return {
 							pubdate : Moment(item.datetime).format('DD.MM.YYYY HH:mm'),
@@ -55,7 +55,7 @@ module.exports = function() {
 		});
 		xhr.open('GET', url.replace('NEEDLE', encodeURIComponent(args.needle)));
 		xhr.send();
-	} else { // searching in podcasts (local search):
+	} else {// searching in podcasts (local search):
 		var link = Ti.Database.open(DB);
 		var sql = 'SELECT *,'//
 		+ '(SELECT title FROM feeds WHERE feeds.url=items.channelurl) AS podcast,'//
@@ -66,7 +66,7 @@ module.exports = function() {
 		var items = [];
 		while (res.isValidRow()) {
 			var parts = res.getFieldByName('duration').split(':');
-			var station =  res.getFieldByName('station') || 'dlf';
+			var station = res.getFieldByName('station') || 'default';
 			var item = {
 				title : res.getFieldByName('title'),
 				pubdate : Moment(res.getFieldByName('pubdate')).format('DD. MM. YYYY  HH:ii'),
@@ -78,7 +78,7 @@ module.exports = function() {
 				author : res.getFieldByName('author'),
 				duration : parseInt(parts[0] * 60) + parseInt(parts[1]),
 				station : station,
-				color : Model[station].color,
+				color : (Model[station] && Model[station].color) || 'gray',
 				image : res.getFieldByName('channelimage')
 			};
 			var match = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
@@ -95,7 +95,7 @@ module.exports = function() {
 		link.close();
 		args.done({
 			items : items,
-			where: args.where,
+			where : args.where,
 			section : args.section
 		});
 	}

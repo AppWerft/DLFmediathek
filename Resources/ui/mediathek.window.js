@@ -9,10 +9,10 @@ var FlipModule = require('de.manumaticx.androidflip'),
     Favs = new (require('controls/favorites.adapter'))();
 
 var MediathekPage = require('ui/mediathek.page');
-var currentStation = Ti.App.Properties.hasProperty('LAST_STATION') ? Ti.App.Properties.getString('LAST_STATION') : 'dlf';
+var currentStation = Ti.App.Properties.hasProperty('LAST_STATION') && Ti.App.Properties.getString('LAST_STATION') != 'default' ? Ti.App.Properties.getString('LAST_STATION') : 'dlf';
 
 module.exports = function() {
-	
+
 	//http://jgilfelt.github.io/android-actionbarstylegenerator/#name=dlrmediathek&compat=appcompat&theme=dark&actionbarstyle=solid&texture=0&hairline=0&neutralPressed=1&backColor=6b6a6a%2C100&secondaryColor=6b6a6a%2C100&tabColor=949393%2C100&tertiaryColor=b6b6b6%2C100&accentColor=33B5E5%2C100&cabBackColor=d6d6d6%2C100&cabHighlightColor=949393%2C100
 	var locked = false;
 	var self = Ti.UI.createWindow();

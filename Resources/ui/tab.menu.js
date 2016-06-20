@@ -10,7 +10,7 @@ const RECENT = 0,
     MYPODS = 2,
     MYPLAYLIST = 3,
     PLAY = 4,
-    WURF =5;
+    WURF = 5;
 
 /* Reference to Play icon to control it outside the callback */
 var playIcon;
@@ -136,24 +136,20 @@ module.exports = function(_event) {
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", onPlayStopClickFn);
 			/*_menuevent.menu.add({
-				title : 'Wurfsendung',
-				itemId : WURF,
-				visible : true,
-				icon : Ti.App.Android.R.drawable['wurfsendung'],
-				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-			});*/
+			 title : 'Wurfsendung',
+			 itemId : WURF,
+			 visible : true,
+			 icon : Ti.App.Android.R.drawable['wurfsendung'],
+			 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+			 });*/
 			playIcon = _menuevent.menu.findItem(PLAY);
 			searchMenu = _menuevent.menu.add({
 				title : L('MENU_SEARCH'),
-				visible : false,
+				visible : true,
 				actionView : searchView,
-				icon : (Ti.Android.R.drawable.ic_menu_search ? Ti.Android.R.drawable.ic_menu_search : "my_search.png"),
-				showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER | Ti.Android.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
+				icon : Ti.Android.R.drawable.ic_menu_search,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM | Ti.Android.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
 			});
-			setTimeout(function() {
-				searchMenu.setVisible(true);
-			}, 5000);
-			// changing a searchview
 			АктйонБар.setSearchView({
 				searchView : searchView,
 				//backgroundColor : '#777',

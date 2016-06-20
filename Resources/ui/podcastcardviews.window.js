@@ -39,8 +39,10 @@ module.exports = function() {
 		if (self.FlipViewCollection)
 			self.FlipViewCollection.currentPage = stationindex;
 	}
-	for (var ndx = 0; ndx < stations.length; ndx++) {
-		var podcasts = require('model/' + stations[ndx]);
+
+
+	stations.forEach(function(station, ndx) {
+		var podcasts = require('model/' + station);
 		var color = podcasts.color;
 		pages[ndx] = Ti.UI.createScrollView({
 			scrollType : 'vertical',
@@ -53,6 +55,8 @@ module.exports = function() {
 			if (_e.source.itemId) {
 				var item = JSON.parse(_e.source.itemId);
 				if (item) {
+					console.log("======================");
+					console.log(item);
 					item.color = color;
 					item.station = stations[ndx];
 					require('ui/podcastlist.window')(item).open();
@@ -93,7 +97,8 @@ module.exports = function() {
 				}));
 			pages[ndx].add(cv);
 		});
-	}
+	});
+
 	self.FlipViewCollection = FlipModule.createFlipView({
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,

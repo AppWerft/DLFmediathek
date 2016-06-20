@@ -12,11 +12,9 @@ String.prototype.toHHMMSS = function() {
 		seconds = "0" + seconds;
 	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
 	return time;
-};
-
-! function() {
+}; ! function() {
 	var introWindow = require('ui/intro.window')();
-	introWindow.addEventListener('open',function(){
+	introWindow.addEventListener('open', function() {
 		require('ui/main.tabgroup')();
 	});
 	introWindow.open();

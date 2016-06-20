@@ -1,4 +1,4 @@
-'use strict';
+	'use strict';
 var DEPOT = 'EARLYBIRDWEB∞';
 
 module.exports = function(_container, _i, _onload) {
