@@ -4,9 +4,7 @@ var Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function(_args) {
-	var self = Ti.UI.createWindow({
-
-	});
+	var self = Ti.UI.createWindow();
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
 		backgroundColor : _args.station,
@@ -17,18 +15,18 @@ module.exports = function(_args) {
 		top : 78,
 		sections : [Ti.UI.createListSection({})]
 	});
-	var items = [];
 	Feed.getFeed({
 		url : _args.url,
 		done : function(_feeditems) {
-			_feeditems.items.forEach(function(item) {
+				var items = [];
+			_feeditems.items && _feeditems.items.forEach(function(item) {
 				var res = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
 				item.image = (res) ? res[1] : item.channelimage;
 				var height = (res) ? 65 : 90;
 				var description = (res) ? res[3] : null;
 				var copyright = (res) ? res[2] : null;
-				var pubdate = Moment(item.pubdate).format('LLL') + ' Uhr';
-		 	   item.station = _args.station ? _args.station : 'dlf';
+				var pubdate = Moment(item.pubDate).format('LLL') + ' Uhr';
+		 	    item.station = _args.station ? _args.station : 'dlf';
 				items.push({
 					pubdate : {
 						text : pubdate
@@ -99,6 +97,10 @@ module.exports = function(_args) {
 		});
 
 	};
+	self.addEventListener('close', function(_event) {
+		self.removeAllChildren();
+		self=null;
+	});
 	self.addEventListener('open', function(_event) {
 		var station = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 		АктйонБар.title = Model[station].name;

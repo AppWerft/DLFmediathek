@@ -27,12 +27,7 @@ exports.isCached = function(options) {
 	var parts = options.url.match(/\/([0-9_a-zA-Z]+\.mp3)$/);
 	var filename = parts ? parts[1] : Ti.Utils.md5HexDigest(options.url);
 	var file = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, filename);
-	if (file.getSize() < MIN) {// zombie
-		console.log("Warning: file deleted because of to short, "+ filename+ " was " + file.getSize());
-		file.deleteFile();
-		return false;
-	}
-	console.log(JSON.stringify(options)+ "  SIZE=" + file.getSize());
+	
 	return file.exists() ? true : false;
 };
 
@@ -60,7 +55,7 @@ exports.cacheURL = function(options) {
 	var file = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, filename);
 	if (file.getSize() < MIN) {// zombie
 		console.log("Warning: file deleted because of to short, was " + file.getSize());
-		file.deleteFile();
+		//file.deleteFile();
 	}
 	if (file.exists()) {
 		return {
@@ -97,7 +92,7 @@ exports.getURL = function(options) {
 	var file = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, filename);
 	if (file.getSize() < 512) {// zombie
 		console.log("Warning: file deleted because of to short, was " + file.getSize());
-		file.deleteFile();
+		//file.deleteFile();
 		return {
 			url : options.url,
 			cached : false

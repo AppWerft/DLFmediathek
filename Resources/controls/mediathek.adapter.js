@@ -21,9 +21,7 @@ module.exports = function(_args) {
 			    lastsendung = '',
 			    sectionndx = -1;
 			for (var i = 0; i < entries.length; i++) {
-				
 				var item = entries[i];
-				console.log("Info: " + JSON.stringify(item));
 				item.station = _args.station;
 				item.datetime = item.datetime.trim();
 				item.author = item.author.trim();
@@ -44,7 +42,6 @@ module.exports = function(_args) {
 					duration : item.duration,
 					title : item.title,
 				};
-				console.log(sub);
 				sub.isfav = Favs.isFav(sub) ? true : false;
 				if (item.sendung != lastsendung) {
 					sectionndx++;

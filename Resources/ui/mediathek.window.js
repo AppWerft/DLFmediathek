@@ -35,7 +35,6 @@ module.exports = function() {
 		height : Ti.UI.FILL
 	});
 	self.onFlippedFunc = function(_e) {
-		console.log('#####################\nstationIndex' + _e.index);
 		currentStation = _e.index != undefined ? pages[_e.index].station : _e.station;
 		currentStation && Ti.App.Properties.setString('LAST_STATION', currentStation);
 		Ti.App.fireEvent('app:station', {

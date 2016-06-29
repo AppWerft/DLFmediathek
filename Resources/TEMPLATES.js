@@ -171,7 +171,7 @@ exports.podcastlist = {
 			properties : {
 				left : 0,
 				touchEnabled : false,
-				top : 0,
+				top : 10,
 				color : '#777',
 				font : {
 					fontSize : 16,

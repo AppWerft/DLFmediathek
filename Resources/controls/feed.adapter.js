@@ -1,14 +1,11 @@
 'use strict';
 
 var Moment = require('vendor/moment'),
-    XMLTools = require('vendor/XMLTools');
-
-var DB = Ti.App.Properties.getString('DATABASE');
-
-var Cache = require('controls/cache.adapter');
+    Podcast = require('de.appwerft.podcast'),
+    DB = Ti.App.Properties.getString('DATABASE'),
+    Cache = require('controls/cache.adapter');
 
 var $ = function() {
-	this.eventhandlers = {};
 	var link = Ti.Database.open(DB);
 	if (link) {
 		link.execute('CREATE TABLE IF NOT EXISTS "feeds" ("url" TEXT UNIQUE, "http_expires" DATETIME, "http_lastmodified" DATETIME, "http_etag" TEXT, "http_contentlength" INTEGER, "title" TEXT, "description" TEXT, "category" TEXT,"station" TEXT, "pubDate" DATETIME, "lastBuildDate" DATETIME, "image" TEXT,"faved" INTEGER);');
@@ -63,8 +60,10 @@ $.prototype = {
 					}
 				}
 			}
+
 			loadfeed();
 		}
+
 		loadfeeds();
 	},
 	getAllFavedFeeds : function() {
@@ -91,8 +90,6 @@ $.prototype = {
 		link.execute('UPDATE feeds SET faved=? where url=?', (this.isFaved(_url)) ? 0 : 1, _url);
 		link.close();
 	},
-	addFeed : function() {
-	},
 	isFaved : function(_url) {
 		var link = Ti.Database.open(DB);
 		var faved;
@@ -104,7 +101,7 @@ $.prototype = {
 		link.close();
 		return faved;
 	},
-	// get feed with all items
+	// get feed with all items from locale db
 	getFeed : function(_args) {
 		var link = Ti.Database.open(DB);
 		var rows = link.execute('SELECT items.* ,'//
@@ -119,7 +116,7 @@ $.prototype = {
 				    url = rows.getFieldByName('enclosure_url'),
 				    station = rows.getFieldByName('station') || 'dlf';
 				var item = {
-					pubdate : rows.getFieldByName('pubdate'),
+					pubDate : rows.getFieldByName('pubdate'),
 					title : rows.getFieldByName('title').replace(/\(podcast\)/gi, '').replace(/(\d\d\.\d\d\.\d\d\d\d)/gi, ''),
 					description : rows.getFieldByName('description'),
 					url : url,
@@ -127,6 +124,7 @@ $.prototype = {
 					author : rows.getFieldByName('author'),
 					duration : parseInt(parts[0] * 60) + parseInt(parts[1]),
 					station : station,
+					faved : this.isFaved(_args.url),
 					channelimage : rows.getFieldByName('channelimage'),
 					cached : Cache.isCached({
 						station : station,
@@ -138,150 +136,51 @@ $.prototype = {
 			}
 			rows.close();
 			link.close();
-			_args.done({
+			items.length && _args.done({
 				ok : true,
 				items : items
 			});
-			return;
+		} else {
+			console.log("Warning: no podcasts found");
 		}
-		/* fallback if first time and not yet feed in database */
-		//this.loadFeed(_args);
-		var faved = 0;
-		var that = this;
-		var xhr = Ti.Network.createHTTPClient({
-			validatesSecureCertificate : false,
-			onload : function() {
-				if (!this.responseXML) {
-					console.log(this.responseText);
-					return;
-				}
-				var channel = new XMLTools(this.responseXML).toObject().channel;
-				if (channel.item && !Array.isArray(channel.item)) {
-					channel.item = [channel.item];
-				}
-				var link = Ti.Database.open(DB);
-				link.execute('INSERT OR REPLACE INTO feeds VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', //
-				_args.url, //
-				this.getResponseHeader('Expires'), //
-				this.getResponseHeader('Last-modified'), //
-				this.getResponseHeader('ETag') || '', //
-				this.getResponseHeader('Content-Length'), //
-				channel.title, //
-				channel.description, //
-				channel.category, //
-				_args.station, channel.pubDate, //
-				channel.lastBuildDate, //
-				channel.image.url, //
-				faved);
-				channel.item.forEach(function(item) {
-					link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
-					_args.url, item.title, item.link, item.description, item.guid, //
-					item.enclosure.url, item.enclosure.length, item.enclosure.type, item['itunes:author'], item['itunes:duration'], Moment(item.pubDate).toISOString(), 0);
-				});
-
-				link.close();
-				channel.item.faved = that.isFaved(_args.url);
-				var result = {
-					ok : true,
-					items : channel.item
-				};
-				_args.done(result);
-			}
-		});
-		xhr.open('GET', _args.url);
-		console.log(_args.url);
-		xhr.send();
+		this.loadFeed(_args);
 	},
-	/* load feed from net, args:
-	 *
-	 * url - STRING i.e. http://www.deutschlandfunk.de/podcast-computer-und-kommunikation-komplette-sendung.416.de.podcast.xml
-	 * station - STRING i.e. dlf
-	 * done - callback function
-	 *
-	 */
 	loadFeed : function(_args) {
-		var faved = 0;
-		var that = this;
-		var xhr = Ti.Network.createHTTPClient({
-			onload : function() {
-				var channel = new XMLTools(this.responseXML).toObject().channel;
-				if (channel.item && !Array.isArray(channel.item)) {
-					channel.item = [channel.item];
-				}
-				var link = Ti.Database.open(DB);
-				// test if faved:
-				var faved = 0;
-				var res = link.execute('SELECT faved FROM feeds WHERE url=?', _args.url);
-				if (res.isValidRow()) {
-					faved = res.fieldByName('faved');
-				}
-				res.close();
-				link.execute('INSERT OR REPLACE INTO feeds VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', //
-				_args.url, //
-				this.getResponseHeader('Expires'), //
-				this.getResponseHeader('Last-modified'), //
-				this.getResponseHeader('ETag') || '', //
-				this.getResponseHeader('Content-Length'), //
-				channel.title, //
-				channel.description, //
-				channel.category, //
-				_args.station, //
-				Moment(channel.pubDate).toISOString(), //
-				Moment(channel.lastBuildDate).toISOString(), //
-				channel.image.url, //
-				faved);
-				channel.item.sort(function(a, b) {
-					return parseInt(a.timestamp) > parseInt(b.timestamp);
-				});
-				channel.item.forEach(function(item) {
-					var pubdate = Moment(item.pubDate).toISOString();
-					link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
-					_args.url, //
-					item.title, //
-					item.link, //
-					item.description, //
-					item.guid, //
-					item.enclosure.url, //
-					item.enclosure.length, //
-					item.enclosure.type, //
-					item['itunes:author'], //
-					item['itunes:duration'], //
-					pubdate, //
-					0 //watched
-					);
-				});
-				link.close();
-				channel.item.faved = that.isFaved(_args.url);
-				var result = {
-					ok : true,
-					items : channel.item
-				};
-				_args.done(result);
+		var faved =  this.isFaved(_args.url);
+		Podcast.loadPodcast({
+			url : _args.url,
+			timeout : 5000
+		}, function(channel) {
+			var link = Ti.Database.open(DB);
+			link.execute('INSERT OR REPLACE INTO feeds VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', //
+			_args.url, //
+			"", //this.getResponseHeader('Expires'), //
+			"", //this.getResponseHeader('Last-modified'), //
+			"", //this.getResponseHeader('ETag') || '', //
+			"", //this.getResponseHeader('Content-Length'), //
+			channel.title, //
+			channel.description, //
+			channel.category, //
+			_args.station, channel.pubDate, //
+			channel.lastBuildDate, //
+			"", //channel.image.url, //
+			faved);
+			for (var i = 0; i < channel.items.length; i++) {
+				channel.items[i].duration = parseInt(channel.items[i].duration.split(':')[0]) * 60 + parseInt(channel.items[i].duration.split(':')[1]);
+				channel.items[i].pubDate = Moment(channel.items[i].pubDate).toISOString();
 			}
+			channel.items.forEach(function(item) {
+				link.execute('INSERT OR REPLACE INTO items VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', //
+				_args.url, item.title, item.link, item.description, item.guid, //
+				item.enclosure.url, item.enclosure.length, item.enclosure.type, item.author, item.duration, item.pubDate, 0);
+			});
+			link.close();
+			var result = {
+				ok : true,
+				items : channel.items
+			};
+			_args.done(result);
 		});
-		xhr.open('GET', _args.url);
-		console.log(_args.url);
-		xhr.send();
-	}, // standard methods for event/observer pattern
-	fireEvent : function(_event, _payload) {
-		if (this.eventhandlers[_event]) {
-			for (var i = 0; i < this.eventhandlers[_event].length; i++) {
-				this.eventhandlers[_event][i].call(this, _payload);
-			}
-		}
-	},
-	addEventListener : function(_event, _callback) {
-		if (!this.eventhandlers[_event])
-			this.eventhandlers[_event] = [];
-		this.eventhandlers[_event].push(_callback);
-	},
-	removeEventListener : function(_event, _callback) {
-		if (!this.eventhandlers[_event])
-			return;
-		var newArray = this.eventhandlers[_event].filter(function(element) {
-			return element != _callback;
-		});
-		this.eventhandlers[_event] = newArray;
 	}
 };
 

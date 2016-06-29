@@ -31,6 +31,8 @@ module.exports = function() {
 		color : '#90505050',
 		width : 240,
 		height : 240,
+		borderWidth:0,
+		borderColor:'white',
 		center : {
 			x : '50%',
 			y : '70%'

@@ -13,7 +13,6 @@ var schema = {
 function getValidSchemaByStation(station) {
 	const KEY = 'SCHEMA–' + station;
 	if (!Ti.App.Properties.hasProperty(KEY)) {
-		console.log('Warning: no schema in cache ' + station);
 		return null;
 	}
 	var items = schema[station] ? schema[station] : Ti.App.Properties.getList(KEY);
@@ -49,7 +48,6 @@ var _sanitizeHTML = function(foo) {
 	return bar;
 };
 var _updateTimestamps = function(_args) {
-	console.log("_updateTimestamps");
 	var items = getValidSchemaByStation(_args.station);
 	if (items) {
 		var length = items.length;
@@ -105,7 +103,6 @@ exports.getCurrentOnAir = function(_args) {
 };
 
 exports.getRSS = function(_args) {
-	console.log('getRSS*' + _args.station);
 	var KEY = "SCHEMA–" + _args.station;
 	var items = getValidSchemaByStation(_args.station);
 	if (items != null) {
