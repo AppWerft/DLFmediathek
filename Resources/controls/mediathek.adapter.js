@@ -55,16 +55,19 @@ module.exports = function(_args) {
 				}
 			}
 		}
-		var result = {
-			mediathek : mediathek,
-			hash : Ti.Utils.md5HexDigest(JSON.stringify(mediathek))
-		};
-		entries = null;
-		Ti.App.Properties.setString(DEPOTKEY, JSON.stringify(result));
-		_args.onload(result);
+		if (mediathek) {
+			var result = {
+				mediathek : mediathek,
+				hash : Ti.Utils.md5HexDigest(JSON.stringify(mediathek))
+			};
+			entries = null;
+			Ti.App.Properties.setString(DEPOTKEY, JSON.stringify(result));
+			_args.onload(result);
+		}
 	};
-	
-	if (!_args.url) return;
+
+	if (!_args.url)
+		return;
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
 	require('de.appwerft.scraper').createScraper({
 		url : url + '&_____=' + Math.random(),

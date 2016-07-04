@@ -1,7 +1,8 @@
+
 var AudioStreamer = require('controls/audiostreamer.adapter');
 
 function LOG() {
-	console.log('ABMENU ≠≠≠≠≠≠≠≠≠≠≠≠≠: ' + arguments[0]);
+	console.log('ABMENU ………………………: ' + arguments[0]);
 }
 
 /* constants for menuItems */
@@ -114,7 +115,7 @@ searchView.addEventListener('submit', function(_e) {
 /* INTERFACE */
 /* =================================================*/
 module.exports = function(_event) {
-	console.log('Info: starting tabmenu ≠≠≠≠≠≠≠≠≠≠');
+	
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
@@ -265,4 +266,11 @@ Ti.Network.addEventListener('change', function(event) {
 Ti.Android.currentActivity.onRestart = function() {
 	playIcon && playIcon.setVisible(Ti.Network.online);
 };
-
+/*
+  actionBar.setHomeButtonEnabled(true);
+    abx.setDisplayShowHomeEnabled(true);
+    abx.setDisplayUseLogoEnabled(true);
+    actionBar.setIcon('/images/acv-white-noText.png');
+    abx.setDisplayShowTitleEnabled(false);
+ * 
+ * */
