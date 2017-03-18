@@ -17,7 +17,7 @@ function getValidSchemaByStation(station) {
 	}
 	var items = schema[station] ? schema[station] : Ti.App.Properties.getList(KEY);
 	/* valides JSON ?*/
-	if (!Array.isArray(items) || !items[0].schema) {
+	if (!Array.isArray(items) || !items[0] || !items[0].schema) {
 		console.log('Warning: we kill old DAYPLAN because has not array');
 		// remove to save time for next step
 		schema[station] = null;

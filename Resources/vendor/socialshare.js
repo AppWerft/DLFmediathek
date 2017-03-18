@@ -1,7 +1,6 @@
 var urlshortener = function(_args) {
 	var self = Ti.Network.createHTTPClient({
 		onload : function(_e) {
-			console.log(_e);
 			_args.done(JSON.parse(this.responseText).id);
 		},
 		onerror : function(_e) {

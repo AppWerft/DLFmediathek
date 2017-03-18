@@ -13,8 +13,9 @@ module.exports = function(_args) {
             АктйонБар.title = self.title;
             АктйонБар.subtitle = self.subtitle;
             АктйонБар.titleFont = "ScalaSansBold";
-             АктйонБар.setBackgroundColor('#444444');
+            _args.color && АктйонБар.setBackgroundColor(_args.color);
             АктйонБар.subtitleColor = "#ccc";
+            _args.color && АктйонБар.setStatusbarColor(_args.color);
             var activity = _event.source.getActivity();
             if (activity) {
                 activity.onCreateOptionsMenu = function(_menuevent) {

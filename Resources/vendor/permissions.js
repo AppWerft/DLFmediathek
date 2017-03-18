@@ -7,11 +7,10 @@ exports.requestPermissions = function(_permissions, _callback) {
 		return (perm.match(/^android\.permission\./)) ? perm : 'android.permission.' + perm;
 	});
 	var grantedpermissions = 0;
-	var TiPermissions = require('ti.permissions');
+	var TiPermissions = Ti.Android;
 	permissions.forEach(function(perm) {
 		if (TiPermissions.hasPermission(perm)) 
 			grantedpermissions++;
-		
 		if (grantedpermissions == permissions.length)
 			_callback(true);
 	});

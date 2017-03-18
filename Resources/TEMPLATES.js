@@ -208,8 +208,6 @@ exports.podcastlist = {
 	}]
 };
 
-
-
 /************/
 exports.mediathek = {
 	properties : {
@@ -986,7 +984,6 @@ exports.tilestemplate = {
 
 exports.earlybird = {
 	properties : {
-
 		height : Ti.UI.SIZE,
 	},
 	childTemplates : [{
@@ -1025,3 +1022,70 @@ exports.earlybird = {
 	}]
 };
 
+exports.dlf24 = {
+	properties : {
+		height : Ti.UI.SIZE,
+		backgroundColor : 'white',
+		layout : "vertical"
+	},
+	childTemplates : [{
+		type : 'Ti.UI.Label',
+		bindId : 'overline',
+		properties : {
+			right : 0,
+			top : 0,
+			zIndex : 9999,
+			height : 30,
+			touchEnabled : false,
+			width : Ti.UI.FILL,
+			backgroundColor : require('model/stations').dlf.color,
+			color : "white",
+			font : {
+				fontFamily : "Aller Bold",
+				fontSize : 22
+			}
+		}
+	}, {
+		type : 'Ti.UI.ImageView',
+		bindId : 'aufmacher',
+		properties : {
+			left : 0,
+			right : 0,
+			top : -30,
+			height : Ti.UI.SIZE,
+			touchEnabled : false,
+			width : Ti.UI.FILL
+		}
+	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'title',
+		properties : {
+			left : 10,
+			right : 10,
+			top : 5,
+			height : Ti.UI.SIZE,
+			touchEnabled : false,
+			font : {
+				fontSize : TITLESIZE,
+				fontFamily : 'Aller Bold'
+			},
+			color : require('model/stations').dlf.color
+		}
+	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'shorttext',
+		properties : {
+			left : 10,
+			right : 30,
+			top : 0,
+			bottom : 15,
+			height : Ti.UI.SIZE,
+			touchEnabled : false,
+			font : {
+				fontSize : 16,
+				fontFamily : 'Aller Bold'
+			},
+			color : '#555'
+		}
+	}]
+};

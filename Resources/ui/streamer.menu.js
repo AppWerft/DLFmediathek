@@ -27,7 +27,6 @@ function onPlayStopClickFn() {
 	if (Ti.App.AudioStreamer.getStatus() == PLAYING) {
 		radioShouldPlay = false;
 		Ti.App.AudioStreamer.stop();
-		console.log('Info: AAS was playing forced stop');
 		return;
 	}
 	if (Ti.Network.online) {
@@ -57,7 +56,6 @@ var startAudioStreamer = function(doRestart) {
 	АктйонБар.setSubtitle('Verbindung mit RadioServer');
 	Ti.App.AudioStreamer.play(icyurl);
 	if (radioShouldPlay) {// try to restart with ugly trick
-		console.log('Info: AAS  forced restart because of radioShoudPlay');
 		radioShouldPlay = false;
 		Ti.UI.createNotification({
 			message : L('LOST_CONNECTION_TOAST')

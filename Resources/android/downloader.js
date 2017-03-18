@@ -38,8 +38,8 @@ function handleEvent(e) {
 			contentText : '„' + options.subtitle + '“ runtergeholt (' + (e.bps / 1000000).toFixed(1) + ' Mbit/s)',
 			playSound : true,
 			icon : Ti.App.Android.R.drawable.appicon,
-			largeIcon : Ti.App.Android.R.drawable.appicon,
-			sound : Ti.Filesystem.getResRawDirectory() + 'kkj',
+			largeIcon : Ti.App.Android.R.drawable.appicon
+			//sound : Ti.Filesystem.getResRawDirectory() + 'kkj',
 		});
 }
 

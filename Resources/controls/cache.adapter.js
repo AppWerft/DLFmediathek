@@ -1,6 +1,6 @@
 "use strict";
 var FOLDER = 'RadioCache';
-var MIN = 1000000;
+var MIN = 100000;
 
 if (Ti.Filesystem.isExternalStoragePresent())
 	var DEPOT = Ti.Filesystem.externalStorageDirectory;
@@ -55,14 +55,16 @@ exports.cacheURL = function(options) {
 	var file = Ti.Filesystem.getFile(DEPOT, FOLDER, options.station, filename);
 	if (file.getSize() < MIN) {// zombie
 		console.log("Warning: file deleted because of to short, was " + file.getSize());
-		//file.deleteFile();
+		file.deleteFile();
 	}
+	// was cached:
 	if (file.exists()) {
 		return {
 			url : file.nativePath,
 			cached : true
 		};
 	} else {
+		// starting download:
 		var intent = Ti.Android.createServiceIntent({
 			url : 'downloader.js'
 		});

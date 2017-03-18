@@ -63,6 +63,7 @@ var $ = function(options) {
 		that.setControlView();
 	};
 	this.onCompleteFn = function(_e) {
+		console.log("📻onCompleteFn");
 		if (that._view)
 			that._view.setVisible(false);
 		that._Recents.setComplete();
@@ -72,7 +73,7 @@ var $ = function(options) {
 
 	};
 	this.onStatusChangeFn = function(_e) {
-		console.log("Info: AudioPlayer sends " + _e.description);
+		console.log("📻onStatusChangeFn# Info: AudioPlayer sends " + _e.description);
 		switch (_e.description) {
 		case 'stopped':
 			if (this.onProgressFn && typeof this.onProgressFn == 'function')
@@ -250,9 +251,9 @@ var $ = function(options) {
 				message : 'Das Stück wurde unterbrochen, was soll jetzt geschehen?',
 				title : 'Weiterhören'
 			});
-			console.log("alert with question created");
+			console.log("📻alert with question created");
 			dialog.addEventListener('click', function(e) {
-				console.log("reaction on alert");
+				console.log("📻reaction on alert");
 				alertactive = false;
 				that.startPlayer();
 				if (e.index != 0) {
@@ -262,7 +263,7 @@ var $ = function(options) {
 						message : 'Setzte Wiedergabe am Zeitpunkt „' + ('' + that.progress).toHHMMSS() + '“ fort.'
 					}).show();
 					return;
-				} else console.log("Cancel in alert");
+				} else console.log("📻Cancel in alert");
 			});
 			dialog.show();
 		}

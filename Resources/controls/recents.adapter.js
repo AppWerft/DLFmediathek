@@ -56,7 +56,6 @@ $.prototype = {
 		var link = Ti.Database.open(DB);
 		var recents = [];
 		var sql = 'SELECT * FROM recents WHERE progress <= duration ORDER BY DATETIME(lastaccess) DESC LIMIT 100';
-		console.log(sql);
 		var res = link.execute(sql);
 		while (res.isValidRow()) {
 			var station = res.getFieldByName('station');
@@ -73,7 +72,6 @@ $.prototype = {
 				author : res.getFieldByName('author'),
 				color : (station ) ? Model[station].color : 'gray'
 			};
-			console.log(item);
 			recents.push(item);
 			res.next();
 		}

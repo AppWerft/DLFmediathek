@@ -192,6 +192,12 @@ module.exports = function(_event) {
 				}).addEventListener("click", function(_e) {
 					require('ui/pdf.window')().open();
 				});
+				/*_menuevent.menu.add({
+					title : 'DLF24',
+					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+				}).addEventListener("click", function(_e) {
+					require('ui/dlf24.window')().open();
+				});*/
 			}, 700);
 			playIcon = _menuevent.menu.findItem(PLAY);
 			activity.actionBar.displayHomeAsUp = false;
@@ -202,13 +208,12 @@ module.exports = function(_event) {
 			 *
 			 * */
 			Ti.App.addEventListener('app:station', function(_e) {
-
 				if (!_e.station) {
 					console.log('Warning: no station');
 					return;
 				}
-
 				currentStation = _e.station;
+				
 				АктйонБар.setStatusbarColor(Model[currentStation].color);
 				Ti.App.Properties.setString('LAST_STATION', currentStation);
 				АктйонБар.setTitle(Model[currentStation].name);

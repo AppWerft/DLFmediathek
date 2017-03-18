@@ -17,6 +17,8 @@ function requestOnlinestate(_cb) {
 		wasLastPingSuccessful = false;
 		_cb && _cb(false);
 	} else {
+		_cb(true);
+		return;
 		var xhr = Ti.Network.createHTTPClient({
 			timeout : TICK,
 			onload : function() {
@@ -34,7 +36,9 @@ function requestOnlinestate(_cb) {
 			}
 		});
 		xhr.setAutoRedirect(false);
-		xhr.open('HEAD', 'https://facebook.com/'), xhr.send();
+		xhr.open('HEAD', 'https://facebook.com/');
+		xhr.setRequestHeader("User-Agent","Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0");
+		xhr.send();
 	}
 }
 
@@ -149,10 +153,11 @@ exports.play = function(_icyurl, _callbackFn) {
 					LOG('timeout watcher started, status was ' + STATUS[StreamingPlayer.getStatus()]);
 					//	timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
 					//	console.log('timeouttimer started');
-					StreamingPlayer.play({
+					/*StreamingPlayer.play({
 						url : _icyurl,
 						expectedKBitSecRate : 128
-					});
+					});*/
+					StreamingPlayer.play(_icyurl);
 					LOG('PLAY STARTED');
 				} else {
 					timeoutTimer && clearTimeout(timeoutTimer);

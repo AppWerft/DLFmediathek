@@ -20,8 +20,7 @@ module.exports = {
 	drw : {
 		color : '#FF01953C',
 		name : 'DRadio Wissen',
-		icyurl : ['icy://stream.dradio.de/7/728/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dwissen_m', 'http://dradio_mp3_dwissen_m.akacast.akamaistream.net/7/728/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dwissen_m'],
-		playlist : 'http://www.deutschlandradio.de/streaming/dradiowissen.m3u',
+		icyurl : ['http://dradio_mp3_dwissen_m.akacast.akamaistream.net/7/728/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dwissen_m'],
 		mediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=1&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'
 	}
 	

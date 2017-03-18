@@ -21,7 +21,7 @@ module.exports = function() {
 		sections : [Ti.UI.createListSection({})]
 	});
 	var items = [];
-	self.updateList = function() {
+	self.updateListContent = function() {
 		var recents = Recents.getAllRecents();
 		var items = recents.map(function(item) {
 			return {
@@ -80,7 +80,7 @@ module.exports = function() {
 					url : data.url,
 					duration : data.duration,
 					title : data.title,
-					subtitle : Moment(data.pubdate).format('LLL') + ' Uhr',
+					subtitle : data.subtitle,//Moment(data.pubdate).format('LLL') + ' Uhr',
 					author : data.author,
 					station : data.station,
 					pubdate : data.pubdate
@@ -88,7 +88,7 @@ module.exports = function() {
 			}
 		}
 	});
-	self.addEventListener('focus', self.updateList);
+	self.addEventListener('focus', self.updateListContent);
 	self.addEventListener('open', function(_event) {
 		АктйонБар.title = 'DeutschlandRadio';
 		АктйонБар.subtitle = 'RadioZumMitnehmen';
