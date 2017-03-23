@@ -15,7 +15,7 @@ module.exports = function() {
 		ndx : 1,
 	}), Ti.UI.createTab({
 		title : 'DLF24',
-		window : require('ui/dlf24.window')(),
+		window : require('ui/dlf24/index.window')(),
 		ndx : 2,
 	})];
 	tabs.forEach(function(tab) {

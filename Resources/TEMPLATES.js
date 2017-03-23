@@ -1029,29 +1029,13 @@ exports.dlf24 = {
 		layout : "vertical"
 	},
 	childTemplates : [{
-		type : 'Ti.UI.Label',
-		bindId : 'overline',
-		properties : {
-			right : 0,
-			top : 0,
-			zIndex : 9999,
-			height : 30,
-			touchEnabled : false,
-			width : Ti.UI.FILL,
-			backgroundColor : require('model/stations').dlf.color,
-			color : "white",
-			font : {
-				fontFamily : "Aller Bold",
-				fontSize : 22
-			}
-		}
-	}, {
 		type : 'Ti.UI.ImageView',
 		bindId : 'aufmacher',
 		properties : {
 			left : 0,
 			right : 0,
-			top : -30,
+			top : 0,
+			defaultImage: "/images/dlf24.jpeg",
 			height : Ti.UI.SIZE,
 			touchEnabled : false,
 			width : Ti.UI.FILL

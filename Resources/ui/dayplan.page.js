@@ -118,6 +118,7 @@ module.exports = function(station) {
 				}),
 				top : 79
 			});
+			
 			win.container.setRefreshing(true);
 			win.container.view.addEventListener('load', function() {
 				win.container.setRefreshing(false);
