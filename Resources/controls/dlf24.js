@@ -1,6 +1,7 @@
 var DLF24_FEED_URL = "http://www.deutschlandfunk.de/die-nachrichten.353.de.rss?_=";
 
-var KEY = "DLF#";
+var Moment = require("vendor/moment");
+var KEY = "DLF#11";
 var lasttime = new Date().getTime();
 
 function l(t) {
@@ -41,27 +42,38 @@ var $ = {
 					// copy from xml list
 					item = _item;
 					item.ndx = _ndx;
-					item.shorttext = clean(_item.description);
+					item.shorttext = clean(_item.description).replace(/\. mehr/,".");
 					item.title = clean(_item.title);
 					return item;
 				}
 			});
+			
 			l("first resolving ready");
 			_callback && _callback({
 				items : items,
 				state : 1,
 				unresolved : unresolvedItems.length
 			});
+			
 			var count = 0;
 			l("UI (listview) updated => start second (async) run");
-			var getDetailsForItemfromNet = function(item) {
+			var getDetailsForItemfromServer = function(item) {
 				count++;
-				$.getNewsItem(item.link, function(_item) {
+				l("items resolved " + count);
+				if (count == 5) {
+					l("3 items resolved");
+					_callback && _callback({
+						items : items,
+						unresolved : 0
+					});
+				}
+				function doNextStep(_item) {
+					l("donextStep");
 					items[item.ndx] = _item;
 					var uitem = unresolvedItems.pop();
 					if (uitem) {
-						getDetailsForItemfromNet(uitem);
-					} else {
+						getDetailsForItemfromServer(uitem);
+					} else { // end of loop
 						l("item " + count + " resolved");
 						Ti.App.Properties.setList("DLF24", items);
 						_callback && _callback({
@@ -69,33 +81,44 @@ var $ = {
 							state : 2,
 							unresolved : 0
 						});
+						l("end doNextsteploop");
 					}
-				}, false);
+				}
+				$.getNewsItem(item.link, doNextStep, false);
 			};
 			var uitem = unresolvedItems.pop();
-			uitem && getDetailsForItemfromNet(uitem);
+			uitem && getDetailsForItemfromServer(uitem);
+			l("end/start loop");
 		});
 	},
 
 	getNewsItem : function(_url, _callback, _forced) {
 		var key = KEY + _url;
+		l(key);
+		l(_forced);
 		if (Ti.App.Properties.hasProperty(key) && !_forced) {
 			var res = Ti.App.Properties.getObject(key);
 			_callback && _callback(res);
 			return res;
 		}
+		l("start scraper of " + _url);
 		var Document = require("de.appwerft.soup").createDocument({
 			url : _url,
 			onload : function(e) {
+				l("end scraper");
+				if (!Document) {
+					l("no Document from " + _url);
+					return;
+				}
 				var result = {
 					"link" : _url,
-					"aufmacher" : Document.select("dt img")[0].getAttribute("src"),
-					"bu" : clean(Document.select("dt img")[0].getAttribute("title")),
-					"shorttext" : clean(Document.select(".articlemain .kicker")[0].getText()),
-					"overline" : clean(Document.select("h1 span")[0].getText()),
-					"title" : clean(Document.select("#content header h1")[0].getOwnText().replace(/<a.*<\/a>?/gm, ""))
+					"aufmacher" : Document.selectFirst("dt img").getAttribute("src"),
+					"bu" : clean(Document.selectFirst("dt img").getAttribute("title")),
+					"shorttext" : clean(Document.selectFirst(".articlemain .kicker").getText()),
+					"overline" : clean(Document.selectFirst("h1 span").getText()),
+					"title" : clean(Document.selectFirst("#content header h1").getOwnText().replace(/<a.*<\/a>?/gm, ""))
 				};
-				var bu = Document.select("dt img")[0].getAttribute("title").match(/\(.*?\)/);
+				var bu = Document.selectFirst("dt img").getAttribute("title").match(/\(.*?\)/);
 				if (bu && bu.length > 0) {
 					result.copyright = bu[bu.length - 1].replace("(", "").replace(")", "");
 				}
@@ -111,24 +134,26 @@ var $ = {
 		});
 		return null;
 	},
-	getArchive : function() {
-		console.log("========XXX===========");
+	getArchive : function(_cb) {
+		var URL = "http://www.deutschlandfunk.de/dlf24-nachrichten-wochenueberblick.1724.de.html?"+ Moment().format("YYYYMMDD");
 		var Document = require("de.appwerft.soup").createDocument({
-			url : "http://www.deutschlandfunk.de/dlf24-nachrichten-wochenueberblick.1724.de.html",
+			url : URL,
 			onload : function(_e) {
-				var items = Document.select(".dlfn-article-list h3 a");
-				var archive = items.map(function(item) {
+				var items = Document.select(".dlfn-article-list h3 a").map(function(item) {
+					console.log(item);
 					return {
-						title : item.getOwnText(),
+						title : clean(item.getOwnText()),
 						link : "http://www.deutschlandfunk.de/" + item.getAttribute("href"),
 						overline : item.getChild(0).getText()
 					};
-
 				});
-				console.log(archive.length);
+				if (_cb)
+					_cb(items);
+				else
+					console.log("no callback for archive");
 			}
 		});
-
+		console.log(URL);
 	}
 };
 module.exports = $;
@@ -140,6 +165,8 @@ function clean(foo) {
 		.replace(/<br>\s*<br>\s*/gm, "\n\n")//
 		.replace(/<br>/gm, "")//
 		.replace(/Erdogan/gm, "Erdoğan")//
+		.replace(/Yildirim/gm,"Yıldırım")//
+		.replace(/Cavusoglu/gm,"Çavuşoğlu")//
 		.replace(/Isik/gm, "Işık")//
 		.replace(/"([^"]+)"/gm, '„$1“');
 	else

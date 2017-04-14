@@ -1,5 +1,5 @@
-
 var AudioStreamer = require('controls/audiostreamer.adapter');
+var snooze;
 
 function LOG() {
 	console.log('ABMENU ………………………: ' + arguments[0]);
@@ -80,6 +80,12 @@ function onCallbackFn(_payload) {
 function onPlayStopClickFn() {
 	playIcon.setVisible(false);
 	if (onAir == false) {
+		require("ui/snooze.dialog")(function(_duration) {
+			if (_duration != 0) {
+				Ti.Media.vibrate([30,20]);
+				snoozy = setTimeout(onPlayStopClickFn,_duration);
+			}
+		});
 		AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
 		LOG('onAir was false now setting  to true');
 		onAir = true;
@@ -108,14 +114,16 @@ searchView.addEventListener('submit', function(_e) {
 	require('ui/search.window')({
 		needle : _e.source.value,
 		where : searchView.where
-	}).open();
+	}).open({
+		activityEnterAnimation : Ti.Android.R.anim.slide_in_left,
+		activityExitAnimation : Ti.Android.R.anim.slide_out_right
+	});
 	searchMenu.collapseActionView();
 });
 
 /* INTERFACE */
 /* =================================================*/
 module.exports = function(_event) {
-	
 	АктйонБар.setTitle(Model[currentStation].name);
 	АктйонБар.setSubtitle('Mediathek');
 	АктйонБар.setFont("Aller");
@@ -193,11 +201,11 @@ module.exports = function(_event) {
 					require('ui/pdf.window')().open();
 				});
 				/*_menuevent.menu.add({
-					title : 'DLF24',
-					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-				}).addEventListener("click", function(_e) {
-					require('ui/dlf24.window')().open();
-				});*/
+				 title : 'DLF24',
+				 showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+				 }).addEventListener("click", function(_e) {
+				 require('ui/dlf24.window')().open();
+				 });*/
 			}, 700);
 			playIcon = _menuevent.menu.findItem(PLAY);
 			activity.actionBar.displayHomeAsUp = false;
@@ -213,7 +221,7 @@ module.exports = function(_event) {
 					return;
 				}
 				currentStation = _e.station;
-				
+
 				АктйонБар.setStatusbarColor(Model[currentStation].color);
 				Ti.App.Properties.setString('LAST_STATION', currentStation);
 				АктйонБар.setTitle(Model[currentStation].name);
@@ -272,10 +280,10 @@ Ti.Android.currentActivity.onRestart = function() {
 	playIcon && playIcon.setVisible(Ti.Network.online);
 };
 /*
-  actionBar.setHomeButtonEnabled(true);
-    abx.setDisplayShowHomeEnabled(true);
-    abx.setDisplayUseLogoEnabled(true);
-    actionBar.setIcon('/images/acv-white-noText.png');
-    abx.setDisplayShowTitleEnabled(false);
- * 
+ actionBar.setHomeButtonEnabled(true);
+ abx.setDisplayShowHomeEnabled(true);
+ abx.setDisplayUseLogoEnabled(true);
+ actionBar.setIcon('/images/acv-white-noText.png');
+ abx.setDisplayShowTitleEnabled(false);
+ *
  * */

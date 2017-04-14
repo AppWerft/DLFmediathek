@@ -1,23 +1,6 @@
 var АктйонБар = require('com.alcoapps.actionbarextras'),
     Moment = require("vendor/moment"),
-    Lottie = require("ti.animation"),
     lastNews = null;
-
-var LottieView = Ti.UI.createView({
-	backgroundColor : "#6000",
-	touchEnabled : false,
-	pubbleParent : false,
-	zIndex : 998
-});
-LottieView.add(Lottie.createLottieView({
-	file : '/images/gears.json',
-	loop : true,
-	width : 320,
-	height : 320,
-	zIndex : 999,
-	touchEnabled : false,
-	autoStart : true
-}));
 
 module.exports = function() {
 	var locked = false;
@@ -52,20 +35,13 @@ module.exports = function() {
 				lastNews = null;
 		});
 		$.container.setRefreshing(true);
-		console.log("DLF >>>>>>>>>>START>>>>>>>>>>>>>>>>>>>>>");
+		var LottieView = require("ui/lottie.widget")();	
+			$.add(LottieView);
 		require("controls/dlf24").getNewsList(function(_res) {
-
-			console.log("DLF >>>>>>>state=" + _res.state + "  rest=" + _res.unresolved);
-			if (_res.unresolved > 0 && _res.state == 1) {
-				console.log("DLF we need patience ………");
-				locked = true;
-				$.add(LottieView);
-			} else {
-				console.log("DLF ende ………");
-				$.remove(LottieView);
-				locked = false;
-			}
 			$.container.setRefreshing(false);
+			if (_res.unresolved ==0){
+				$.remove(LottieView);
+			}
 			if (_res.items) {
 				$.listView.setSections([Ti.UI.createListSection({
 					headerTitle : "Heutige Nachrichten (" + Moment().format("LL") + ")",
@@ -100,7 +76,7 @@ module.exports = function() {
 		borderRadius : 30,
 		backgroundColor : require('model/stations').dlf.color,
 		bottom : 30,
-		right : 30,
+		right : 20,
 		backgroundImage : "/images/playiconframe.png"
 	});
 	var archiveButton = Ti.UI.createButton({
@@ -109,8 +85,7 @@ module.exports = function() {
 		borderRadius : 30,
 		backgroundColor : require('model/stations').dlf.color,
 		bottom : 30,
-		width : 200,
-		opacity : 1,
+		width : 180,
 		color : "white",
 		font : {
 			fontSize : 20,
@@ -133,7 +108,7 @@ module.exports = function() {
 		});
 		if (e.visibleItemCount + e.firstVisibleItemIndex >= e.source.sections[0].items.length) {
 			archiveButton.animate({
-				opacity : 1
+				bottom: 30
 			});
 		}
 	});
@@ -142,7 +117,7 @@ module.exports = function() {
 			scale : 0.01
 		});
 		archiveButton.animate({
-			opacity : 0
+			bottom: -100
 		});
 	});
 	floatView.addEventListener("click", function() {
@@ -160,6 +135,8 @@ module.exports = function() {
 			pubdate : lastNews.pubDate
 		});
 	});
+	archiveButton.addEventListener("click", require("ui/dlf24/archiv.window"));
+	
 	$.addEventListener("focus", updateList);
 	return $;
 };

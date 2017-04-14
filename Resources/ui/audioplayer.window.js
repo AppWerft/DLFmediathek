@@ -8,21 +8,16 @@ var RecentsAdapter = require('controls/recents.adapter'),
 	TelephonyManager = require('com.goyya.telephonymanager'),
 	timeout = null,
 	TIMEOUT = 10000;
-	
-	
 
 TelephonyManager.addEventListener('callState',function(_e){
 	if (TelephonyManager.CALL_STATE_RINGING ==  _e.state && singletonPlayer.playing==true) singletonPlayer.pause();
 });
 
-var PLAYER = Ti.Media;
-// require('com.kcwdev.audio')
-
-var singletonPlayer = PLAYER['createAudioPlayer']({
+var singletonPlayer = Ti.Media.createAudioPlayer({
 	allowBackground : true,
-	volume : 1
+	volume : 1.0
 });
-
+console.log("📻singletonPlayer created");
 if (singletonPlayer.seek === undefined)
 	singletonPlayer.seek = singletonPlayer.setTime;
 
@@ -63,7 +58,16 @@ var $ = function(options) {
 		that.setControlView();
 	};
 	this.onCompleteFn = function(_e) {
-		console.log("📻onCompleteFn");
+		if (_e.error) Ti.UI.createNotication({
+			message : _e.error,
+			duration : 3000
+		}).show();
+		console.log("📻onCompleteFn success=" + _e.success);
+		console.log("📻onCompleteFn error=" + _e.error);
+		console.log("📻onCompleteFn code=" + _e.code);
+		var diff = Math.abs(_e.source.getDuration() - _e.source.getTime());
+		console.log("📻onCompleteFn diff=" + diff);
+		
 		if (that._view)
 			that._view.setVisible(false);
 		that._Recents.setComplete();
@@ -73,9 +77,10 @@ var $ = function(options) {
 
 	};
 	this.onStatusChangeFn = function(_e) {
-		console.log("📻onStatusChangeFn# Info: AudioPlayer sends " + _e.description);
+		console.log("📻onStatusChangeFn Info: AudioPlayer sends >>>>>>" + _e.description);
 		switch (_e.description) {
 		case 'stopped':
+		case "stopping":
 			if (this.onProgressFn && typeof this.onProgressFn == 'function')
 				singletonPlayer.removeEventListener('progress', this.onProgressFn);
 			if (this.onCompleteFn && typeof this.onCompleteFn == 'function')
@@ -126,16 +131,21 @@ var $ = function(options) {
 		}
 	};
 	this.stopPlayer = function() {
+		console.log("📻 stopPlayer");
 		if (that._view.mVisualizerView) {
 			this._view.mVisualizerView = null;
 		}
 		this._view.removeAllChildren();
 		this._view == null;
-		singletonPlayer.seek(0);
+	//	singletonPlayer.seek(0);
 		singletonPlayer.stop();
 		singletonPlayer && singletonPlayer.release();
-		if (!singletonPlayer.playing) 
+	//	if (!singletonPlayer.playing)  {
 			that._window.close();
+	//	}	
+		singletonPlayer.removeEventListener('progress', this.onProgressFn);
+		singletonPlayer.removeEventListener('complete', this.onCompleteFn);
+		singletonPlayer.removeEventListener('change', this.onStatusChangeFn);
 	};
 	this.startPlayer = function() {
 		var that = this;
@@ -241,9 +251,10 @@ var $ = function(options) {
 	});
 	this.progress = this._Recents.getProgress(this.options.url) * 1000;
 	if (this.createWindow()) {
+		console.log("📻createWindow");
 		var that = this;
 		if (CacheAdapter.isCached(this.options) && !this._Recents.isComplete(this.options.url)) {
-			console.log('is chached and not complete ==> try to continue');
+			console.log('📻 is cached and not complete ==> try to continue');
 			alertactive = true;
 			var dialog = Ti.UI.createAlertDialog({
 				cancel : 1,
@@ -267,11 +278,11 @@ var $ = function(options) {
 			});
 			dialog.show();
 		}
+		console.log("📻adding events to Player");
 		singletonPlayer.addEventListener('progress', this.onProgressFn);
 		singletonPlayer.addEventListener('complete', this.onCompleteFn);
 		singletonPlayer.addEventListener('change', this.onStatusChangeFn);
 		this._window.addEventListener("android:back", function() {
-			console.log('android:back is pressed =>> firing longpress');
 			that._view.control.fireEvent('longpress', {});
 			return false;
 		});

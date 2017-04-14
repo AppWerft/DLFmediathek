@@ -16,17 +16,19 @@ var $ = function(args) {
 	if (args.image) {
 		$.add(Ti.UI.createImageView({
 			touchEnabled : false,
-			top : 0,
-			right:0,
-			width : '60%',
+			bottom : 0,
+			zIndex:0,
+			width : Ti.UI.FILL,
 			height : 'auto',
 			image : args.image
 		}));
 	}
 	$.visualizerContainer = Ti.UI.createView({
-		height : Ti.UI.FILL,visible:false
+		height : Ti.UI.FILL,
+		visible : false
 	});
 	$.add($.visualizerContainer);
+	
 	$.container = Ti.UI.createView({
 		bubbleParent : false,
 		touchEnabled : false,
@@ -112,6 +114,7 @@ var $ = function(args) {
 		bottom : 115
 	});
 	$.spinner.show();
+	
 	$.container.add($.progress);
 	$.container.add($.slider);
 	$.container.add($.duration);

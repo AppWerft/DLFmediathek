@@ -29,7 +29,7 @@ module.exports = function(_args) {
 				var sub = {
 					author : ( typeof item.author == 'string') ? item.author : null,
 					start : item.datetime ? item.datetime.split(' ')[1].substr(0, 5) : '',
-					subtitle : item.title,
+					subtitle : item.title.replace(/"([^"]+)"/gm, '„$1“'),
 					station : item.station,
 					url : item.url,
 					datetime : item.datetime,
@@ -40,7 +40,7 @@ module.exports = function(_args) {
 					killtime : item.killtime,
 					pubdate : item.datetime,
 					duration : item.duration,
-					title : item.title,
+					title : item.title.replace(/"([^"]+)"/gm, '„$1“')
 				};
 				sub.isfav = Favs.isFav(sub) ? true : false;
 				if (item.sendung != lastsendung) {
@@ -76,7 +76,7 @@ module.exports = function(_args) {
 		subXpaths : {
 			url : "//item/@url",
 			author : "//item/author/text()",
-			title : "//item/title/text()",
+			title : "//item/title/text()".replace(/"([^"]+)"/gm, '„$1“').replace(/Erdogan/gm, "Erdoğan").replace(/Isik/gm, "Işık"),
 			id : "//item/@id",
 			sendung : "//item/sendung/text()",
 			sendungid : "//item/sendung/@id",

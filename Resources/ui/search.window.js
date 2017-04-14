@@ -23,7 +23,7 @@ module.exports = function() {
 				text : 'Sendedatum: ' + item.pubdate + ' Uhr'
 			},
 			duration : {
-				text : 'Dauer: ' + item.duration
+				text : 'Dauer: ' + Moment.unix(item.duration).format("mm:ss")
 			},
 			author : {
 				text : 'Autor: ' + item.author
@@ -52,7 +52,23 @@ module.exports = function() {
 	var args = arguments[0] || {};
 	var color = 'silver';
 	var $ = Ti.UI.createWindow();
-	$.addEventListener('open', function() {
+	$.addEventListener('open', function(_event) {
+		АктйонБар.setTitle('DRadio Suche');
+		АктйонБар.setSubtitle('Suche nach „' + args.needle + '“');
+		АктйонБар.setFont("Aller");
+		АктйонБар.setBackgroundColor('#444444');
+		АктйонБар.setStatusbarColor('#444444');
+		var activity = _event.source.getActivity();
+		if (activity) {
+			activity.onCreateOptionsMenu = function(_menuevent) {
+				_menuevent.menu.clear();
+				activity.actionBar.displayHomeAsUp = true;
+			};
+			activity.actionBar.onHomeIconItemSelected = function() {
+				$.close();
+			};
+			activity && activity.invalidateOptionsMenu();
+		}
 		$.listView = Ti.UI.createListView({
 			templates : {
 				'search' : require('TEMPLATES').search,
@@ -93,7 +109,7 @@ module.exports = function() {
 			});
 		});
 		var progress = 1;
-		$.waterProgressView = require('de.appwerft.waterwaveprogress').createView({
+		$.waterProgressView = require('ti.waterwaveprogress').createView({
 			width : 200,
 			height : 200,
 			showWater : true,
@@ -121,24 +137,6 @@ module.exports = function() {
 		$.add($.listView);
 		$.add($.waterProgressView);
 	});
-	$.addEventListener('open', function(_event) {
-		АктйонБар.setTitle('DRadio Suche');
-		АктйонБар.setSubtitle('Suche nach „' + args.needle + '“');
-		АктйонБар.setFont("Aller");
-		АктйонБар.setBackgroundColor('#444444');
-		АктйонБар.setStatusbarColor('#444444');
-		var activity = _event.source.getActivity();
-		if (activity) {
-			activity.onCreateOptionsMenu = function(_menuevent) {
-				_menuevent.menu.clear();
-				activity.actionBar.displayHomeAsUp = true;
-			};
-			activity.actionBar.onHomeIconItemSelected = function() {
-				$.close();
-			};
-			activity && activity.invalidateOptionsMenu();
-		}
-	});
-
+	
 	return $;
 };

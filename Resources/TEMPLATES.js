@@ -714,7 +714,7 @@ exports.search = {
 			properties : {
 				left : 0,
 				top : 5,
-				height : 50,
+				height : Ti.UI.SIZE,
 				verticalAlign : 'vertical',
 				touchEnabled : false,
 				ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_END,
