@@ -67,17 +67,18 @@ module.exports = function() {
 		while (res.isValidRow()) {
 			var parts = res.getFieldByName('duration').split(':');
 			var station = res.getFieldByName('station') || 'default';
+			console.log(parts);
 			var item = {
 				title : res.getFieldByName('title'),
-				pubdate : Moment(res.getFieldByName('pubdate')).format('DD. MM. YYYY  HH:ii'),
+				pubdate : Moment(res.getFieldByName('pubdate')).format('DD. MM. YYYY  HH:mm'),
 				author : res.getFieldByName('author'),
 				sendung : res.getFieldByName('podcast'),
 				url : res.getFieldByName('enclosure_url'),
 				description : res.getFieldByName('description'),
 				podcast : res.getFieldByName('podcast'),
 				author : res.getFieldByName('author'),
-				duration : parseInt(parts[0] * 60) + parseInt(parts[1]),
-				station : station,
+				duration : res.getFieldByName('duration'),
+				station : station || "dlf",
 				color : (Model[station] && Model[station].color) || 'gray',
 				image : res.getFieldByName('channelimage')
 			};

@@ -42,8 +42,13 @@ module.exports = function() {
 				if (i < 100)
 					items.push(item2dataitem(item));
 			});
-			if (_res.where == 'mediathek')
+			if (_res.where == 'mediathek') {
 				$.waterProgressView.hide();
+			} else {
+				_res.items.forEach(function(item, i) {
+					console.log(item);
+				});
+			}
 			$.listView.sections[_res.where == 'mediathek' ? 0 : 1].setItems(items);
 
 		}
@@ -137,6 +142,6 @@ module.exports = function() {
 		$.add($.listView);
 		$.add($.waterProgressView);
 	});
-	
+
 	return $;
 };

@@ -1,9 +1,10 @@
 var DLF24_FEED_URL = "http://www.deutschlandfunk.de/die-nachrichten.353.de.rss?_=";
-
+var PodcastListGrabber = require("de.appwerft.podcast");
 var Moment = require("vendor/moment");
-var KEY = "DLF#11";
+var KEY = "DLF#13";
 var lasttime = new Date().getTime();
-
+var lastHash = "";
+var TTL = 1000*60; // cache time
 function l(t) {
 	var diff = (new Date().getTime()) - lasttime;
 	console.log(diff + " DLF: " + t);
@@ -11,50 +12,57 @@ function l(t) {
 };
 l("START=======================");
 var $ = {
-	getNewsList : function(_callback, _forced) {
-		$.getArchive();
-		if (Ti.App.Properties.hasProperty("DLF24") && !_forced) {
-			var res = Ti.App.Properties.getObject("DLF24");
+	getNewsList : function(_callback, _forced, _offset, _limit) {
+		if (_callback == undefined || typeof _callback != "function") {
+			return;
+		}
+		var forced = (_forced == undefined) ? true : false;	
+		var offset = (_offset == undefined) ? 0 : _offset;
+		var limit = (_limit == undefined) ? 3 : _limit;
+		l(">>>>>>>>>>>>>>>>> " +forced + "   offset=" + offset + "   limit=" + limit);
+		if (Ti.App.Properties.hasProperty("DLF24") && !forced) {
+			// first callback from cache:
+			var items = Ti.App.Properties.getObject("DLF24");
 			_callback && _callback({
-				items : res,
-				state : 0
+				items : items,
+				state : 0,
+				changed : testChanges(items)
 			});
-			return res;
 		}
 		var unresolvedItems = [];
-		l("----------- start refresh");
-		require("de.appwerft.podcast").loadPodcast({
+		PodcastListGrabber.loadPodcast({
 			url : DLF24_FEED_URL + Math.random(),
 			timeout : 10000
 		}, function(_e) {
 			l("Answer from server " + _e.items.length);
-			_e.items && Ti.App.Properties.setList("DLF24", _e.items);
+			// in list details try to resolve (synchronly)
+			// iterating thru all items:
 			var items = _e.items.map(function(_item, _ndx) {
-				if (!_item)
-					return null;
-				//_item.ndx = _ndx;
-				//_item.url = _item.link;
-				var item = $.getNewsItem(_item.link);
+				var item = $.getNewsItem(_item.link); // getter
 				if (item) {
-					return item;
+					return item; // directly to result list
 				} else {
-					unresolvedItems.push(_item);
-					// copy from xml list
+					if (_ndx >= offset && _ndx <= offset+limit)
+						unresolvedItems.push(_item);
 					item = _item;
 					item.ndx = _ndx;
-					item.shorttext = clean(_item.description).replace(/\. mehr/,".");
+					item.shorttext = clean(_item.description).replace(/\. mehr/, ".");
 					item.title = clean(_item.title);
 					return item;
 				}
 			});
 			
+			// result save in properties for caching
+			_e.items && Ti.App.Properties.setList("DLF24", _e.items);
+			//		
 			l("first resolving ready");
 			_callback && _callback({
 				items : items,
 				state : 1,
+				changed : testChanges(items),
 				unresolved : unresolvedItems.length
 			});
-			
+            // now we go into net and resolve partly the details depending offset/limit
 			var count = 0;
 			l("UI (listview) updated => start second (async) run");
 			var getDetailsForItemfromServer = function(item) {
@@ -73,7 +81,7 @@ var $ = {
 					var uitem = unresolvedItems.pop();
 					if (uitem) {
 						getDetailsForItemfromServer(uitem);
-					} else { // end of loop
+					} else {// end of loop
 						l("item " + count + " resolved");
 						Ti.App.Properties.setList("DLF24", items);
 						_callback && _callback({
@@ -84,6 +92,8 @@ var $ = {
 						l("end doNextsteploop");
 					}
 				}
+
+
 				$.getNewsItem(item.link, doNextStep, false);
 			};
 			var uitem = unresolvedItems.pop();
@@ -94,18 +104,16 @@ var $ = {
 
 	getNewsItem : function(_url, _callback, _forced) {
 		var key = KEY + _url;
-		l(key);
-		l(_forced);
 		if (Ti.App.Properties.hasProperty(key) && !_forced) {
 			var res = Ti.App.Properties.getObject(key);
 			_callback && _callback(res);
 			return res;
 		}
+		if (!_callback) return;
 		l("start scraper of " + _url);
 		var Document = require("de.appwerft.soup").createDocument({
 			url : _url,
 			onload : function(e) {
-				l("end scraper");
 				if (!Document) {
 					l("no Document from " + _url);
 					return;
@@ -135,7 +143,7 @@ var $ = {
 		return null;
 	},
 	getArchive : function(_cb) {
-		var URL = "http://www.deutschlandfunk.de/dlf24-nachrichten-wochenueberblick.1724.de.html?"+ Moment().format("YYYYMMDD");
+		var URL = "http://www.deutschlandfunk.de/dlf24-nachrichten-wochenueberblick.1724.de.html?" + Moment().format("YYYYMMDD");
 		var Document = require("de.appwerft.soup").createDocument({
 			url : URL,
 			onload : function(_e) {
@@ -165,10 +173,21 @@ function clean(foo) {
 		.replace(/<br>\s*<br>\s*/gm, "\n\n")//
 		.replace(/<br>/gm, "")//
 		.replace(/Erdogan/gm, "Erdoğan")//
-		.replace(/Yildirim/gm,"Yıldırım")//
-		.replace(/Cavusoglu/gm,"Çavuşoğlu")//
+		.replace(/Yildirim/gm, "Yıldırım")//
+		.replace(/Cavusoglu/gm, "Çavuşoğlu")//
 		.replace(/Isik/gm, "Işık")//
 		.replace(/"([^"]+)"/gm, '„$1“');
 	else
 		return "";
+}
+
+function testChanges(items) {
+	var newHash = Ti.Utils.md5HexDigest(JSON.stringify(items));
+	console.log(newHash);
+	console.log(lastHash);
+	if (newHash != lastHash) {
+		lastHash = newHash; 
+		return true;		
+	}
+	return false;
 }

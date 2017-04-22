@@ -27,7 +27,7 @@ var alertactive = false;
 var $ = function(options) {
 	if (!options.station)
 		options.station = Ti.App.Properties.getString('LAST_STATION');
-	options.color = Stations[options.station].color;
+	options.color = options.station  && Stations[options.station]? Stations[options.station].color : "#555";
 	this.options = options;
 	if (singletonPlayer && singletonPlayer.playing)
 		singletonPlayer.release();

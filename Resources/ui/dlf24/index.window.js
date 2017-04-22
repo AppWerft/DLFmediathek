@@ -1,6 +1,8 @@
 var АктйонБар = require('com.alcoapps.actionbarextras'),
     Moment = require("vendor/moment"),
-    lastNews = null;
+    DLF24controler = require("controls/dlf24");
+lastNews = null,
+ROWS_IN_VIEWPORT = 2;
 
 module.exports = function() {
 	var locked = false;
@@ -24,7 +26,7 @@ module.exports = function() {
 	$.container.addEventListener('refreshing', updateList);
 	$.add($.container);
 
-	function updateList() {
+	function updateList(forced, offset, limit) {
 		getLastURL(function(_item) {
 			if (_item) {
 				lastNews = _item;
@@ -35,14 +37,12 @@ module.exports = function() {
 				lastNews = null;
 		});
 		$.container.setRefreshing(true);
-		var LottieView = require("ui/lottie.widget")();	
-			$.add(LottieView);
-		require("controls/dlf24").getNewsList(function(_res) {
+		var LottieView = require("ui/lottie.widget")();
+		$.add(LottieView);
+		DLF24controler.getNewsList(function(_res) {
 			$.container.setRefreshing(false);
-			if (_res.unresolved ==0){
-				$.remove(LottieView);
-			}
-			if (_res.items) {
+			$.remove(LottieView);
+			if (true == _res.changed && _res.items) {
 				$.listView.setSections([Ti.UI.createListSection({
 					headerTitle : "Heutige Nachrichten (" + Moment().format("LL") + ")",
 					items : _res.items.map(function(_item, _ndx) {
@@ -55,7 +55,7 @@ module.exports = function() {
 								text : _item.title
 							},
 							shorttext : {
-								text : _item.shorttext.replace(/<a.*?>/gm, "").replace(/<\/a>/gm, "")
+								text : _item.shorttext
 							},
 							aufmacher : {
 								image : _item.aufmacher || undefined
@@ -65,7 +65,7 @@ module.exports = function() {
 				})]);
 			} else
 				console.log("DLF ERROR: no items in feed");
-		}, true);
+		}, forced, offset, limit);
 	}
 
 
@@ -108,16 +108,33 @@ module.exports = function() {
 		});
 		if (e.visibleItemCount + e.firstVisibleItemIndex >= e.source.sections[0].items.length) {
 			archiveButton.animate({
-				bottom: 30
+				bottom : 30
 			});
 		}
+		// all rows in viewport:
+		var ndxList = [];
+		for (var i = e.firstVisibleItemIndex; i < e.firstVisibleItemIndex + e.visibleItemCount; i++) {
+			ndxList.push(i);
+		}
+		ndxList.forEach(function(ndx) {
+			// getting the item
+			var item = $.listView.sections[0].getItemAt(ndx);
+			if (item) {
+				var url = item.properties.itemId;
+				DLF24controler.getNewsItem(url, function(res) {
+					item.aufmacher.image = res.aufmacher || undefined;
+					$.listView.sections[0].updateItemAt(ndx, item);
+				}, /*forced*/false);
+			}
+		});
+		//	updateList(false, e.firstVisibleItemIndex, e.visibleItemCount);
 	});
 	$.listView.addEventListener("scrollstart", function() {
 		floatView.transform = Ti.UI.create2DMatrix({
 			scale : 0.01
 		});
 		archiveButton.animate({
-			bottom: -100
+			bottom : -100
 		});
 	});
 	floatView.addEventListener("click", function() {
@@ -136,7 +153,7 @@ module.exports = function() {
 		});
 	});
 	archiveButton.addEventListener("click", require("ui/dlf24/archiv.window"));
-	
+
 	$.addEventListener("focus", updateList);
 	return $;
 };

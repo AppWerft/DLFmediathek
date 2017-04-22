@@ -1041,6 +1041,15 @@ exports.dlf24 = {
 			width : Ti.UI.FILL
 		}
 	}, {
+		
+        type: 'gif.GifView',
+        bindId: 'gif',
+        properties: {
+            image:"/images/ajax-loader.gif",
+            opacity:0
+        }
+		
+	},{
 		type : 'Ti.UI.Label',
 		bindId : 'title',
 		properties : {
