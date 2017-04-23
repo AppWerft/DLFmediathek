@@ -121,8 +121,11 @@ module.exports = function() {
 			var item = $.listView.sections[0].getItemAt(ndx);
 			if (item) {
 				var url = item.properties.itemId;
+				//var LV =  require("ui/lottie.widget")();
+				//$.add(LV);
 				DLF24controler.getNewsItem(url, function(res) {
 					item.aufmacher.image = res.aufmacher || undefined;
+					//$.remove(LV);
 					$.listView.sections[0].updateItemAt(ndx, item);
 				}, /*forced*/false);
 			}

@@ -6,9 +6,8 @@ var Favs = new (require('controls/favorites.adapter'))(),
 var Moment = require('vendor/moment');
 Moment.locale('de');
 
-var HEIGHT_OF_TOPBOX = 120;
-
 module.exports = function(_args) {
+
 	var activityworking = true;
 	var self = Ti.UI.createView({
 		backgroundColor : '#444',
@@ -17,39 +16,14 @@ module.exports = function(_args) {
 		itemId : {
 			name : _args.station,
 			mediathek : _args.mediathek,
-
 		},
 	});
-	Ti.App.addEventListener('daychanged', function() {
-		//	self.date = Moment().startOf('day');
-	});
-	if (_args.archiv != true) {
-		setTimeout(function() {
-			self.calendarView = require('ui/calendar.widget')({
-				self : self,
-				color : _args.color,
-				station : _args.station,
-				date : self.date
-			});
-			self.add(self.calendarView);
-		}, 3000);
+	self.hideCurrent = function() {
 
-		var TopBoxWidget = new (require('ui/currenttop.widget'))({
-			station : _args.station
-		});
-		self.topBox = TopBoxWidget.createView({
-			height : HEIGHT_OF_TOPBOX,
-			color : _args.color
-		});
-		self.add(self.topBox);
-	}
-	self.add(Ti.UI.createView({
-		top : 0,
-		height : 7,
-		backgroundColor : _args.color
-	}));
+	};
+	// dummy
 	self.bottomList = Ti.UI.createListView({
-		top : (_args.archiv == true) ? 79 : 7,
+		top : 2,
 		backgroundColor : _args.color,
 		templates : {
 			'mediathek' : require('TEMPLATES').mediathek,
@@ -57,70 +31,40 @@ module.exports = function(_args) {
 		defaultItemTemplate : 'mediathek',
 		sections : [Ti.UI.createListSection()]
 	});
-	self.bottomView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
+
+	self.refreshView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 		view : self.bottomList,
-		top : _args.archiv ? 70 : 0,
+		top : 12,
 		backgroundColor : '#444'
 	});
-	self.bottomView.addEventListener('refreshing', function() {
-		if (Math.random() > 0.99)
-			Ti.UI.createNotification({
-				message : 'Sehr gut, Medienkompetenz=1!\nAber bitte nicht allzuoft hier ziehen. Empfehlung: so alle fünf Minuten – sonst leierst aus …'
-			}).show();
+
+	self.refreshView.addEventListener('refreshing', function() {
 		setTimeout(function() {
-			self.bottomView.setRefreshing(false);
+			self.refreshView.setRefreshing(false);
 		}, 2000);
 		self.updateMediathekList();
 	});
-	self.add(self.bottomView);
+	self.add(self.refreshView);
 	var dataItems = [];
 	var lastPubDate = null;
 	var currentMediathekHash = null;
-	self.updateCurrentinTopBox = function(_forced) {
-		
-			var currentItem = Schema.getCurrentOnAir({
-				station : _args.station
-			});
-			if (currentItem) {
-				lastPubDate = currentItem.pubDate;
-				if (_args.archiv != true) {
-					self.topBox.setTop(8);
-					self.bottomView.setTop(HEIGHT_OF_TOPBOX);
-					TopBoxWidget.setProgress(currentItem.progress);
-					TopBoxWidget.setPubDate(currentItem.pubDate);
-					TopBoxWidget.setTitle(currentItem.title);
-					TopBoxWidget.setDescription(currentItem.description);
-					self.bottomView.animate({
-						top : HEIGHT_OF_TOPBOX,
-						duration : 700
-					});
-				}
-			}
-		
-	};
 	/* hiding of todays display */
-	self.hideCurrent = function() {
-		self.bottomView.setTop(7);
-		self.topBox.setTop(-HEIGHT_OF_TOPBOX);
-	};
 	self.updateMediathekList = function() {
-		self.bottomView.setRefreshing(true);
+		self.refreshView.setRefreshing(true);
 		setTimeout(function() {
-			self.bottomView.setRefreshing(false);
+			self.refreshView.setRefreshing(false);
 		}, 3000);
-		if (activityworking == false) {
-			return;
-		}
+
 		require('controls/mediathek.adapter')({
 			url : _args.mediathek,
 			station : _args.station,
 			archiv : _args.archiv,
 			nocache : (self.date.isSame(Moment().startOf('day'))) ? true : false,
-			date : _args.date ?  _args.date.format('DD.MM.YYYY') : Moment().format('DD.MM.YYYY'),
+			date : _args.date ? _args.date.format('DD.MM.YYYY') : Moment().format('DD.MM.YYYY'),
 			onload : function(_sendungen) {
 				if (_sendungen == null)
 					return;
-				self.bottomView.setRefreshing(false);
+				self.refreshView.setRefreshing(false);
 				if (currentMediathekHash == _sendungen.hash)
 					return;
 				currentMediathekHash = _sendungen.hash;
@@ -191,36 +135,22 @@ module.exports = function(_args) {
 						items : dataitems
 					}));
 				});
-				if (self.date.isSame(Moment().startOf('day')) && _args.station != 'drw	')
-					self.updateCurrentinTopBox();
 				self.bottomList.setMarker({
 					sectionIndex : 5,
 					itemIndex : 0
-				});
-				self.bottomList.addEventListener('marker', function(e) {
-					if (_args.archiv != true) {
-						self.topBox.animate({
-							top : -HEIGHT_OF_TOPBOX,
-						});
-						self.bottomView.animate({
-							top : 8,
-							duration : 600
-						});
-					}
-					return;
-
 				});
 			}
 		});
 	};
 	var locked = false;
 	self.bottomList.addEventListener('itemclick', _args.window.onitemclickFunc);
-	if (_args.station != 'drw')
-		setInterval(self.updateCurrentinTopBox, 60000);
 	Ti.App.addEventListener('app:state', function(_payload) {
 		activityworking = _payload.state;
 	});
 	self.updateMediathekList();
-	self.updateCurrentinTopBox();
+	for (var i = 1; i < 10; i++)
+		require("controls/nova/thema.adapter")(i, function(res) {
+			console.log(res);
+		});
 	return self;
 };

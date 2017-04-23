@@ -19,12 +19,21 @@ module.exports = function() {
 	self.onitemclickFunc = require('ui/mediathek.onclick');
 	var pages = [];
 	for (var station in Model) {
-		pages.push(MediathekPage({
-			station : station,
-			window : self,
-			color : Model[station].color,
-			mediathek : Model[station].mediathek,
-		}));
+		if (station != "drw") {
+			pages.push(MediathekPage({
+				station : station,
+				window : self,
+				color : Model[station].color,
+				mediathek : Model[station].mediathek,
+			}));
+		} else
+			pages.push(require("ui/nova/index.page")({
+				station : station,
+				window : self,
+				color : Model[station].color,
+				mediathek : Model[station].mediathek,
+			}));
+
 	};
 	self.FlipViewCollection = FlipModule.createFlipView({
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
@@ -42,13 +51,15 @@ module.exports = function() {
 			page : 'mediathek'
 		});
 		pages.forEach(function(page, ndx) {
-			if (ndx == _e.index || _e.forced == true) {
-				setTimeout(function() {
-					page.updateCurrentinTopBox(true);
-				}, 500);
-				page.updateMediathekList();
-			} else
+			if (ndx < 2) {
+				if (ndx == _e.index || _e.forced == true) {
+					setTimeout(function() {
+						page.updateCurrentinTopBox(true);
+					}, 500);
+					page.updateMediathekList();
+				}
 				page.hideCurrent([_e.index]);
+			}
 		});
 	};
 	self.onFocusFunc = function() {

@@ -37,7 +37,7 @@ module.exports = function() {
 				sendung : {
 					text : item.title,
 					height : (item.title) ? Ti.UI.SIZE : 0,
-					color : (item.title && item.station) ? Model[item.station].color : '#555'
+					color : (item.title && item.station && item.station!= "default") ? Model[item.station].color : '#555'
 				},
 				author : {
 					text : 'Autor: ' + item.author,

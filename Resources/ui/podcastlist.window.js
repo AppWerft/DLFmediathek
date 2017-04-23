@@ -4,7 +4,16 @@ var Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function(_args) {
-	var self = Ti.UI.createWindow();
+	var self = Ti.UI.createWindow({layout:"vertical"});
+	console.log(_args);
+	if (_args.banner) {
+		self.add(Ti.UI.createImageView({
+			image : "/images/podcasts/"+_args.banner,
+			top: 78,
+			width:Ti.UI.FILL,
+			height: "auto"
+		}));
+	}
 	self.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
 		backgroundColor : _args.station,
@@ -12,7 +21,7 @@ module.exports = function(_args) {
 			'podcastlist' : require('TEMPLATES').podcastlist,
 		},
 		defaultItemTemplate : 'podcastlist',
-		top : 78,
+		top : (_args.banner) ?0:78,
 		sections : [Ti.UI.createListSection({})]
 	});
 	Feed.getFeed({

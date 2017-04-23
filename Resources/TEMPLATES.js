@@ -1035,21 +1035,22 @@ exports.dlf24 = {
 			left : 0,
 			right : 0,
 			top : 0,
-			defaultImage: "/images/dlf24.jpeg",
+			defaultImage : "/images/dlf24.jpeg",
 			height : Ti.UI.SIZE,
 			touchEnabled : false,
 			width : Ti.UI.FILL
 		}
-	}, {
-		
-        type: 'gif.GifView',
-        bindId: 'gif',
-        properties: {
-            image:"/images/ajax-loader.gif",
-            opacity:0
-        }
-		
-	},{
+	}, /*{
+		type : 'Ti.UI.ScrollableView',
+		bindId : 'spinner',
+		properties : {
+			top : -100,
+			width : 100,
+			right : 5,
+			height : 100,
+			views: []
+		}
+	},*/ {
 		type : 'Ti.UI.Label',
 		bindId : 'title',
 		properties : {

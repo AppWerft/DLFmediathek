@@ -11,7 +11,7 @@ module.exports = {
 	},
 	drk : {
 		color : '#FFE95D0F',
-		name : 'DRadio Kultur',
+		name : 'DLF Kultur',
 		dayplan : 'http://www.deutschlandradiokultur.de/programmvorschau.282.de.rss',
 		playlist : 'http://www.dradio.de/streaming/dkultur.m3u',
 		icyurl : ['icy://dradio_mp3_dkultur_m.akacast.akamaistream.net/7/530/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dkultur_m'],
@@ -19,7 +19,7 @@ module.exports = {
 	},
 	drw : {
 		color : '#FF01953C',
-		name : 'DRadio Wissen',
+		name : 'DLF Nova',
 		icyurl : ['http://dradio_mp3_dwissen_m.akacast.akamaistream.net/7/728/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dwissen_m'],
 		mediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=1&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'
 	}

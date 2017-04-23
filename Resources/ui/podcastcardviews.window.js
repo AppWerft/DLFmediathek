@@ -27,7 +27,7 @@ function getTileDims() {
 }
 
 module.exports = function() {
-	var self = Ti.UI.createWindow();
+	var $ = Ti.UI.createWindow();
 	var pages = [];
 	function flipTo() {
 		var laststation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
@@ -36,8 +36,8 @@ module.exports = function() {
 			if (stations[ndx] == laststation)
 				stationindex = ndx;
 		}
-		if (self.FlipViewCollection)
-			self.FlipViewCollection.currentPage = stationindex;
+		if ($.FlipViewCollection)
+			$.FlipViewCollection.currentPage = stationindex;
 	}
 
 
@@ -52,11 +52,11 @@ module.exports = function() {
 			horizontalWrap : true,
 		});
 		pages[ndx].addEventListener('click', function(_e) {
+			console.log(_e.source.itemId);
 			if (_e.source.itemId) {
+				Ti.Media.vibrate([20,10]);
 				var item = JSON.parse(_e.source.itemId);
 				if (item) {
-					console.log("======================");
-					console.log(item);
 					item.color = color;
 					item.station = stations[ndx];
 					require('ui/podcastlist.window')(item).open();
@@ -67,7 +67,10 @@ module.exports = function() {
 			var itemId = {
 				title : (p.a) ? p.a.img.alt : p.img.alt,
 				url : (p.a) ? p.a.href : p.href,
+				banner : p.banner,
+				color: Model[station].color
 			};
+			console.log(itemId);
 			var backgroundImage = ndx == 2 ? '/images/podcasts/' + p.img.src : '/images/' + stations[ndx] + 'tile.png';
 			var cv = Ti.UI.Android.createCardView({
 				padding : 0,
@@ -99,7 +102,7 @@ module.exports = function() {
 		});
 	});
 
-	self.FlipViewCollection = FlipModule.createFlipView({
+	$.FlipViewCollection = FlipModule.createFlipView({
 		orientation : FlipModule.ORIENTATION_HORIZONTAL,
 		overFlipMode : FlipModule.OVERFLIPMODE_GLOW,
 		views : pages,
@@ -107,20 +110,20 @@ module.exports = function() {
 		height : Ti.UI.FILL,
 		width : Ti.UI.FILL
 	});
-	self.FlipViewCollection.addEventListener('flipped', function(_e) {
+	$.FlipViewCollection.addEventListener('flipped', function(_e) {
 		Ti.App.fireEvent('app:station', {
 			station : stations[_e.source.currentPage],
 			page : 'Podcasts'
 		});
 	});
-	self.add(self.FlipViewCollection);
-	self.addEventListener('focus', flipTo);
+	$.add($.FlipViewCollection);
+	$.addEventListener('focus', flipTo);
 	Ti.Gesture.addEventListener('orientationchange', function() {
 		var currentStation = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 		if (Ti.Platform.displayCaps.platformHeight > Ti.Platform.displayCaps.platformWidth) {
-			self.FlipViewCollection && self.FlipViewCollection.setTop(130);
+			$.FlipViewCollection && $.FlipViewCollection.setTop(130);
 		} else {
-			self.FlipViewCollection && self.FlipViewCollection.setTop(80);
+			$.FlipViewCollection && $.FlipViewCollection.setTop(80);
 		}
 		var dims = getTileDims();
 		if (dims != undefined) {
@@ -149,5 +152,5 @@ module.exports = function() {
 			});
 		}
 	});
-	return self;
+	return $;
 };

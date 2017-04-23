@@ -59,21 +59,23 @@ $.prototype = {
 		var res = link.execute(sql);
 		while (res.isValidRow()) {
 			var station = res.getFieldByName('station');
-			var item = {
-				url : res.getFieldByName('url'),
-				image : '/images/' + station + '.png',
-				station : station,
-				title : res.getFieldByName('sendung'),
-				subtitle : res.getFieldByName('title'),
-				duration : res.getFieldByName('duration'),
-				progress : res.getFieldByName('progress') / res.getFieldByName('duration'),
-				lastaccess : res.getFieldByName('lastaccess'),
-				pubdate : res.getFieldByName('pubdate'),
-				author : res.getFieldByName('author'),
-				color : (station ) ? Model[station].color : 'gray'
-			};
-			recents.push(item);
-			res.next();
+			if (station) {
+				var item = {
+					url : res.getFieldByName('url'),
+					image : '/images/' + station + '.png',
+					station : station,
+					title : res.getFieldByName('sendung'),
+					subtitle : res.getFieldByName('title'),
+					duration : res.getFieldByName('duration'),
+					progress : res.getFieldByName('progress') / res.getFieldByName('duration'),
+					lastaccess : res.getFieldByName('lastaccess'),
+					pubdate : res.getFieldByName('pubdate'),
+					author : res.getFieldByName('author'),
+					color : (station !="default") ? Model[station].color : 'gray'
+				};
+				recents.push(item);
+				res.next();
+			} 
 		}
 
 		res.close();

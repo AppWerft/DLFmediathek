@@ -13,7 +13,7 @@ String.prototype.toHHMMSS = function() {
 	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
 	return time;
 };
-
+var Lotti = require("ti.animation");
 //if (require("de.appwerft.cameraparameters").isPermissionGranted())//
 
 //require("de.appwerft.cameraparameters").getAllCameras({
