@@ -10,7 +10,6 @@ module.exports = function() {
 		fullscreen : false,
 		exitOnClose : options.exitOnClose ? true : false
 	});
-	require('de.manumaticx.crouton').info("Langes Pressen löscht Beitrag.");
 	self.list = Ti.UI.createListView({
 		top : 80,
 		height : Ti.UI.FILL,
@@ -24,6 +23,7 @@ module.exports = function() {
 	self.updateListContent = function() {
 		var recents = Recents.getAllRecents();
 		var items = recents.map(function(item) {
+			console.log(item.pubdate);
 			return {
 				title : {
 					text : item.subtitle,
@@ -37,7 +37,7 @@ module.exports = function() {
 				sendung : {
 					text : item.title,
 					height : (item.title) ? Ti.UI.SIZE : 0,
-					color : (item.title && item.station && item.station!= "default") ? Model[item.station].color : '#555'
+					color : (item.title && item.station && item.station != "default") ? Model[item.station].color : '#555'
 				},
 				author : {
 					text : 'Autor: ' + item.author,
@@ -51,6 +51,7 @@ module.exports = function() {
 					height : (item.duration != 0) ? Ti.UI.SIZE : 0,
 				},
 				pubdate : {
+					height : (item.pubdate == "Invalid date") ? 0 : undefined,
 					text : (item.pubdate) ? 'Sendezeit : ' + require('vendor/smartDate')(item.pubdate) : ''
 				},
 				lastaccess : {
@@ -61,6 +62,7 @@ module.exports = function() {
 				}
 			};
 		});
+
 		self.list.sections[0].setItems(items);
 	};
 	self.add(self.list);
@@ -80,7 +82,7 @@ module.exports = function() {
 					url : data.url,
 					duration : data.duration,
 					title : data.title,
-					subtitle : data.subtitle,//Moment(data.pubdate).format('LLL') + ' Uhr',
+					subtitle : data.subtitle, //Moment(data.pubdate).format('LLL') + ' Uhr',
 					author : data.author,
 					station : data.station,
 					pubdate : data.pubdate

@@ -52,7 +52,6 @@ module.exports = function() {
 			horizontalWrap : true,
 		});
 		pages[ndx].addEventListener('click', function(_e) {
-			console.log(_e.source.itemId);
 			if (_e.source.itemId) {
 				Ti.Media.vibrate([20,10]);
 				var item = JSON.parse(_e.source.itemId);
@@ -70,7 +69,6 @@ module.exports = function() {
 				banner : p.banner,
 				color: Model[station].color
 			};
-			console.log(itemId);
 			var backgroundImage = ndx == 2 ? '/images/podcasts/' + p.img.src : '/images/' + stations[ndx] + 'tile.png';
 			var cv = Ti.UI.Android.createCardView({
 				padding : 0,

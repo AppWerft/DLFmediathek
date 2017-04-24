@@ -112,7 +112,7 @@ var $ = {
 		if (!_callback) return;
 		l("start scraper of " + _url);
 		var Document = require("de.appwerft.soup").createDocument({
-			url : _url,
+			url : _url,timeout: 30000,
 			onload : function(e) {
 				if (!Document) {
 					l("no Document from " + _url);
@@ -166,20 +166,7 @@ var $ = {
 };
 module.exports = $;
 
-function clean(foo) {
-	if (foo)
-		return foo.replace(/<a.*?>/gim, "").replace(/<\/a>/gim, "")//
-		.replace(/&nbsp;/gm, " ")//
-		.replace(/<br>\s*<br>\s*/gm, "\n\n")//
-		.replace(/<br>/gm, "")//
-		.replace(/Erdogan/gm, "Erdoğan")//
-		.replace(/Yildirim/gm, "Yıldırım")//
-		.replace(/Cavusoglu/gm, "Çavuşoğlu")//
-		.replace(/Isik/gm, "Işık")//
-		.replace(/"([^"]+)"/gm, '„$1“');
-	else
-		return "";
-}
+
 
 function testChanges(items) {
 	var newHash = Ti.Utils.md5HexDigest(JSON.stringify(items));

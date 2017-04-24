@@ -31,3 +31,19 @@ var Lotti = require("ti.animation");
 
  }();
 
+function clean(foo) {
+	if (foo)
+		return foo.replace(/<a.*?>/gim, "").replace(/<\/a>/gim, "")//
+		.replace(/&nbsp;/gm, " ")//
+		.replace(/<br>\s*<br>\s*/gm, "\n\n")//
+		.replace(/<br>/gm, "")//
+		.replace(/Erdogan/gm, "Erdoğan")//
+		.replace(/Yildirim/gm, "Yıldırım")//
+		.replace(/Cavusoglu/gm, "Çavuşoğlu")//
+		.replace(/Isik/gm, "Işık")//
+		.replace(/Sislik/gm, "Şişlik")//
+		
+		.replace(/"([^"]+)"/gm, '„$1“');
+	else
+		return "";
+}

@@ -4,30 +4,32 @@ var Model = require('model/stations'),
     АктйонБар = require('com.alcoapps.actionbarextras');
 
 module.exports = function(_args) {
-	var self = Ti.UI.createWindow({layout:"vertical"});
+	var $ = Ti.UI.createWindow({
+		layout : "vertical"
+	});
 	console.log(_args);
 	if (_args.banner) {
-		self.add(Ti.UI.createImageView({
-			image : "/images/podcasts/"+_args.banner,
-			top: 78,
-			width:Ti.UI.FILL,
-			height: "auto"
+		$.add(Ti.UI.createImageView({
+			image : "/images/podcasts/" + _args.banner,
+			top : 78,
+			width : Ti.UI.FILL,
+			height : "auto"
 		}));
 	}
-	self.list = Ti.UI.createListView({
+	$.list = Ti.UI.createListView({
 		height : Ti.UI.FILL,
 		backgroundColor : _args.station,
 		templates : {
 			'podcastlist' : require('TEMPLATES').podcastlist,
 		},
 		defaultItemTemplate : 'podcastlist',
-		top : (_args.banner) ?0:78,
+		top : (_args.banner) ? 0 : 78,
 		sections : [Ti.UI.createListSection({})]
 	});
 	Feed.getFeed({
 		url : _args.url,
 		done : function(_feeditems) {
-				var items = [];
+			var items = [];
 			_feeditems.items && _feeditems.items.forEach(function(item) {
 				var res = /<img src="(.*?)"\s.*?title="(.*?)".*?\/>(.*?)</gmi.exec(item.description);
 				item.image = (res) ? res[1] : item.channelimage;
@@ -35,7 +37,7 @@ module.exports = function(_args) {
 				var description = (res) ? res[3] : null;
 				var copyright = (res) ? res[2] : null;
 				var pubdate = Moment(item.pubDate).format('LLL') + ' Uhr';
-		 	    item.station = _args.station ? _args.station : 'dlf';
+				item.station = _args.station ? _args.station : 'dlf';
 				items.push({
 					pubdate : {
 						text : pubdate
@@ -73,11 +75,12 @@ module.exports = function(_args) {
 					}
 				});
 			});
-			self.list.sections[0].setItems(items);
+			if ($ && $.list && $.list.sections[0])
+				$.list.sections[0].setItems(items);
 		}
 	});
-	self.add(self.list);
-	self.list.addEventListener('itemclick', function(_e) {
+	$.add($.list);
+	$.list.addEventListener('itemclick', function(_e) {
 		if (_e.bindId && _e.bindId == 'image') {
 			var item = _e.section.getItemAt(_e.itemIndex);
 			if (item.copyright.text != null)
@@ -87,10 +90,10 @@ module.exports = function(_args) {
 				}).show();
 		} else {
 			var item = JSON.parse(_e.itemId);
-			self.createAndStartPlayer(item);
+			$.createAndStartPlayer(item);
 		}
 	});
-	self.createAndStartPlayer = function(data) {
+	$.createAndStartPlayer = function(data) {
 		if (!data.url)// new since 02/2006 (new feed structur)
 			data.url = data.enclosure.url;
 		require('ui/audioplayer.window').createAndStartPlayer({
@@ -106,11 +109,11 @@ module.exports = function(_args) {
 		});
 
 	};
-	self.addEventListener('close', function(_event) {
-		self.removeAllChildren();
-		self=null;
+	$.addEventListener('close', function(_event) {
+		$.removeAllChildren();
+		$ = null;
 	});
-	self.addEventListener('open', function(_event) {
+	$.addEventListener('open', function(_event) {
 		var station = Ti.App.Properties.getString('LAST_STATION', 'dlf');
 		АктйонБар.title = Model[station].name;
 		АктйонБар.subtitle = _args.title;
@@ -144,12 +147,12 @@ module.exports = function(_args) {
 					menuitem.setIcon(Feed.isFaved(_args.url) ? Ti.App.Android.R.drawable.ic_action_faved : Ti.App.Android.R.drawable.ic_action_favorite_add);
 				});
 				activity.actionBar.onHomeIconItemSelected = function() {
-					self.close();
+					$.close();
 				};
 			};
 			activity.invalidateOptionsMenu();
 		}
 	});
 
-	return self;
+	return $;
 };

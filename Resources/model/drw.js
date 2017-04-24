@@ -52,7 +52,7 @@ module.exports = [{
 	"img" : {
 		"alt" : "Hielscher oder Haase",
 		"src" : "hh.jpg"
-	}, "banner" : "haasebanner.jpg"
+	}, "banner" : "hielscher-oder-haase.jpg"
 }, {
 	"href" : "http://dradiowissen.de/podcast/hoersaal-der-podcast",
 	"img" : {

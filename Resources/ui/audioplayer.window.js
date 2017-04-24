@@ -135,8 +135,10 @@ var $ = function(options) {
 		if (that._view.mVisualizerView) {
 			this._view.mVisualizerView = null;
 		}
-		this._view.removeAllChildren();
-		this._view == null;
+		if (this._view){
+			this._view.removeAllChildren();
+			this._view == null;
+		}
 	//	singletonPlayer.seek(0);
 		singletonPlayer.stop();
 		singletonPlayer && singletonPlayer.release();
