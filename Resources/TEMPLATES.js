@@ -1101,6 +1101,7 @@ exports.novathema = {
 			bottom : 0,
 			right : 0,
 			height : "auto",
+			width: Ti.UI.FILL,
 			backgroundColor : '#8801953C',
 			touchEnabled : false
 		},

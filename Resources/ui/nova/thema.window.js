@@ -2,25 +2,28 @@ var Flip = require('de.manumaticx.androidflip');
 var АктйонБар = require('com.alcoapps.actionbarextras');
 var Moment = require("vendor/moment");
 var PAGES = 7;
+var themen = require("model/nova");
 
-module.exports = function(_thema,_sendung,_color) {
+module.exports = function(_thema) {
 	var activityworking = false;
 	var $ = Ti.UI.createWindow({
        fullscreen : false,
        layout : "vertical"
     });
+    var image = "/images/podcasts/banner/" + _thema + ".jpg";
+    console.log(image);
     $.add(Ti.UI.createImageView({
     	top:79,
-    	image: "/images/podcasts/" + _thema + ".jpg",
+    	image: image,
     	height:"auto"
     }));
 	$.addEventListener('open', function(_event) {
 		АктйонБар.title = "DLF nova";
-		АктйонБар.subtitle = _sendung;
+		АктйонБар.subtitle = themen[_thema].title;
 		АктйонБар.titleFont = "ScalaSansBold";
 		АктйонБар.setBackgroundColor("#444	");
 		АктйонБар.subtitleColor = "#ccc";
-		АктйонБар.setStatusbarColor(require('model/stations').drw.color);
+		АктйонБар.setStatusbarColor(themen[_thema].color);
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function() {
@@ -36,8 +39,7 @@ module.exports = function(_thema,_sendung,_color) {
 	var activityworking = false;
 	function onClickFn(_e) {
 		var data = JSON.parse(_e.itemId);
-		
-			require('ui/audioplayer.window').createAndStartPlayer({
+				require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.link,
 				duration : data.duration,
@@ -67,13 +69,13 @@ module.exports = function(_thema,_sendung,_color) {
 	$.refreshView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 		view : $.mainlist,
 		top : 0,
-		backgroundColor : (_color)? _color :require('model/stations').drw.color
+		backgroundColor : themen[_thema].color
 	});
 
 	$.refreshView.addEventListener('refreshing', function() {
 		setTimeout(function() {
 			$.refreshView.setRefreshing(false);
-		}, 2000);
+		}, 20*1000);
 		$.updateMediathekList();
 	});
 	$.add($.refreshView);

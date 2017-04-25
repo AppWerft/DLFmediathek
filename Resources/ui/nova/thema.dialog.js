@@ -1,5 +1,5 @@
 var themen = require("model/nova");
-	
+
 module.exports = function() {
 	var androidView = Ti.UI.createScrollView({
 		layout : "vertical",
@@ -8,7 +8,7 @@ module.exports = function() {
 	});
 	Object.getOwnPropertyNames(themen).forEach(function(thema) {
 		androidView.add(Ti.UI.createImageView({
-			image : (themen[thema])? themen[thema].banner: undefined,
+			image : "/images/podcasts/banner/"+ thema + ".jpg",
 			itemId : thema,
 			top : 0,
 			height : 'auto'
@@ -23,7 +23,7 @@ module.exports = function() {
 	});
 	androidView.addEventListener("click", function(e) {
 		var thema = e.source.itemId;
-		require("ui/nova/thema.window")(thema, themen[thema].title, themen[thema].color);
+		require("ui/nova/thema.window")(thema);
 		$.hide();
 	});
 	$.show();
