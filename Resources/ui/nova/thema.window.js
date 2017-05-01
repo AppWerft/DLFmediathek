@@ -8,7 +8,8 @@ module.exports = function(_thema) {
 	var activityworking = false;
 	var $ = Ti.UI.createWindow({
        fullscreen : false,
-       layout : "vertical"
+       layout : "vertical",
+       orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
     var image = "/images/podcasts/banner/" + _thema + ".jpg";
     console.log(image);
@@ -45,6 +46,7 @@ module.exports = function(_thema) {
 				duration : data.duration,
 				title : data.sendung,
 				subtitle : data.title,
+				description: data.text,
 				station : 'drw',
 				image : data.image,
 				pubdate : data.pubdate || 'unbekannt'
@@ -91,7 +93,7 @@ module.exports = function(_thema) {
 		for (var ndx = 0; ndx < PAGES; ndx++) {
 			require('controls/nova/adapter')(ndx, _thema, function(_sendungen, _ndx) {
 				$.refreshView.setRefreshing(false);
-				$.mainlist.sections[_ndx].setItems(require("ui/nova/index.row")(_sendungen));
+				$.mainlist.sections[_ndx].setItems(require("ui/nova/index.row")(_sendungen,themen[_thema].color));
 			});
 		}
 	};

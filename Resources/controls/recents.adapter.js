@@ -34,14 +34,17 @@ var $ = function() {
 
 $.prototype = {
 	setProgress : function(_args) {
+		var progress =  Math.round(parseFloat(_args.progress));
+		console.log("setProgress >>>>>>>>>>>>   " + progress);
 		var link = Ti.Database.open(DB);
 		link.execute('UPDATE recents SET progress=?,lastaccess=? WHERE url=?', //
-		Math.floor(_args.progress), //
+		progress, //
 		Moment().toISOString(), //
 		_args.url || this.url);
 		link.close();
 	},
 	setComplete : function(_progress) {
+		console.log("setComplete" + _progress);
 		var link = Ti.Database.open(DB);
 		//link.execute('UPDATE recents SET progress=duration,lastaccess=? WHERE url =?', Moment().toISOString(), this.url);
 		link.close();

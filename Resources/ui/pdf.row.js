@@ -1,7 +1,7 @@
 module.exports = function(pdf) {
 	var $ = Ti.UI.createTableViewRow({
 		height : 90,
-		itemId : pdf.url
+		itemId : pdf.link
 	});
 	$.add(Ti.UI.createView({
 		left : 0,

@@ -9,6 +9,8 @@
 		<item name="android:fitsSystemWindows">false</item>
 		<item name="android:windowTranslucentNavigation">false</item>
 	</style>
+	
+	
 	<style name="Theme.NoActionBar" parent="@style/Theme.AppCompat.Translucent.NoTitleBar">
 	</style>
 	<style name="Theme.Dlrmediathek" parent="@style/Theme.AppCompat.Light.DarkActionBar">

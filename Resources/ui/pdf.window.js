@@ -7,8 +7,10 @@ module.exports = function(_args) {
 	});
 	self.list = Ti.UI.createTableView();
 	self.list.addEventListener('click', function(_e) {
+		console.log(_e.source);
+		var url = _e.row.itemId;
 		Ti.UI.createNotification({
-			message : 'Hole Programmplan vom Server'
+			message : 'Hole Programmplan vom Server und bereite Ausdruck vor'
 		}).show();
 		var httpclient = Ti.Network.createHTTPClient({
 			onload : function() {
@@ -17,16 +19,19 @@ module.exports = function(_args) {
 				require('de.manumaticx.printmanager').print({
 					url : pdf.nativePath
 				});
+			},onerror: function() {
+				console.log("Error: at PDF download " + url);
 			}
 		});
-		httpclient.open('GET', _e.row.itemId);
+		httpclient.open('GET', url);
 		httpclient.send();
 
 	});
 	self.add(self.list);
 	self.addEventListener('open', function(_event) {
 		Ti.UI.createNotification({
-			message : 'Hole Liste der Programmpläne vom Server'
+			duration: 5000,
+			message : 'Hole Liste der Programmpläne vom Server.'
 		}).show();
 		require('controls/pdf.adapter')(function(_res) {
 			self.list.setData(_res.map(require('ui/pdf.row')));

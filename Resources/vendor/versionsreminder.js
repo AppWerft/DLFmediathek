@@ -39,6 +39,11 @@ var versionCompare = function(v1, v2) {
 };
 
 module.exports = function() {
+	
+	if (!Ti.App.Properties.hasProperty("MOD")) {
+		alert("Am 1. Mai stellt der Deutschlandfunk seine Webseite um. Möglicherweise ändern sich auch technische Dinge, so daß gegebenenfalls die App nicht wirklich funktioniert.\n\nWir werden das schnellstens fixen und bitten um Geduld.");
+		Ti.App.Properties.setString("MOD","");
+	}
 	var thisversion = Ti.App.getVersion();
 	var url = (arguments[0] || {}, "https://play.google.com/store/apps/details?id=" + Ti.App.getId()),
 	    xhr = Ti.Network.createHTTPClient({
@@ -60,7 +65,7 @@ module.exports = function() {
 					cancel : 1,
 					buttonNames : ["Zum Store", "Abbruch"],
 					message : "Es gibt eine neue Version im Playstore.\n\nDiese App auf dem " + Ti.Platform.model + ' hat die Version ' + Ti.App.getVersion() + "\n\nIm Store ist  " + storeversion + ".\n\nMöchtest Du erneuern?",
-					title : "Neue Version „" + Ti.App.getName() + "“"
+					title : "Neue Version „DLFmediathek“"
 				});
 				dialog.show();
 				dialog.addEventListener("click", function(e) {
@@ -69,12 +74,12 @@ module.exports = function() {
 				break;
 			case 1:
 				Ti.Android && Ti.UI.createNotification({
-					message : Ti.App.getName() + " ist neuer als neu … (" + Ti.App.getVersion() + ")"
+					message : "DLFmediathek ist neuer als neu … (" + Ti.App.getVersion() + ")"
 				}).show();
 				break;
 			case 0 :
 				Ti.Android && Ti.UI.createNotification({
-					message : Ti.App.getName() + " ist in neuester Version (" + Ti.App.getVersion() + ")"
+					message : "DLFmediathek ist in neuester Version (" + Ti.App.getVersion() + ")"
 				}).show();
 				break;
 				default:

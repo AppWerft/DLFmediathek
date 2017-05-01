@@ -10,7 +10,7 @@ module.exports = function(_args) {
 	console.log(_args);
 	if (_args.banner) {
 		$.add(Ti.UI.createImageView({
-			image : "/images/podcasts/" + _args.banner,
+			image : "/images/podcasts/banner/" + _args.banner,
 			top : 78,
 			width : Ti.UI.FILL,
 			height : "auto"

@@ -1,5 +1,18 @@
 'use strict';
 
+var nova = require("model/nova");
+
+function hms2s(str) {
+    var p = str.split(':'),
+        s = 0, m = 1;
+
+    while (p.length > 0) {
+        s += m * parseInt(p.pop(), 10);
+        m *= 60;
+    }
+
+    return s;
+}
 module.exports = function(ndx, slot, cb) {
 	slot = slot.toLowerCase().replace("hörsaal", "hörsaal").replace("grünstreifen", "gruenstreifen").replace(" ", "-");
 	var url = 'https://dradiowissen.de/' + slot + '/p' + (ndx + 1) + "?_=" + Math.random();
@@ -35,9 +48,10 @@ module.exports = function(ndx, slot, cb) {
 							var link = button.getAttribute("data-mp3");
 							var alt = button.getAttribute("data-title");
 							if (alt) {
-								var match = alt.match(/\(([\d]+:[\d][\d])\)/);
-								if (match)
-									var duration = parseInt(match[1].split(':')[0]) * 60 + parseInt(match[1].split(':')[1]);
+								var match = alt.match(/\(.*?\)/);
+								if (match) {
+									var duration = hms2s(match[0].replace("(","").replace(")",""));
+								}
 								else
 									console.log("Error No match \n" + alt);
 							} else
@@ -50,7 +64,8 @@ module.exports = function(ndx, slot, cb) {
 								title : clean(title),
 								image : image,
 								duration : duration,
-								text : clean(article.selectFirst(".teaser__text p").getText())
+								text : clean(article.selectFirst(".teaser__text p").getText()),
+								color : nova[thema] ? nova[thema].color: "#777777"
 							});
 						}
 					}

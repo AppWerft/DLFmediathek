@@ -1,7 +1,7 @@
 var Flip = require('de.manumaticx.androidflip');
 var АктйонБар = require('com.alcoapps.actionbarextras');
 var Moment = require("vendor/moment");
-
+var lila="#461C9C";
 module.exports = function(_e) {
 	var $ = Ti.UI.createWindow({
        fullscreen : false
@@ -10,9 +10,9 @@ module.exports = function(_e) {
 		АктйонБар.title = "DLF24";
 		АктйонБар.subtitle = "Meldungen vom " + Moment().format("LL");
 		АктйонБар.titleFont = "ScalaSansBold";
-		АктйонБар.setBackgroundColor("#444	");
+		АктйонБар.setBackgroundColor("#333");
 		АктйонБар.subtitleColor = "#ccc";
-		АктйонБар.setStatusbarColor(require('model/stations').dlf.color);
+		АктйонБар.setStatusbarColor(lila);
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function() {

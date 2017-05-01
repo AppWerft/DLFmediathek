@@ -12,7 +12,7 @@ module.exports = function(_e) {
 		АктйонБар.titleFont = "ScalaSansBold";
 		АктйонБар.setBackgroundColor("#444	");
 		АктйонБар.subtitleColor = "#ccc";
-		АктйонБар.setStatusbarColor(require('model/stations').dlf.color);
+		АктйонБар.setStatusbarColor("#461C9C");
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function() {

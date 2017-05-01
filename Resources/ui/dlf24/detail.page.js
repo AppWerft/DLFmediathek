@@ -41,7 +41,7 @@ module.exports = function(_item) {
 				fontSize : 22,
 				fontFamily : 'Aller Bold'
 			},
-			color : require('model/stations').dlf.color
+			color : "#461C9C"
 		}));
 		$.scrollContainer.add(Ti.UI.createLabel({
 			top : 10,
@@ -77,7 +77,7 @@ module.exports = function(_item) {
 					y : 0
 				}
 			}),
-			backgroundColor : require('model/stations').dlf.color
+			backgroundColor : "#461C9C"
 		});
 		$.overline.add(Ti.UI.createLabel({
 			color : "white",

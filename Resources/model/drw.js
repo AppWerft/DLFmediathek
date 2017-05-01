@@ -1,92 +1,92 @@
 module.exports = [{
-	"href" : "http://dradiowissen.de/podcast/das-perfekte-buch-fuer-den-moment",
+	"href" : "http://deutschlandfunknova.de/podcast/das-perfekte-buch-fuer-den-moment",
 	"img" : {
 		"alt" : "Das perfekte Buch",
 		"src" : "buch.jpg",
 
 	},
-	"banner" : "buchbanner.jpg"
+	"banner" : "das-perfekte-buch-fuer-den-moment.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/eine-stunde-film",
+	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-film",
 	"img" : {
 		"alt" : "Eine Stunde Film",
 		"src" : "film.png"
 	},
-	"banner" : "filmbanner.jpg"
+	"banner" : "eine-stunde-film.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/eine-stunde-history",
+	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-history",
 	"img" : {
 		"alt" : "Eine Stunde History",
 		"src" : "history.jpg"
 
 	},
-	"banner" : "historybanner.jpg"
+	"banner" : "eine-stunde-history.jpg"
 }, {
 
-	"href" : "http://dradiowissen.de/podcast/eine-stunde-liebe",
+	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-liebe",
 	"img" : {
 		"alt" : "Eine Stunde Liebe",
 		"src" : "liebe.png"
-	}, "banner" : "liebebanner.jpg"
+	}, "banner" : "eine-stunde-liebe.jpg"
 
 }, {
-	"href" : "http://dradiowissen.de/podcast/eine-stunde-talk",
+	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-talk",
 	"img" : {
 		"alt" : "Eine Stunde Talk",
 		"src" : "talk.png"
-	}, "banner" : "talkbanner.jpg"
+	}, "banner" : "eine-stunde-talk.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/eine-stunde-medien",
+	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-medien",
 	"img" : {
 		"alt" : "Eine Stunde was mit Medien",
 		"src" : "medien.png"
-	}, "banner" : "medienbanner.jpg"
+	}, "banner" : "eine-stunde-medien.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/einhundert",
+	"href" : "http://deutschlandfunknova.de/podcast/einhundert",
 	"img" : {
 		"alt" : "Einhundert",
 		"src" : "100.png"
-	}, "banner" : "100banner.jpg"
+	}, "banner" : "einhundert.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/hielscher-oder-haase",
+	"href" : "http://deutschlandfunknova.de/podcast/hielscher-oder-haase",
 	"img" : {
 		"alt" : "Hielscher oder Haase",
 		"src" : "hh.jpg"
 	}, "banner" : "hielscher-oder-haase.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/hoersaal-der-podcast",
+	"href" : "http://deutschlandfunknova.de/podcast/hoersaal-der-podcast",
 	"img" : {
 		"alt" : "Hörsaal",
 		"src" : "hsaal.png"
-	}, "banner" : "saalbanner.jpg"
+	}, "banner" : "hoersaal-der-podcast.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/netzbasteln",
+	"href" : "http://deutschlandfunknova.de/podcast/netzbasteln",
 	"img" : {
 		"alt" : "Netzbasteln",
 		"src" : "netzbasteln.jpg"
-	}, "banner" : "makerbanner.jpg"
+	}, "banner" : "netzbasteln.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/redaktionskonferenz",
+	"href" : "http://deutschlandfunknova.de/podcast/redaktionskonferenz",
 	"img" : {
 		"alt" : "Redaktionskonferenz",
 		"src" : "konferenz.png"
-	}, "banner" : "confibanner.jpg"
+	}, "banner" : "redaktionskonferenz.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/tiergespraech",
+	"href" : "http://deutschlandfunknova.de/podcast/tiergespraech",
 	"img" : {
 		"alt" : "Tiergespräch",
 		"src" : "tier.jpg"
-	}, "banner" : "tierbanner.jpg"
+	}, "banner" : "tiergespraech.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/update",
+	"href" : "http://deutschlandfunknova.de/podcast/update",
 	"img" : {
 		"alt" : "Update",
 		"src" : "update.png"
-	}, "banner" : "updatebanner.jpg"
+	}, "banner" : "update.jpg"
 }, {
-	"href" : "http://dradiowissen.de/podcast/wissensnachrichten",
+	"href" : "http://deutschlandfunknova.de/podcast/wissensnachrichten",
 	"img" : {
 		"alt" : "Wissensnachrichten",
 		"src" : "wissensnachrichten"
-	}, "banner" : "wissensnachrichtenbanner.jpg"
+	}, "banner" : "wissensnachrichten.jpg"
 }];

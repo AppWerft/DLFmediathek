@@ -7,7 +7,7 @@ var RecentsAdapter = require('controls/recents.adapter'),
 	VisualizerView = require('ti.audiovisualizerview'),
 	TelephonyManager = require('com.goyya.telephonymanager'),
 	timeout = null,
-	TIMEOUT = 10000;
+	TIMEOUT = 30000;
 
 TelephonyManager.addEventListener('callState',function(_e){
 	if (TelephonyManager.CALL_STATE_RINGING ==  _e.state && singletonPlayer.playing==true) singletonPlayer.pause();
@@ -66,14 +66,17 @@ var $ = function(options) {
 		console.log("📻onCompleteFn error=" + _e.error);
 		console.log("📻onCompleteFn code=" + _e.code);
 		var diff = Math.abs(_e.source.getDuration() - _e.source.getTime());
-		console.log("📻onCompleteFn diff=" + diff);
-		
-		if (that._view)
-			that._view.setVisible(false);
-		that._Recents.setComplete();
-		that.onStatusChangeFn({
-			description : 'stopped'
-		});
+		if (diff<10*1000) {
+			console.log("📻onCompleteFn diff=" + diff);
+			if (that._view)
+				that._view.setVisible(false);
+			that._Recents.setComplete();
+			that.onStatusChangeFn({
+				description : 'stopped'
+			});
+		} else {
+			that.startPlayer(_e.source.getTime());
+		}
 
 	};
 	this.onStatusChangeFn = function(_e) {
@@ -105,11 +108,11 @@ var $ = function(options) {
 			}
 			setTimeout(function() {
 				CacheAdapter.cacheURL(options);
-			}, 5000);
+			}, 3000);
 			//that._view.control.image = '/images/leer.png';
 			break;
 		case 'paused':
-			that._view.subtitle.ellipsize = false;
+			that._view.sendung.ellipsize = false;
 			that._view.control.setImage('/images/play.png');
 			that._view.slider.show();
 			that._view.progress.hide();
@@ -124,7 +127,7 @@ var $ = function(options) {
 			that._view.slider.hide();
 			that._view.spinner.hide();
 			//that._view.subtitle.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
-			that._view.title.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
+			that._view.sendung.ellipsize = Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_MARQUEE;
 			that._view.visualizerContainer.show();
 			that.setControlView();
 			break;
@@ -149,7 +152,8 @@ var $ = function(options) {
 		singletonPlayer.removeEventListener('complete', this.onCompleteFn);
 		singletonPlayer.removeEventListener('change', this.onStatusChangeFn);
 	};
-	this.startPlayer = function() {
+	this.startPlayer = function(time) {
+		if (!time) time =0;
 		var that = this;
 		this._view.setVisible(true);
 		var maxRange = this.options.duration * 1000;
@@ -157,16 +161,19 @@ var $ = function(options) {
 		this._view.slider.setMax(maxRange);
 		this._view.progress.setValue(0);
 		this._view.slider.setValue(0);
-		this._view.title.setText(this.options.title);
+		this._view.sendung.setText(this.options.title);
 		//this._view.title.setColor(this.options.color);
-		this._view.subtitle.setText(this.options.subtitle);
+		this._view.title.setText(this.options.subtitle);
+		this._view.description.setText(this.options.description?this.options.description:"");
 		this._view.duration.setText(('' + this.options.duration * 1000).toHHMMSS());
 		singletonPlayer && singletonPlayer.release();
-		singletonPlayer.seek(0);
+		singletonPlayer.seek(time);
 		var item = CacheAdapter.getURL({
 			station : this.options.station,
 			url : this.options.url
 		});
+		console.log("📻" + JSON.stringify(item));
+
 		if (item.cached || Ti.Network.online)  {
 			singletonPlayer.setUrl(item.url);
 			singletonPlayer.start();
@@ -185,7 +192,7 @@ var $ = function(options) {
 		this._window = Ti.UI.createWindow({
 			backgroundColor : 'transparent',
 			theme : 'Theme.NoActionBar',
-			orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
+			//orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT],
 			fullscreen : true
 		});
 		var that = this;
@@ -210,13 +217,16 @@ var $ = function(options) {
 			require('vendor/permissions').requestPermissions(['RECORD_AUDIO'], function(_success) {
 				if (_success !== true)
 					return;
+				that._view.hifi.addEventListener('click',function(){
+					require("ui/hifi/main.dialog")(true);
+				});	
 				that._view.mVisualizerView = VisualizerView.createView({
 					audioSessionId : 0,
-					top : 0,
 					touchEnabled : false,
 					zIndex : 1,
 					lifecycleContainer : that._window,
-					height : Ti.UI.FILL
+					height : Ti.UI.FILL,
+					width : Ti.UI.FILL
 				});
 				that._view.visualizerContainer.add(that._view.mVisualizerView);
 				setTimeout(function() {

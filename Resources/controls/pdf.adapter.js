@@ -4,41 +4,37 @@ var Adapter = function(done) {
 	if (Ti.App.Properties.hasProperty('PDF'))
 		done(Ti.App.Properties.getList('PDF'));
 	var res = [];
-	var subXpaths = {
-		href : "//a[@target=_self]/@href",
-		week : "//a[@target=_self]/text()"
-	};
-	require('de.appwerft.scraper').createScraper({
+
+	require('de.appwerft.soup').createDocument({
 		url : URL,
-		rootXpath : "//div[@class=deutschlandfunkColor]",
-		subXpaths : subXpaths
-	}, function(_e) {
-		if (_e.success) {
-			_e.items.forEach(function(pdf) {
-				res.push({
-					url : "http://www.deutschlandradio.de/" + pdf.href,
-					title : pdf.week,
+		timeout : 30000,
+		onerror : function() {
+			console.log("Error from Soup !!!!");
+		},
+		onload : function(result) {
+			if (!result.document) {
+				console.log("Error: result without document");
+				return;
+			}
+			var pdfs = [];
+			result.document.select(".text .deutschlandfunkColor p a").forEach(function(e) {
+				pdfs.push({
+					link : "http://deutschlandradio.de/" + e.getAttribute("href"),
+					title : e.getText(),
 					station : "dlf"
 				});
 			});
-		}
-		require('de.appwerft.scraper').createScraper({
-			url : URL,
-			rootXpath : "//div[@class=dradiokulturColor]",
-			subXpaths : subXpaths
-		}, function(_e) {
-			if (_e.success) {
-				_e.items.forEach(function(pdf) {
-					res.push({
-						url : "http://www.deutschlandradio.de/" + pdf.href,
-						title : pdf.week,
-						station : "drk"
-					});
+			result.document.select(".text .dradiokulturcolor p a").forEach(function(e) {
+				pdfs.push({
+					link : "http://deutschlandradio.de/" + e.getAttribute("href"),
+					title : e.getText(),
+					station : "drk"
 				});
-			}
-			Ti.App.Properties.setList('PDF', res);
-			done(res);
-		});
+			});
+			console.log(pdfs);
+			if (done)
+				done(pdfs);
+		}
 	});
 };
 

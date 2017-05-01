@@ -2,14 +2,14 @@ var АктйонБар = require('com.alcoapps.actionbarextras'),
     Moment = require("vendor/moment"),
     DLF24controler = require("controls/dlf24");
 lastNews = null,
-ROWS_IN_VIEWPORT = 2;
+ROWS_IN_VIEWPORT = 2,lila="#461C9C";
 
 module.exports = function() {
 	var locked = false;
 	var $ = Ti.UI.createWindow({
 		fullscreen : false,
 		top : 0,
-		backgroundColor : require('model/stations').dlf.color
+		backgroundColor : lila
 	});
 	$.listView = Ti.UI.createListView({
 		templates : {
@@ -74,7 +74,7 @@ module.exports = function() {
 		width : 60,
 		height : 60,
 		borderRadius : 30,
-		backgroundColor : require('model/stations').dlf.color,
+		backgroundColor : lila,
 		bottom : 30,
 		right : 20,
 		backgroundImage : "/images/playiconframe.png"
@@ -83,7 +83,7 @@ module.exports = function() {
 		width : 60,
 		height : 60,
 		borderRadius : 30,
-		backgroundColor : require('model/stations').dlf.color,
+		backgroundColor : lila,
 		bottom : 30,
 		width : 180,
 		color : "white",
@@ -94,7 +94,7 @@ module.exports = function() {
 		title : "Archiv"
 	});
 	$.addEventListener('open', function(_event) {
-		АктйонБар.setStatusbarColor(require('model/stations').dlf.color);
+		АктйонБар.setStatusbarColor(lila);
 		$.add(floatView);
 		$.add(archiveButton);
 	});
@@ -144,7 +144,7 @@ module.exports = function() {
 		var parts = lastNews.duration.split(":");
 		var duration = parseInt(parts[0]) * 60 + parseInt(parts[1]);
 		require('ui/audioplayer.window').createAndStartPlayer({
-			color : require('model/stations').dlf.color,
+			color : lila,
 			url : lastNews.link,
 			storage : 'cache',
 			duration : duration,

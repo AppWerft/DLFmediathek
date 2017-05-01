@@ -9,12 +9,14 @@ function LOG() {
 const RECENT = 0,
     MYFAVS = 1,
     MYPODS = 2,
-    MYPLAYLIST = 3,
-    PLAY = 4,
-    WURF = 5;
+    HIFI = 5;
+MYPLAYLIST = 3,
+PLAY = 4,
+WURF = 5;
 
 /* Reference to Play icon to control it outside the callback */
 var playIcon;
+var hifiIcon;
 
 var lastOnlineState = Ti.Network.online;
 
@@ -82,8 +84,8 @@ function onPlayStopClickFn() {
 	if (onAir == false) {
 		require("ui/snooze.dialog")(function(_duration) {
 			if (_duration != 0) {
-				Ti.Media.vibrate([30,20]);
-				snoozy = setTimeout(onPlayStopClickFn,_duration);
+				Ti.Media.vibrate([30, 20]);
+				snoozy = setTimeout(onPlayStopClickFn, _duration);
 			}
 		});
 		AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
@@ -144,21 +146,25 @@ module.exports = function(_event) {
 				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
 			}).addEventListener("click", onPlayStopClickFn);
-			/*_menuevent.menu.add({
-			 title : 'Wurfsendung',
-			 itemId : WURF,
-			 visible : true,
-			 icon : Ti.App.Android.R.drawable['wurfsendung'],
-			 showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-			 });*/
 			playIcon = _menuevent.menu.findItem(PLAY);
 			searchMenu = _menuevent.menu.add({
 				title : L('MENU_SEARCH'),
 				visible : true,
 				actionView : searchView,
-				icon : Ti.Android.R.drawable.ic_menu_search,
+				icon : "/images/lupe.png",
 				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM | Ti.Android.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
 			});
+			_menuevent.menu.add({
+				title : "Hifi Transfer",
+				visible : (Ti.Network.getNetworkType() == Ti.Network.NETWORK_WIFI || require("de.appwerft.a2dp").isBluetoothEnabled()) ? true : false,
+				itemId : HIFI,
+				icon : "/images/hifi.png", //Ti.Android.R.drawable.ic_action_hifi,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_ALWAYS
+			}).addEventListener("click", function() {
+				require("ui/hifi/main.dialog")();
+			});
+
+			hifiIcon = _menuevent.menu.findItem(HIFI);
 			АктйонБар.setSearchView({
 				searchView : searchView,
 				//backgroundColor : '#777',
@@ -268,6 +274,12 @@ module.exports = function(_event) {
 var lastOnlineState = Ti.Network.online;
 Ti.Network.addEventListener('change', function(event) {
 	var onlineState = Ti.Network.online;
+	if (Ti.Network.getNetworkType() == Ti.Network.NETWORK_WIFI) {
+		hifiIcon && hifiIcon.setVisible(true);
+	} else {
+		hifiIcon && hifiIcon.setVisible(false);
+	};
+
 	playIcon && playIcon.setVisible(onlineState);
 	if (lastOnlineState != onlineState) {
 		lastOnlineState = onlineState;

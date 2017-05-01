@@ -1026,6 +1026,7 @@ exports.nova = {
 		}
 	}, {
 		type : 'Ti.UI.View',
+		bindId : "strip",
 		properties : {
 			bottom : 0,
 			right : 0,
@@ -1174,7 +1175,7 @@ exports.dlf24 = {
 				fontSize : TITLESIZE,
 				fontFamily : 'Aller Bold'
 			},
-			color : require('model/stations').dlf.color
+			color : "#461C9C"
 		}
 	}, {
 		type : 'Ti.UI.Label',

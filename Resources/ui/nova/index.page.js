@@ -30,6 +30,7 @@ module.exports = function(_args) {
 				duration : data.duration,
 				title : data.sendung,
 				subtitle : data.title,
+				description: data.text,
 				station : 'drw',
 				image : data.image,
 				pubdate : data.pubdate || 'unbekannt'
@@ -109,5 +110,4 @@ module.exports = function(_args) {
 		$.menubutton.removeEventListener("click",onMenuFn);
 	});
 	return $;
-
 };

@@ -5,7 +5,7 @@ module.exports = function() {
 	var $ = Ti.UI.createWindow({
 		fullscreen : false,
 		top : 0,
-		backgroundColor : require('model/stations').dlf.color
+		backgroundColor : "#461C9C"
 	});
 	Ti.Media.vibrate([30, 30]);
 	$.listView = Ti.UI.createListView({
@@ -46,7 +46,7 @@ module.exports = function() {
 
 	$.listView.addEventListener("itemclick", require("ui/dlf24/archivdetail.window"));
 	$.addEventListener('open', function(_event) {
-		АктйонБар.setStatusbarColor(require('model/stations').dlf.color);
+		АктйонБар.setStatusbarColor("#461C9C");
 	});
 	$.addEventListener('open', function(_event) {
 		АктйонБар.title = "DLF24";
@@ -54,7 +54,7 @@ module.exports = function() {
 		АктйонБар.titleFont = "ScalaSansBold";
 		АктйонБар.setBackgroundColor("#444	");
 		АктйонБар.subtitleColor = "#ccc";
-		АктйонБар.setStatusbarColor(require('model/stations').dlf.color);
+		АктйонБар.setStatusbarColor("#461C9C");
 		var activity = _event.source.getActivity();
 		if (activity) {
 			activity.onCreateOptionsMenu = function() {

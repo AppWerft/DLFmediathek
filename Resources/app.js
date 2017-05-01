@@ -14,22 +14,14 @@ String.prototype.toHHMMSS = function() {
 	return time;
 };
 var Lotti = require("ti.animation");
-//if (require("de.appwerft.cameraparameters").isPermissionGranted())//
-
-//require("de.appwerft.cameraparameters").getAllCameras({
-//	onSuccess : function() {
-//		console.log(arguments[0]);
-//	}
-//});
 ! function() {
- var introWindow = require('ui/intro.window')();
- introWindow.addEventListener('open', function() {
- require('ui/main.tabgroup')();
- });
- introWindow.open();
- require('cronservice.trigger')();
-
- }();
+	var introWindow = require('ui/intro.window')();
+	introWindow.addEventListener('open', function() {
+		require('ui/main.tabgroup')();
+	});
+	introWindow.open();
+	require('cronservice.trigger')();
+}();
 
 function clean(foo) {
 	if (foo)
@@ -42,8 +34,11 @@ function clean(foo) {
 		.replace(/Cavusoglu/gm, "Çavuşoğlu")//
 		.replace(/Isik/gm, "Işık")//
 		.replace(/Sislik/gm, "Şişlik")//
-		
+		.replace(/`s /gm, "'s ")//
 		.replace(/"([^"]+)"/gm, '„$1“');
 	else
 		return "";
 }
+
+
+

@@ -36,7 +36,7 @@ function handleEvent(e) {
 			second : 1,
 			contentTitle : options.title,
 			contentText : '„' + options.subtitle + '“ runtergeholt (' + (e.bps / 1000000).toFixed(1) + ' Mbit/s)',
-			playSound : true,
+			playSound : false,
 			icon : Ti.App.Android.R.drawable.appicon,
 			largeIcon : Ti.App.Android.R.drawable.appicon
 			//sound : Ti.Filesystem.getResRawDirectory() + 'kkj',
