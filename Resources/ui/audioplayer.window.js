@@ -90,14 +90,20 @@ var $ = function(options) {
 				singletonPlayer.removeEventListener('complete', this.onCompleteFn);
 			if (this.onStatusChangeFn && typeof this.onStatusChangeFn == 'function')
 				singletonPlayer.removeEventListener('change', this.onStatusChangeFn);
-			that._view.visualizerContainer.hide();
-			that._view.control.image = '/images/play.png';
-			if (that._window) {
-				that._window.removeEventListener('close', that.stopPlayer);
-				that._window.removeAllChildren();
-				that._window.close();
-			}
+			that._view.mVisualizerView = null;	
 			singletonPlayer && singletonPlayer.release();
+			setTimeout(function() {
+				that._view.control.image = '/images/play.png';
+				if (that._window) {
+					that._window.removeEventListener('close', that.stopPlayer);
+					that._window.removeAllChildren();
+					that._window.close({
+						 activityEnterAnimation: Ti.Android.R.anim.fade_in,
+    					 activityExitAnimation: Ti.Android.R.anim.fade_out
+					});
+				}
+			},1500);
+			
 			break;
 		case 'stopping':
 			break;

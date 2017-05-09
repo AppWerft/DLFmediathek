@@ -11,7 +11,7 @@ module.exports = function() {
 		window : require('ui/mediathek.window')()
 	}), Ti.UI.createTab({
 		title : 'Podcasts',
-		window : require('ui/podcastcardviews.window')(),
+		window : require('ui/podcast/main.window')(),
 		ndx : 1,
 	}), Ti.UI.createTab({
 		title : 'DLF24',

@@ -8,7 +8,6 @@ module.exports = function() {
 	var options = arguments[0] || {};
 	var self = Ti.UI.createWindow({
 		fullscreen : false,
-		exitOnClose : options.exitOnClose ? true : false
 	});
 	self.list = Ti.UI.createListView({
 		top : 80,
@@ -23,7 +22,6 @@ module.exports = function() {
 	self.updateListContent = function() {
 		var recents = Recents.getAllRecents();
 		var items = recents.map(function(item) {
-			console.log(item.pubdate);
 			return {
 				title : {
 					text : item.subtitle,
@@ -92,8 +90,8 @@ module.exports = function() {
 	});
 	self.addEventListener('focus', self.updateListContent);
 	self.addEventListener('open', function(_event) {
-		АктйонБар.title = 'DeutschlandRadio';
-		АктйонБар.subtitle = 'RadioZumMitnehmen';
+		АктйонБар.title = 'Deutschlandfunk *';
+		АктйонБар.subtitle = 'Letztgehörtes';
 		АктйонБар.titleFont = "Aller Bold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');

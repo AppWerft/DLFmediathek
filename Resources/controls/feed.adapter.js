@@ -18,54 +18,63 @@ var $ = function() {
 };
 
 $.prototype = {
-	cacheAll : function(channelurl) {
+	cacheAll : function(channelurl, station) {
 		var link = Ti.Database.open(DB);
 		var res = link.execute('SELECT items.enclosure_url AS url,feeds.station AS station FROM items,feeds WHERE items.channelurl=? AND items.channelurl=feeds.url', channelurl);
 		while (res.isValidRow()) {
 			Cache.getURL({
 				url : res.getFieldByName('url'),
-				station : res.getFieldByName('station'),
+				station : res.getFieldByName('station') || station,
 			});
 			res.next();
 		}
 		res.close();
 		link.close();
-
 	},
 	mirrorAllFeeds : function(_args) {
 		var that = this;
 		var total = 0;
-		var stations = ['dlf', 'drk', 'drw'];
-		var ndx = 0;
+		// collecting all feeds in queue;
+		var queue = [];
+		['dlf', 'drk', 'drw'].forEach(function(station) {
+			require('model/' + station).forEach(function(feed) {
+				if (Array.isArray(feed.href)) {
+					feed.href.forEach(function(url) {
+						queue.push({
+							station : station,
+							url : url
+						});
+					});
+				} else
+					queue.push({
+						station : station,
+						url : feed.href
+					});
+			});
+		});
+
 		function loadfeeds() {
-			var station = stations[ndx];
-			var feeds = require('model/' + station);
 			function loadfeed() {
-				var feed = feeds.shift();
+				var feed = queue.shift();
 				if (feed) {
 					total++;
 					that.loadFeed({
-						url : feed.href,
-						station : station,
+						url : feed.url,
+						station : feed.station,
 						done : loadfeed
 					});
-				} else {
-					ndx++;
-					if (ndx < stations.length) {
-						loadfeeds();
-					} else {
-						_args.done && _args.done({
-							total : total
-						});
-					}
 				}
+				_args.done && _args.done({
+					total : total
+				});
+
 			}
 
 			loadfeed();
 		}
-
 		loadfeeds();
 	},
+
 	getAllFavedFeeds : function() {
 		var link = Ti.Database.open(DB);
 		var res = link.execute('SELECT feeds.*, (SELECT MAX(DATE(pubDate)) FROM items WHERE feeds.url=items.channelurl) AS lastpubdate, (SELECT COUNT(*) FROM items WHERE feeds.url=items.channelurl) AS total FROM feeds WHERE feeds.faved=1 ORDER BY lastpubdate DESC');
@@ -75,6 +84,7 @@ $.prototype = {
 				description : res.getFieldByName('description'),
 				title : res.getFieldByName('title'),
 				image : res.getFieldByName('image'),
+				station : res.getFieldByName('station'),
 				lastpubdate : res.getFieldByName('lastpubdate'),
 				total : res.getFieldByName('total'),
 				url : res.getFieldByName('url')
@@ -86,20 +96,26 @@ $.prototype = {
 		return feeds;
 	},
 	toggleFaved : function(_url) {
+		console.log("toggleFaved " + _url);
 		var link = Ti.Database.open(DB);
 		link.execute('UPDATE feeds SET faved=? where url=?', (this.isFaved(_url)) ? 0 : 1, _url);
 		link.close();
 	},
 	isFaved : function(_url) {
-		var link = Ti.Database.open(DB);
-		var faved;
-		var res = link.execute('SELECT faved FROM feeds WHERE url=?', _url);
-		if (res.isValidRow()) {
-			faved = (res.fieldByName('faved')) ? true : false;
-		}
-		res.close();
-		link.close();
-		return faved;
+		if (_url) {
+			if (Array.isArray(_url))
+				_url = _url[0];
+			var link = Ti.Database.open(DB);
+			var faved;
+			var res = link.execute('SELECT faved FROM feeds WHERE url=?', _url);
+			if (res.isValidRow()) {
+				faved = (res.fieldByName('faved')) ? 1 : 0;
+			}
+			res.close();
+			link.close();
+			return faved;
+		} else
+			console.log("_url must be!= null");
 	},
 	// get feed with all items from locale db
 	getFeed : function(_args) {
@@ -146,7 +162,9 @@ $.prototype = {
 		this.loadFeed(_args);
 	},
 	loadFeed : function(_args) {
-		var faved =  this.isFaved(_args.url);
+		console.log(_args);
+		var faved = this.isFaved(_args.url) || 0;
+		// getting from URL
 		Podcast.loadPodcast({
 			url : _args.url,
 			timeout : 5000

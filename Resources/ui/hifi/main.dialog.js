@@ -3,6 +3,7 @@ var BTA2DP = require("de.appwerft.a2dp");
 var AIRLINO = 0,
     GOOGLE = 1,
     BT = 2;
+var HBM10 = require("ti.airlino");
 
 module.exports = function(_dark) {
 	var dark = (_dark == undefined) ? false : true;
@@ -32,16 +33,21 @@ module.exports = function(_dark) {
 		Ti.Media.vibrate([5, 5]);
 		switch (e.section.ndx) {
 		case BT:
-			if (e.row.switcher.getValue() == true) {
-
-				BTA2DP.disconnectFrom(device.name);
-			} else {
-				e.row.spinner.show();
-				setTimeout(function() {
-					e.row.spinner.hide();
-				}, 5000);
-				BTA2DP.connectWith(device.name);
-			}
+			if (device.nearby == true) {
+				if (e.row.switcher.getValue() == true) {
+					BTA2DP.disconnectFrom(device.name);
+				} else {
+					e.row.spinner.show();
+					setTimeout(function() {
+						e.row.spinner.hide();
+					}, 5000);
+					BTA2DP.connectWith(device.name);
+				}
+			} else
+				Ti.UI.createNotification({
+					duration : 8000,
+					message : "„" + device.name + "“ ist nicht in Reichweite oder ausgeschaltet.\n\nEs gibt aber auch die Möglichkeit, daß es nicht bereit für eine Verbindung ist.\n\nDann sollte jetzt der Knopf am Gerät gedrückt werden."
+				}).show();
 			break;
 		default:
 			Ti.UI.createNotification({
@@ -50,7 +56,7 @@ module.exports = function(_dark) {
 		}
 	});
 	var $ = Ti.UI.createAlertDialog({
-		message : "Hier kann die App mit Wifi-Boxen von Teufel™, Harman™ oder Heos™, mit Empfängern wie Chromecast™ oder Airlino™ oder mit Bluetoothgeräten verbunden werden.\n",
+		title : "Wiedergabe auf externen Lautsprechern",
 		cancel : 0,
 		//title : "Kopplung mit externen Lautsprechern/Empfängern",
 		persistent : true,
@@ -64,20 +70,19 @@ module.exports = function(_dark) {
 			duration : 5000
 		}).show();
 	}, 3000);
-	var AirlinoBrowser = require("ti.airlino").createDiscoveryResolver({
+
+	var MSearch = HBM10.createMSearch();
+	//MSearch.start();
+
+	var AirlinoBrowser = HBM10.createZeroConfBrowser({
 		dnstype : "dockset",
 		onchange : function(e) {
 			clearTimeout(cron);
 			updateSection(AIRLINO, e.devices, "ui/hifi/row" + AIRLINO);
 		}
 	});
-	var ChromecastBrowser = require("ti.airlino").createDiscoveryResolver({
-		dnstype : "googlecast",
-		onchange : function(e) {
-			clearTimeout(cron);
-			updateSection(GOOGLE, e.devices, "ui/hifi/row" + GOOGLE);
-		}
-	});
+	//var GooglecastBrowser = require("ti.googlecast").createMediaRouter({}).start();
+
 	var btAvail = BTA2DP.Bluetooth.getAvailibility();
 	switch (btAvail) {
 	case 0:
@@ -86,7 +91,7 @@ module.exports = function(_dark) {
 	case 1:
 		BTA2DP.Bluetooth.enableBluetooth({
 			onsuccess : function() {
-				alert("OK");
+				handleBluetooth();
 			},
 			onerror : function() {
 			}
@@ -107,9 +112,7 @@ module.exports = function(_dark) {
 						updateSection(BT, e.devices, "ui/hifi/row" + BT);
 					}
 				});
-				BTA2DP.DiscoveryNearbyDevices.start({
-
-				});
+				BTA2DP.DiscoveryNearbyDevices.start();
 			}
 		});
 
@@ -117,13 +120,12 @@ module.exports = function(_dark) {
 
 
 	AirlinoBrowser.start();
-	ChromecastBrowser.start();
+
 	$.addEventListener("click", function() {
 		AirlinoBrowser.stop();
-		ChromecastBrowser.stop();
+		//GooglecastBrowser.stop();
 		BTA2DP && BTA2DP.DiscoveryNearbyDevices.stop();
 		BTA2DP && BTA2DP.stopMonitorPairedDevices();
-		
 
 	});
 	$.show();

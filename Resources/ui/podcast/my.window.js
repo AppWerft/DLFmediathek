@@ -2,13 +2,10 @@ var Model = require('model/stations'),
     Feeds = new (require('controls/feed.adapter'))(),
     Moment = require('vendor/moment');
 Moment.locale('de');
- АктйонБар = require('com.alcoapps.actionbarextras'),
-
-module.exports = function() {
-	var station = 'dlf';
+АктйонБар = require('com.alcoapps.actionbarextras'), module.exports = function() {
+	var station;
 	var self = require('ui/generic.window')({
 		title : 'Meine Podcasts',
-		subtitle : 'Feedlisten',
 		station : null,
 		singlewindow : true,
 		fullscreen : false
@@ -17,33 +14,36 @@ module.exports = function() {
 		templates : {
 			'mypodcasts' : require('TEMPLATES').mypodcasts,
 		},
-		top:80,
+		top : 80,
 		defaultItemTemplate : 'mypodcasts',
 		sections : [Ti.UI.createListSection({})]
 	});
 	self.add(self.list);
 	function updateList() {
 		var dataItems = Feeds.getAllFavedFeeds().map(function(item) {
+			var image = '/images/' + item.station + '.png';
 			return {
 				properties : {
 					accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
 					itemId : JSON.stringify(item),
 				},
 				lastbuilddate : {
-					text : 'Letzter Beitrag:\n' + Moment(item.lastpubdate).format('LLLL') + ' Uhr'
+					text : 'Letzter Beitrag: ' + Moment(item.lastpubdate).format('LL')
 				},
 				total : {
 					text : 'Anzahl der Beiträge: ' + item.total
 				},
 				title : {
-					text : item.title
-				},
+					text : clean(item.title),
+					color: (item.station)? Model[item.station].color : "black"
+					
+									},
 				description : {
-					html : item.description,
+					html : clean(item.description),
 				},
 				logo : {
-					image : item.image,
-					defaultImage : '/images/' + station + '.png'
+					
+					image : image
 				},
 				cached : {
 					opacity : 0
@@ -53,9 +53,11 @@ module.exports = function() {
 		self.list.sections[0].setItems(dataItems);
 	}
 
-	updateList();	
+
+	self.addEventListener('focus', updateList);
+	
 	self.list.addEventListener('itemclick', function(_e) {
-		require('ui/podcastlist.window')(JSON.parse(_e.itemId)).open();
+		require('ui/podcast/list.window')(JSON.parse(_e.itemId)).open();
 	});
 	self.addEventListener('open', function(_event) {
 		АктйонБар.titleFont = "ScalaSansBold";

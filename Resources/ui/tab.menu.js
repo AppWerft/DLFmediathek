@@ -6,13 +6,12 @@ function LOG() {
 }
 
 /* constants for menuItems */
-const RECENT = 0,
-    MYFAVS = 1,
-    MYPODS = 2,
-    HIFI = 5;
-MYPLAYLIST = 3,
-PLAY = 4,
-WURF = 5;
+const RECENTS = 1,
+    MYFAVS = 2,
+    MYPODS = 3,
+    HIFI = 4,
+    MYPLAYLIST = 5,
+    PLAY = 6;
 
 /* Reference to Play icon to control it outside the callback */
 var playIcon;
@@ -136,6 +135,7 @@ module.exports = function(_event) {
 	require('vendor/versionsreminder')();
 	var activity = _event.source.getActivity();
 	if (activity) {
+
 		activity.onCreateOptionsMenu = function(_menuevent) {
 			LOG('onCreateOptionsMenu');
 			_menuevent.menu.clear();
@@ -149,6 +149,7 @@ module.exports = function(_event) {
 			playIcon = _menuevent.menu.findItem(PLAY);
 			searchMenu = _menuevent.menu.add({
 				title : L('MENU_SEARCH'),
+				groupId : 0,
 				visible : true,
 				actionView : searchView,
 				icon : "/images/lupe.png",
@@ -156,7 +157,7 @@ module.exports = function(_event) {
 			});
 			_menuevent.menu.add({
 				title : "Hifi Transfer",
-				visible : (Ti.Network.getNetworkType() == Ti.Network.NETWORK_WIFI || require("de.appwerft.a2dp").isBluetoothEnabled()) ? true : false,
+				visible : (Ti.Network.getNetworkType() == Ti.Network.NETWORK_WIFI || require("de.appwerft.a2dp").Bluetooth.isEnabled()) ? true : false,
 				itemId : HIFI,
 				icon : "/images/hifi.png", //Ti.Android.R.drawable.ic_action_hifi,
 				showAsAction : Ti.Android.SHOW_AS_ACTION_ALWAYS
@@ -174,45 +175,47 @@ module.exports = function(_event) {
 				cancelIcon : "/images/cancel.png",
 				searchIcon : "/images/search.png"
 			});
-			setTimeout(function() {
-				playIcon.setVisible(Ti.Network.online ? true : false);
-				_menuevent.menu.add({
-					title : L('MENU_FAV'),
-					itemId : MYFAVS,
-					icon : Ti.App.Android.R.drawable.ic_action_fav,
-					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-				}).addEventListener("click", function(_e) {
-					require('ui/merkliste.window')().open();
-				});
-				_menuevent.menu.add({
-					title : 'Meine Podcasts',
-					itemId : MYPODS,
-					icon : Ti.App.Android.R.drawable.ic_action_fav,
-					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-				}).addEventListener("click", function(_e) {
-					require('ui/mypodcasts.window')().open();
-				});
-				_menuevent.menu.add({
-					title : 'RadioZumMitnehmen',
-					itemId : RECENT,
-					icon : Ti.App.Android.R.drawable.ic_action_fav,
-					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-				}).addEventListener("click", function(_e) {
-					require('ui/recents.window')().open();
-				});
-				_menuevent.menu.add({
-					title : 'PDF Sendepläne',
-					showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-				}).addEventListener("click", function(_e) {
-					require('ui/pdf.window')().open();
-				});
-				/*_menuevent.menu.add({
-				 title : 'DLF24',
-				 showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
-				 }).addEventListener("click", function(_e) {
-				 require('ui/dlf24.window')().open();
-				 });*/
-			}, 700);
+			//setTimeout(function() {
+			playIcon.setVisible(Ti.Network.online ? true : false);
+			_menuevent.menu.add({
+				title : L('MENU_FAV'),
+				itemId : MYFAVS,
+				groupId : 1,
+				visible : false,
+				icon : Ti.App.Android.R.drawable.ic_action_fav,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+			}).addEventListener("click", function(_e) {
+				require('ui/merkliste.window')().open();
+			});
+			_menuevent.menu.add({
+				title : 'Meine Podcasts',
+				itemId : MYPODS,
+				groupId : 1,
+				visible : false,
+				icon : Ti.App.Android.R.drawable.ic_action_fav,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+			}).addEventListener("click", function(_e) {
+				require('ui/podcast/my.window')().open();
+			});
+			_menuevent.menu.add({
+				title : 'RadioZumMitnehmen',
+				itemId : RECENTS,
+				groupId : 1,
+				visible : false,
+				icon : Ti.App.Android.R.drawable.ic_action_fav,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+			}).addEventListener("click", function(_e) {
+				require('ui/recents.window')().open();
+			});
+			_menuevent.menu.add({
+				title : 'PDF Sendepläne',
+				groupId : 2,
+				showAsAction : Ti.Android.SHOW_AS_ACTION_NEVER,
+			}).addEventListener("click", function(_e) {
+				require('ui/pdf.window')().open();
+			});
+
+			//	}, 700);
 			playIcon = _menuevent.menu.findItem(PLAY);
 			activity.actionBar.displayHomeAsUp = false;
 
@@ -254,6 +257,39 @@ module.exports = function(_event) {
 					}).show();
 				}
 			});
+		};
+		activity.onPrepareOptionsMenu = function(e) {
+			var menu = e.menu;
+			if (!menu)
+				return;
+			// favs:
+			if (menu.findItem(MYFAVS)) {
+				var favs = (new (require('controls/favorites.adapter'))()).getAllFavs();
+				if (favs)
+					if (favs.length) {
+						menu.findItem(MYFAVS).setVisible(true);
+						menu.findItem(MYFAVS).setTitle("Vorgemerktes (" + favs.length + ")");
+					} else
+						menu.findItem(MYFAVS).setVisible(false);
+			}
+			// mypodcasts:
+			if (menu.findItem(MYPODS)) {
+				var feeds = (new (require('controls/feed.adapter'))()).getAllFavedFeeds();
+				if (feeds.length) {
+					menu.findItem(MYPODS).setVisible(true);
+					menu.findItem(MYPODS).setTitle("Lieblingspodcasts (" + feeds.length + ")");
+				} else
+					menu.findItem(MYPODS).setVisible(false);
+			}
+			// recents:
+			if (menu.findItem(RECENTS)) {
+				var count = (new (require('controls/recents.adapter'))()).getAllRecentsCount();
+				if (count > 0) {
+					menu.findItem(RECENTS).setTitle("Letztgehörtes (" + count + ")");
+					menu.findItem(RECENTS).setVisible(true);
+				} else
+					menu.findItem(RECENTS).setVisible(false);
+			}
 		};
 		//activity && activity.invalidateOptionsMenu();
 		activity.onResume = function() {

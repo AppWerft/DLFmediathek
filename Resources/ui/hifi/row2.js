@@ -14,29 +14,47 @@ module.exports = function(device, dark) {
 		color : dark ? "#ddd" : '#333',
 		textAlign : 'left',
 		width : Ti.UI.FILL,
-		left : 80,
+		left : 90,
 		font : {
-			fontSize : 18,
+			fontSize : 20,
 			fontFamily : "Aller Bold"
 		}
 	}));
 	var logo = Ti.UI.createImageView({
-		top : 10,
-		left : 20,
+		left : 15,
 		image : (device.connected) ? "/images/bt4.png" : "/images/bt0.png",
-		height : 32,
-		bottom : 10
-	});
+		height : 52,
 
+	});
+	var status = "nicht in Reichweite oder ausgeschaltet";
+	if (device.nearby)
+		status = "in Reichweite, bereit zum Koppeln";
+	if (device.connected)
+		status = "verbunden und aktiv";
+
+	$.add(Ti.UI.createLabel({
+		top : 50,
+		bottom : 10,
+		text : status,
+		color : '#777',
+		textAlign : 'left',
+		width : Ti.UI.FILL,
+		opacity : 0.6,
+		left : 90,
+		font : {
+			fontSize : 10,
+			fontFamily : "DroidSans"
+		}
+	}));
 	$.switcher = Ti.UI.createSwitch({
 		value : device.connected, // mandatory property for iOS
 		style : Ti.UI.Android.SWITCH_STYLE_SWITCH,
 		right : 10,
+		visible : device.nearby || device.connected,
 		bubbleParent : true,
 		touchEnabled : true
 	});
 	$.switcher.addEventListener("click", function(e) {
-		
 		$.fireEvent("click", {
 			row : $,
 			section : {

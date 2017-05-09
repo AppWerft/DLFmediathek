@@ -55,6 +55,19 @@ $.prototype = {
 		link.execute('DELETE FROM recents WHERE url=?', url);
 		link.close();
 	},
+	getAllRecentsCount : function(){
+		var link = Ti.Database.open(DB);
+		var recents = [];
+		var sql = 'SELECT COUNT(*) AS count FROM recents WHERE progress <= duration ';
+		var res = link.execute(sql);
+		count=0;
+		if (res.isValidRow()) {
+			count = res.getFieldByName('count');
+		}
+		res.close();
+		link.close();
+		return count;
+	},
 	getAllRecents : function() {
 		var link = Ti.Database.open(DB);
 		var recents = [];

@@ -14,7 +14,16 @@ String.prototype.toHHMMSS = function() {
 	return time;
 };
 var Lotti = require("ti.animation");
-! function() {
+/*
+var Feeds = new (require('controls/feed.adapter'))();
+Feeds.mirrorAllFeeds({
+	done : function(e) {
+		console.log(e);
+	}
+	
+	
+	
+}); */! function() {
 	var introWindow = require('ui/intro.window')();
 	introWindow.addEventListener('open', function() {
 		require('ui/main.tabgroup')();
@@ -39,6 +48,4 @@ function clean(foo) {
 	else
 		return "";
 }
-
-
 

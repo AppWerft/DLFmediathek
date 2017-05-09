@@ -12,10 +12,9 @@ module.exports = function(args) {
 	var locked = false;
 	var color = Model[station].color;
 	var date = args.date;
-	console.log('DATE');
-	console.log(date);
-	var self = Ti.UI.createWindow();
-	self.onitemclickFunc = function(_e) {
+
+	var $ = Ti.UI.createWindow();
+	$.onitemclickFunc = function(_e) {
 		var start = new Date().getTime();
 		if (locked == true)
 			return;
@@ -33,7 +32,7 @@ module.exports = function(args) {
 					if (true == Ti.App.Properties.getBool('OFFLINE_DECISION')) {
 						/* init the download*/
 						var CacheAdapter = require('controls/cache.adapter');
-						console.log(payload);
+
 						CacheAdapter.cacheURL(payload);
 					}
 				});
@@ -52,7 +51,6 @@ module.exports = function(args) {
 		} else if (_e.bindId && _e.bindId == 'playtrigger') {
 			Ti.App.fireEvent('app:stopAudioStreamer');
 			var data = JSON.parse(_e.itemId);
-
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.url,
@@ -66,26 +64,27 @@ module.exports = function(args) {
 		}
 	};
 
-	self.pageView = (MediathekPage({
-			station : station,
-			date: date,
-			archiv : true,
-			window : self,
-			color : color,
-			mediathek : Model[station].mediathek,
-		}));
-
-	self.onFocusFunc = function() {
-		///self.FlipViewCollection.peakNext(true);
+	$.pageView = MediathekPage({
+		station : station,
+		date : date,
+		top : 80,
+		archiv : true,
+		window : $,
+		color : color,
+		mediathek : Model[station].mediathek,
+	});
+	$.pageView.setTop(10);
+	$.onFocusFunc = function() {
+		///$.FlipViewCollection.peakNext(true);
 		Ti.App.fireEvent('app:state', {
 			state : true
 		});
 
 	};
-	self.addEventListener('focus', self.onFocusFunc);
-	self.addEventListener('open', function(_event) {
+	$.addEventListener('focus', $.onFocusFunc);
+	$.addEventListener('open', function(_event) {
 		АктйонБар.title = Model[station].name;
-		АктйонБар.subtitle =  ' Mediathek vom ' +date.format('LL');
+		АктйонБар.subtitle = ' Mediathek vom ' + date.format('LL');
 		АктйонБар.titleFont = "Aller Bold";
 		АктйонБар.subtitleColor = "#ccc";
 		АктйонБар.setBackgroundColor('#444444');
@@ -94,16 +93,61 @@ module.exports = function(args) {
 		if (activity) {
 			activity.onCreateOptionsMenu = function(_menuevent) {
 				activity.actionBar.displayHomeAsUp = true;
-				activity.actionBar.onHomeIconItemSelected = function() {
-					self.close();
-				};
+				_menuevent.menu.clear();
+				_menuevent.menu.add({
+					title : '<',
+					itemId : -1,
+					visible : true,
+					icon : "/images/yesterday.png",
+					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+				}).addEventListener("click", function() {
+					date = Moment(date).add(-1, "days");
+					АктйонБар.subtitle = ' Mediathek vom ' + date.format('LL');
+					$.remove($.pageView);
+					$.pageView = MediathekPage({
+						station : station,
+						date : date,
+						top : 80,
+						archiv : true,
+						window : $,
+						color : color,
+						mediathek : Model[station].mediathek,
+					});
+					$.add($.pageView);
+					$.pageView.setTop(10);
+				});
+				_menuevent.menu.add({
+					title : '>',
+					itemId : 1,
+					visible : true,
+					icon : "/images/tomorrow.png",
+					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+				}).addEventListener("click", function() {
+					date = Moment(date).add(1, "days");
+					АктйонБар.subtitle = ' Mediathek vom ' + date.format('LL');
+					$.remove($.pageView);
+					$.pageView = MediathekPage({
+						station : station,
+						date : date,
+						top : 80,
+						archiv : true,
+						window : $,
+						color : color,
+						mediathek : Model[station].mediathek,
+					});
+					$.add($.pageView);
+					$.pageView.setTop(10);
+				});
+			};
+			activity.actionBar.onHomeIconItemSelected = function() {
+				$.close();
 			};
 			activity.invalidateOptionsMenu();
 		};
 	});
 
-	self.add(self.pageView);
-	self.addEventListener('blur', function() {
+	$.add($.pageView);
+	$.addEventListener('blur', function() {
 		Ti.App.fireEvent('app:state', {
 			state : false
 		});
@@ -111,5 +155,5 @@ module.exports = function(args) {
 	Ti.Gesture.addEventListener('orientationchange', function() {
 	});
 
-	return self;
+	return $;
 };

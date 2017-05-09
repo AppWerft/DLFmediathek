@@ -1,3 +1,5 @@
+ var ICON = "/upmpd/icon.png";
+
 module.exports = function(device,dark) {
 	var row = Ti.UI.createTableViewRow({
 		itemId: JSON.stringify(device)
@@ -15,8 +17,8 @@ module.exports = function(device,dark) {
 		color : dark ? '#ddd':'#333',
 		textAlign : 'left',
 		width: Ti.UI.FILL,
-		left : 120,
-		opacity :  0.5,
+		left : 90,
+		opacity :  0.7,
 		font : {
 			fontSize : 20,
 			fontFamily : "Aller bold"
@@ -25,9 +27,10 @@ module.exports = function(device,dark) {
 	row.add(Ti.UI.createImageView({
 		top : 10,
 		left : 20,
-		opacity :  0.5,
-		image : "/images/" + name + ".png",
-		height : 45
+		opacity :  0.6,
+		image :  "http://"+device.ip + ":" + device.port+ "/upmpd/icon.png",
+		defaultImage : "/images/" + device.name + '.png',
+		height : 50
 	}));
 	row.add(Ti.UI.createLabel({
 		top : 40,
@@ -35,8 +38,8 @@ module.exports = function(device,dark) {
 		color : '#777',
 		textAlign : 'left',
 		width: Ti.UI.FILL,
-		opacity :  0.5,
-		left : 120,
+		opacity :  0.6,
+		left : 90,
 		font : {
 			fontSize : 10,
 			fontFamily : "DroidSans"

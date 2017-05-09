@@ -4,9 +4,10 @@ var Model = require('model/stations'),
     Moment = require('vendor/moment'),
     FlipModule = require('de.manumaticx.androidflip'),
     Podcast = new (require('controls/feed.adapter'))(),
-    stations = ['dlf', 'drk', 'drw'];
+    CardView = require("ui/podcast/cardview.widget"),
+    stations = ["dlf", "drk", "drw"];
 
-function getTileDims() {
+var getTileDims = function() {
 	var tilewidth,
 	    tileheight;
 	var screenwidth = Ti.Platform.displayCaps.platformWidth / Ti.Platform.displayCaps.logicalDensityFactor,
@@ -24,7 +25,7 @@ function getTileDims() {
 		width : tilewidth,
 		height : tileheight
 	};
-}
+};
 
 module.exports = function() {
 	var $ = Ti.UI.createWindow();
@@ -53,50 +54,29 @@ module.exports = function() {
 		});
 		pages[ndx].addEventListener('click', function(_e) {
 			if (_e.source.itemId) {
-				Ti.Media.vibrate([20,10]);
+				Ti.Media.vibrate([20, 10]);
 				var item = JSON.parse(_e.source.itemId);
 				if (item) {
-					item.color = color;
 					item.station = stations[ndx];
-					require('ui/podcastlist.window')(item).open();
+					if (Array.isArray(item.url)) {
+						var dialog = Ti.UI.createOptionDialog({
+							options : ["Beiträge", "Ganze Sendung"]
+						});
+						dialog.addEventListener("click", function(event) {
+							if (event.index >= 0 && event.index<item.url.length) {
+								item.url = item.url[event.index];
+								require('ui/podcast/list.window')(item).open();
+							}
+						});
+						dialog.show();
+					} else
+						require('ui/podcast/list.window')(item).open();
 				}
 			}
 		});
-		podcasts.forEach(function(p) {
-			var itemId = {
-				title : (p.a) ? p.a.img.alt : p.img.alt,
-				url : (p.a) ? p.a.href : p.href,
-				banner : p.banner,
-				color: Model[station].color
-			};
-			var backgroundImage = ndx == 2 ? '/images/podcasts/' + p.img.src : '/images/' + stations[ndx] + 'tile.png';
-			var cv = Ti.UI.Android.createCardView({
-				padding : 0,
-				width : getTileDims().width,
-				height : getTileDims().height,
-				top : 0,
-				itemId : JSON.stringify(itemId),
-				borderRadius : 10,
-				useCompatPadding : true,
-				backgroundImage : backgroundImage,
-			});
-			cv.add(Ti.UI.createImageView({
-				image : backgroundImage,
-				width : Ti.UI.FILL,
-				height : Ti.UI.FILL,
-				touchEnabled : false
-			}));
-			if (ndx < 2)
-				cv.add(Ti.UI.createLabel({
-					text : (p.a) ? p.a.img.alt : p.img.alt,
-					bottom : 10,
-					left : 10,
-					font : {
-						fontSize : 18,
-						fontFamily : 'ScalaSans'
-					}
-				}));
-			pages[ndx].add(cv);
+		var dims = getTileDims();
+		podcasts.forEach(function(podcast) {
+			pages[ndx].add(CardView(podcast, station, dims));
 		});
 	});
 

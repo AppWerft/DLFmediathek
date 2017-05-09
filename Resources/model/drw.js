@@ -10,7 +10,7 @@ module.exports = [{
 	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-film",
 	"img" : {
 		"alt" : "Eine Stunde Film",
-		"src" : "film.png"
+		"src" : "film.jpeg"
 	},
 	"banner" : "eine-stunde-film.jpg"
 }, {
@@ -26,26 +26,26 @@ module.exports = [{
 	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-liebe",
 	"img" : {
 		"alt" : "Eine Stunde Liebe",
-		"src" : "liebe.png"
+		"src" : "liebe.jpeg"
 	}, "banner" : "eine-stunde-liebe.jpg"
 
 }, {
 	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-talk",
 	"img" : {
 		"alt" : "Eine Stunde Talk",
-		"src" : "talk.png"
+		"src" : "talk.jpeg"
 	}, "banner" : "eine-stunde-talk.jpg"
 }, {
 	"href" : "http://deutschlandfunknova.de/podcast/eine-stunde-medien",
 	"img" : {
 		"alt" : "Eine Stunde was mit Medien",
-		"src" : "medien.png"
+		"src" : "medien.jpeg"
 	}, "banner" : "eine-stunde-medien.jpg"
 }, {
 	"href" : "http://deutschlandfunknova.de/podcast/einhundert",
 	"img" : {
 		"alt" : "Einhundert",
-		"src" : "100.png"
+		"src" : "100.jpeg"
 	}, "banner" : "einhundert.jpg"
 }, {
 	"href" : "http://deutschlandfunknova.de/podcast/hielscher-oder-haase",
@@ -57,7 +57,7 @@ module.exports = [{
 	"href" : "http://deutschlandfunknova.de/podcast/hoersaal-der-podcast",
 	"img" : {
 		"alt" : "Hörsaal",
-		"src" : "hsaal.png"
+		"src" : "hoersaal.jpg"
 	}, "banner" : "hoersaal-der-podcast.jpg"
 }, {
 	"href" : "http://deutschlandfunknova.de/podcast/netzbasteln",
@@ -69,7 +69,7 @@ module.exports = [{
 	"href" : "http://deutschlandfunknova.de/podcast/redaktionskonferenz",
 	"img" : {
 		"alt" : "Redaktionskonferenz",
-		"src" : "konferenz.png"
+		"src" : "konferenz.jpeg"
 	}, "banner" : "redaktionskonferenz.jpg"
 }, {
 	"href" : "http://deutschlandfunknova.de/podcast/tiergespraech",
@@ -81,12 +81,18 @@ module.exports = [{
 	"href" : "http://deutschlandfunknova.de/podcast/update",
 	"img" : {
 		"alt" : "Update",
-		"src" : "update.png"
+		"src" : "update.jpeg"
 	}, "banner" : "update.jpg"
 }, {
 	"href" : "http://deutschlandfunknova.de/podcast/wissensnachrichten",
 	"img" : {
 		"alt" : "Wissensnachrichten",
-		"src" : "wissensnachrichten"
+		"src" : "wissensnachrichten.jpg"
 	}, "banner" : "wissensnachrichten.jpg"
+},{
+	"href" : "http://deutschlandfunknova.de/podcast/usa-hannas-vote-trip",
+	"img" : {
+		"alt" : "Hannes vote trip",
+		"src" : "hannas-vote-trip.jpg"
+	}, "banner" : "usa-hannas-vote-trip.jpg"
 }];

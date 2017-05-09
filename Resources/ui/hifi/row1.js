@@ -3,19 +3,20 @@ module.exports = function(device,dark) {
 		itemId: JSON.stringify(device)
 	});
 	try {
-	var title = (device.dnstype=="googlecast") ? device.txt.md + "@" +  device.txt.fn : device.txt.model;
+	var title = (device.dnstype=="googlecast") ? device.txt.md : device.txt.model;
 	var name = (device.dnstype=="googlecast") ? device.txt.md.toLowerCase() : device.txt.model.toLowerCase();
 	} catch(E) {
 		title= device.name;
 		name = device.name.toLowerCase();
 	}
+	console.log("name"+name);
 	row.add(Ti.UI.createLabel({
 		top : 10,
-		text : title,opacity :  0.5,
+		text : title,opacity :  0.7,
 		color : dark ? '#ddd':'#333',
 		textAlign : 'left',
 		width: Ti.UI.FILL,
-		left : 120,
+		left : 90,
 		font : {
 			fontSize : 20,
 			fontFamily : "Aller bold"
@@ -23,7 +24,7 @@ module.exports = function(device,dark) {
 	}));
 	row.add(Ti.UI.createImageView({
 		top : 10,
-		left : 20,opacity :  0.5,
+		left : 20,opacity :  0.7,
 		image : "/images/" + name + ".png",
 		height : 45
 	}));
@@ -33,7 +34,7 @@ module.exports = function(device,dark) {
 		color : '#777',
 		textAlign : 'left',
 		width: Ti.UI.FILL,
-		left : 120,
+		left : 90,
 		font : {
 			fontSize : 10,
 			fontFamily : "DroidSans"
