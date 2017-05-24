@@ -1151,18 +1151,7 @@ exports.dlf24 = {
 			touchEnabled : false,
 			width : Ti.UI.FILL
 		}
-	}, /*{
-	 type : 'Ti.UI.ScrollableView',
-	 bindId : 'spinner',
-	 properties : {
-	 top : -100,
-	 width : 100,
-	 right : 5,
-	 height : 100,
-	 views: []
-	 }
-	 },*/
-	{
+	}, {
 		type : 'Ti.UI.Label',
 		bindId : 'title',
 		properties : {
@@ -1184,12 +1173,26 @@ exports.dlf24 = {
 			left : 10,
 			right : 30,
 			top : 0,
-			bottom : 15,
 			height : Ti.UI.SIZE,
 			touchEnabled : false,
 			font : {
 				fontSize : 16,
 				fontFamily : 'Aller Bold'
+			},
+			color : '#555'
+		}
+	}, {
+		type : 'Ti.UI.Label',
+		bindId : 'pubtime',
+		properties : {
+			right : 10,
+			top : 0,
+			bottom : 15,
+			height : Ti.UI.SIZE,
+			touchEnabled : false,
+			font : {
+				fontSize : 14,
+				fontFamily : 'Aller'
 			},
 			color : '#555'
 		}

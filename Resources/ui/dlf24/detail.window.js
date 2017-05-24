@@ -1,14 +1,24 @@
-var Flip = require('de.manumaticx.androidflip');
-var АктйонБар = require('com.alcoapps.actionbarextras');
-var Moment = require("vendor/moment");
-var lila="#461C9C";
+var Flip = require('de.manumaticx.androidflip'),
+    АктйонБар = require('com.alcoapps.actionbarextras'),
+    Moment = require("vendor/moment"),
+    lila = "#461C9C",
+    DLF24controler = require("controls/dlf24konsole");
+
 module.exports = function(_e) {
+	var currentPage = 0;
+	var numberOfPages;
 	var $ = Ti.UI.createWindow({
-       fullscreen : false
-    });
+		fullscreen : false
+	});
+	function getSubtitle() {
+		return "Meldungen vom " + Moment().format("LL") + "   (" + (currentPage+1) + "/"+ numberOfPages+ ")";
+	}
+	function setSubtitle() {
+		АктйонБар.subtitle= getSubtitle();
+	}
 	$.addEventListener('open', function(_event) {
 		АктйонБар.title = "DLF24";
-		АктйонБар.subtitle = "Meldungen vom " + Moment().format("LL");
+		
 		АктйонБар.titleFont = "ScalaSansBold";
 		АктйонБар.setBackgroundColor("#333");
 		АктйонБар.subtitleColor = "#ccc";
@@ -23,22 +33,29 @@ module.exports = function(_e) {
 			};
 			activity.invalidateOptionsMenu();
 		}
+		
 	});
 	
-	require("controls/dlf24").getNewsList(function(_res) {
-		var currentPage = 0;
+	DLF24controler.getNewsList(null, function(_res) {
+		numberOfPages = _res.items.length;
+		setSubtitle();
 		for (var i = 0; i < _res.items.length; i++) {
 			if (_res.items[i].link == _e.itemId)
 				currentPage = i;
 		}
-		$.add(Flip.createFlipView({
-			top : 74,
+		$.flipView = Flip.createFlipView({
+			top : 80,
 			currentPage : currentPage,
 			orientation : "horizontal",
 			overFlipMode : Flip.OVERFLIPMODE_GLOW,
 			views : _res.items.map(require("ui/dlf24/detail.page"))
-		}));
-		$.children[0].peakNext(true);
+		});
+		$.add($.flipView);
+		$.flipView.peakNext(true);
+		$.flipView.addEventListener("flipped",function(event){
+			currentPage = $.flipView.currentPage;
+			setSubtitle();
+		});
 	});
 	$.open();
 };

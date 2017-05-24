@@ -1,6 +1,6 @@
 String.prototype.toHHMMSS = function() {
 	var sec_num = parseInt(this / 1000, 10);
-	// don't forget the second param
+	// don't forget the second parameter
 	var hours = Math.floor(sec_num / 3600);
 	var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
 	var seconds = sec_num - (hours * 3600) - (minutes * 60);
@@ -13,17 +13,10 @@ String.prototype.toHHMMSS = function() {
 	var time = (hours != '00') ? hours + ':' + minutes + ':' + seconds : minutes + ':' + seconds;
 	return time;
 };
-var Lotti = require("ti.animation");
-/*
-var Feeds = new (require('controls/feed.adapter'))();
-Feeds.mirrorAllFeeds({
-	done : function(e) {
-		console.log(e);
-	}
-	
-	
-	
-}); */! function() {
+
+
+! function() {
+	require("ti.googlecast");
 	var introWindow = require('ui/intro.window')();
 	introWindow.addEventListener('open', function() {
 		require('ui/main.tabgroup')();
@@ -40,9 +33,11 @@ function clean(foo) {
 		.replace(/<br>/gm, "")//
 		.replace(/Erdogan/gm, "Erdoğan")//
 		.replace(/Yildirim/gm, "Yıldırım")//
+		.replace(/Sofuoglu/gm,"Sofuoğlu")
 		.replace(/Cavusoglu/gm, "Çavuşoğlu")//
 		.replace(/Isik/gm, "Işık")//
 		.replace(/Sislik/gm, "Şişlik")//
+		.replace(/Incirlik/gm, "İncirlik")//
 		.replace(/`s /gm, "'s ")//
 		.replace(/"([^"]+)"/gm, '„$1“');
 	else

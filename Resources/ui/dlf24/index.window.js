@@ -1,6 +1,6 @@
 var АктйонБар = require('com.alcoapps.actionbarextras'),
     Moment = require("vendor/moment"),
-    DLF24controler = require("controls/dlf24");
+    DLF24controler = require("controls/dlf24konsole");
 lastNews = null,
 ROWS_IN_VIEWPORT = 2,lila="#461C9C";
 
@@ -39,33 +39,22 @@ module.exports = function() {
 		$.container.setRefreshing(true);
 		var LottieView = require("ui/lottie.widget")();
 		$.add(LottieView);
-		DLF24controler.getNewsList(function(_res) {
+		setTimeout(function(){
+			$.container.setRefreshing(false);
+			$.remove(LottieView);
+		},9000);
+		DLF24controler.getNewsList(null,function(_res) {
+			console.log(_res);
 			$.container.setRefreshing(false);
 			$.remove(LottieView);
 			if (true == _res.changed && _res.items) {
 				$.listView.setSections([Ti.UI.createListSection({
 					headerTitle : "Heutige Nachrichten (" + Moment().format("LL") + ")",
-					items : _res.items.map(function(_item, _ndx) {
-						return {
-							properties : {
-								accessoryType : Ti.UI.LIST_ACCESSORY_TYPE_NONE,
-								itemId : _item.link
-							},
-							title : {
-								text : _item.title
-							},
-							shorttext : {
-								text : _item.shorttext
-							},
-							aufmacher : {
-								image : _item.aufmacher || undefined
-							}
-						};
-					})
+					items : require("ui/dlf24/item")(_res.items)
 				})]);
 			} else
 				console.log("DLF ERROR: no items in feed");
-		}, forced, offset, limit);
+		});
 	}
 
 
@@ -111,26 +100,6 @@ module.exports = function() {
 				bottom : 30
 			});
 		}
-		// all rows in viewport:
-		var ndxList = [];
-		for (var i = e.firstVisibleItemIndex; i < e.firstVisibleItemIndex + e.visibleItemCount; i++) {
-			ndxList.push(i);
-		}
-		ndxList.forEach(function(ndx) {
-			// getting the item
-			var item = $.listView.sections[0].getItemAt(ndx);
-			if (item) {
-				var url = item.properties.itemId;
-				//var LV =  require("ui/lottie.widget")();
-				//$.add(LV);
-				DLF24controler.getNewsItem(url, function(res) {
-					item.aufmacher.image = res.aufmacher || undefined;
-					//$.remove(LV);
-					$.listView.sections[0].updateItemAt(ndx, item);
-				}, /*forced*/false);
-			}
-		});
-		//	updateList(false, e.firstVisibleItemIndex, e.visibleItemCount);
 	});
 	$.listView.addEventListener("scrollstart", function() {
 		floatView.transform = Ti.UI.create2DMatrix({

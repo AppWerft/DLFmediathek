@@ -1,18 +1,11 @@
-module.exports = function(device,dark) {
+module.exports = function(route,dark) {
 	var row = Ti.UI.createTableViewRow({
-		itemId: JSON.stringify(device)
+		itemId: JSON.stringify(route)
 	});
-	try {
-	var title = (device.dnstype=="googlecast") ? device.txt.md : device.txt.model;
-	var name = (device.dnstype=="googlecast") ? device.txt.md.toLowerCase() : device.txt.model.toLowerCase();
-	} catch(E) {
-		title= device.name;
-		name = device.name.toLowerCase();
-	}
-	console.log("name"+name);
 	row.add(Ti.UI.createLabel({
 		top : 10,
-		text : title,opacity :  0.7,
+		text : route.getDescription(),
+		opacity :  0.7,
 		color : dark ? '#ddd':'#333',
 		textAlign : 'left',
 		width: Ti.UI.FILL,
@@ -22,24 +15,25 @@ module.exports = function(device,dark) {
 			fontFamily : "Aller bold"
 		}
 	}));
-	row.add(Ti.UI.createImageView({
-		top : 10,
-		left : 20,opacity :  0.7,
-		image : "/images/" + name + ".png",
-		height : 45
-	}));
 	row.add(Ti.UI.createLabel({
-		top : 40,
-		text : device.ip + ":" + device.port + "\n",
+		top : 35,
+		text : route.getName()+ "\n",
 		color : '#777',
 		textAlign : 'left',
 		width: Ti.UI.FILL,
+		opacity :  0.6,
 		left : 90,
 		font : {
 			fontSize : 10,
 			fontFamily : "DroidSans"
 		}
 	}));
+	row.add(Ti.UI.createImageView({
+		left : 20,opacity :  0.7,
+		image : "/images/" + route.getDescription().toLowerCase() + ".png",
+		height : 40
+	}));
+	
 	var switcher = Ti.UI.createSwitch({
 		value : false, // mandatory property for iOS
 		style :  Ti.UI.Android.SWITCH_STYLE_SWITCH,

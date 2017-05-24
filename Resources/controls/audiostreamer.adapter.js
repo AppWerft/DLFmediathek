@@ -7,6 +7,7 @@ const TICK = 3000;
 
 var wasLastPingSuccessful = false;
 var audioSessionId;
+var forcekill = false;
 
 function LOG() {
 	console.log('AAS: ' + arguments[0]);
@@ -89,7 +90,8 @@ function onPlayerChange(_e) {
 			StreamingPlayer.stop();
 		}
 		shouldStopp = false;
-
+		// for avoiding autostart after phone hook off:
+		StreamingPlayer.play(null);
 		if (shouldStream && Ti.Network.online) {
 			LOG('play in STOP event node, timeouttimer started');
 			timeoutTimer = setTimeout(onTimeout, TIMEOUTVALUE);
@@ -100,12 +102,13 @@ function onPlayerChange(_e) {
 		});
 		break;
 	case STREAMERROR:
+	/*
 		callbackFn({
 			status : 'STREAMERROR'
 		});
 		L('LOST_CONNECTION_TOAST') && Ti.UI.createNotification({
 			message : L('LOST_CONNECTION_TOAST')
-		}).show();
+		}).show();*/
 		break;
 	};
 }

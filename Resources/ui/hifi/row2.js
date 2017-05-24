@@ -13,6 +13,8 @@ module.exports = function(device, dark) {
 		text : device.name,
 		color : dark ? "#ddd" : '#333',
 		textAlign : 'left',
+		ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_END, //
+		wordWrap: false,
 		width : Ti.UI.FILL,
 		left : 90,
 		font : {

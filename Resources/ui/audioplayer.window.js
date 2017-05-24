@@ -224,7 +224,7 @@ var $ = function(options) {
 				if (_success !== true)
 					return;
 				that._view.hifi.addEventListener('click',function(){
-					require("ui/hifi/main.dialog")(true);
+					require("ui/hifi/main.dialog")(that._window,true);
 				});	
 				that._view.mVisualizerView = VisualizerView.createView({
 					audioSessionId : 0,

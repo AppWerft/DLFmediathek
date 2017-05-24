@@ -48,7 +48,6 @@ function onCallbackFn(_payload) {
 		onAir = false;
 		break;
 	case 'TIMEOUT':
-		LOG('event TIMEOUT');
 		onAir = false;
 		playIcon.setVisible(Ti.Network.online);
 		Ti.UI.createNotification({
@@ -88,7 +87,6 @@ function onPlayStopClickFn() {
 			}
 		});
 		AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
-		LOG('onAir was false now setting  to true');
 		onAir = true;
 	} else {
 		AudioStreamer.stop(onCallbackFn);
@@ -162,7 +160,7 @@ module.exports = function(_event) {
 				icon : "/images/hifi.png", //Ti.Android.R.drawable.ic_action_hifi,
 				showAsAction : Ti.Android.SHOW_AS_ACTION_ALWAYS
 			}).addEventListener("click", function() {
-				require("ui/hifi/main.dialog")();
+				require("ui/hifi/main.dialog")(_event.source);
 			});
 
 			hifiIcon = _menuevent.menu.findItem(HIFI);

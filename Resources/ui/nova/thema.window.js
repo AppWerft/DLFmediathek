@@ -12,7 +12,6 @@ module.exports = function(_thema) {
        orientationModes : [Ti.UI.PORTRAIT, Ti.UI.UPSIDE_PORTRAIT]
     });
     var image = "/images/podcasts/banner/" + _thema + ".jpg";
-    console.log(image);
     $.add(Ti.UI.createImageView({
     	top:79,
     	image: image,

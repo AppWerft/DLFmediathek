@@ -23,7 +23,6 @@ module.exports = function(_args) {
 			    sectionndx = -1;
 			for (var i = 0; i < entries.length; i++) {
 				var item = entries[i];
-				console.log(item);
 				item.station = _args.station;
 				item.datetime = item.datetime.trim();
 				item.author = item.author.trim();
@@ -31,7 +30,7 @@ module.exports = function(_args) {
 				var sub = {
 					author : ( typeof item.author == 'string') ? item.author : null,
 					start : item.datetime ? item.datetime.split(' ')[1].substr(0, 5) : '',
-					subtitle : clean(item.title),
+					subtitle : item.title.replace(/"([^"]+)"/gm, '„$1“'),
 					station : item.station,
 					url : item.url,
 					datetime : item.datetime,
@@ -42,7 +41,7 @@ module.exports = function(_args) {
 					killtime : item.killtime,
 					pubdate : item.datetime,
 					duration : item.duration,
-					title : clean(item.title)
+					title : item.title.replace(/"([^"]+)"/gm, '„$1“')
 				};
 				sub.isfav = Favs.isFav(sub) ? true : false;
 				if (item.sendung != lastsendung) {
@@ -71,32 +70,22 @@ module.exports = function(_args) {
 	if (!_args.url)
 		return;
 	var url = (_args.date) ? _args.url.replace(/_DATE_/gm, _args.date) : _args.url;
-	Soup.createDocument({
-		url : url,
-		onload : function(res) {
-			if (res && res.document) {
-				var elems = res.document.select("item");
-				if (elems) {
-					onloadFunc({
-						success : true,
-						items : elems.map(function(item) {
-							return {
-								author : item.selectFirst("author").getText(),
-								title : item.selectFirst("title").getText(),
-								sendung : item.selectFirst("sendung").getText(),
-								id : item.getAttribute("id"),
-								sendungid : item.getAttribute("sendungid"),
-								duration : item.getAttribute("duration"),
-								killtime : item.getAttribute("killtime"),
-								deliveryMode : item.getAttribute("deliveryMode"),
-								datetime : item.selectFirst("datetime").getText(),
-								url : item.getAttribute("url"),
-								station : item.getAttribute("station")
-							};
-						})
-					});
-				}
-			}
+	require('de.appwerft.scraper').createScraper({
+		url : url + '&_____=' + Math.random(),
+		rootXpath : "//entries",
+		useragent : "Das DRadio/6 CFNetwork/711.1.16 Darwin/14.0.0",
+		subXpaths : {
+			url : "//item/@url",
+			author : "//item/author/text()",
+			title : "//item/title/text()",
+			id : "//item/@id",
+			sendung : "//item/sendung/text()",
+			sendungid : "//item/sendung/@id",
+			duration : "//item/@duration",
+			killtime : "//item/@killtime",
+			deliveryMode : "//item/@deliveryMode",
+			datetime : "//item/datetime/text()"
 		}
-	});
+	}, onloadFunc);
+	
 };

@@ -3,13 +3,13 @@ module.exports = {
 		title : "Einhundert",
 		color : "#FCFCFA"
 	},
-	"hoersaal" : {
-		title : "Hörsaal",
-		color : "#EBE8D8"
-	},
 	"eine-stunde-film" : {
 		title : "Eine Stunde Film",
 		color : "#50B95C"
+	},
+	"hoersaal" : {
+		title : "Hörsaal – der Podcast",
+		color : "#EAE0A3"
 	},
 	"redaktionskonferenz" : {
 		title : "Redaktionskonferenz",
@@ -39,7 +39,7 @@ module.exports = {
 	"early-bird" : {
 		banner : "/images/podcasts/early-bird.jpg",
 		title : "Early Bird",
-		color : "#E1E344"
+		color : "#EAE0A3"
 	},
 	"dein-sonntag" : {
 		title : "Dein Sonntag",
@@ -54,24 +54,19 @@ module.exports = {
 		title : "Grünstreifen",
 		color : "#39A156"
 	},
-
-	"festival" : {
-		title : "Festival",
-		color : "#ACDAE7"
-	},
 	"eine-stunde-musik" : {
 		title : "Eine Stunde Musik",
 		color : "#9257B1"
 	},
 	"tiergespraech" : {
 		title : "Tiergespräch",
-		color : "#AD3453"
+		color : "#6F9F55"
 	},
-	"serien/wissennachrichten-1" : {
+	"podcasts/download/wissensnachrichten" : {
 		title : "Wissensnachrichten",
 		color : "#52A8C1"
 	},
-	"serien/Netzbasteln" : {
+	"podcasts/download/netzbasteln" : {
 		title : "Netzbasteln",
 		color : "#097C8E"
 	}

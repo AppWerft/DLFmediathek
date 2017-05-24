@@ -1,3 +1,4 @@
+var FEED = "https://dlf24.konsole-labs.com/backend/get/?typ=news&subtyp=__DATA__&ver={ver}";
 var DLF24_FEED_URL = "http://www.deutschlandfunk.de/die-nachrichten.353.de.rss?_=";
 var PodcastListGrabber = require("de.appwerft.podcast");
 var Moment = require("vendor/moment");

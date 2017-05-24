@@ -1,11 +1,12 @@
 var BTA2DP = require("de.appwerft.a2dp");
 
 var AIRLINO = 0,
-    GOOGLE = 1,
+    CAST = 1,
     BT = 2;
 var HBM10 = require("ti.airlino");
+var Cast = require("ti.googlecast");
 
-module.exports = function(_dark) {
+module.exports = function(lifecycleContainer, _dark) {
 	var dark = (_dark == undefined) ? false : true;
 	function updateSection(ndx, data, module) {
 		var section = androidView.getSections()[ndx];
@@ -33,7 +34,8 @@ module.exports = function(_dark) {
 		Ti.Media.vibrate([5, 5]);
 		switch (e.section.ndx) {
 		case BT:
-			if (device.nearby == true) {
+			// Bluetooth
+			if (device.nearby == true || device.connected == true) {
 				if (e.row.switcher.getValue() == true) {
 					BTA2DP.disconnectFrom(device.name);
 				} else {
@@ -46,7 +48,7 @@ module.exports = function(_dark) {
 			} else
 				Ti.UI.createNotification({
 					duration : 8000,
-					message : "„" + device.name + "“ ist nicht in Reichweite oder ausgeschaltet.\n\nEs gibt aber auch die Möglichkeit, daß es nicht bereit für eine Verbindung ist.\n\nDann sollte jetzt der Knopf am Gerät gedrückt werden."
+					message : "„" + device.name + "“ ist nicht in Reichweite oder ausgeschaltet.\n\nEs gibt aber auch die Möglichkeit, daß es nicht bereit für eine Verbindung ist. Dann sollte jetzt der Knopf am Gerät gedrückt werden."
 				}).show();
 			break;
 		default:
@@ -56,7 +58,7 @@ module.exports = function(_dark) {
 		}
 	});
 	var $ = Ti.UI.createAlertDialog({
-		title : "Wiedergabe auf externen Lautsprechern",
+		title : "Externe Lautsprecher",
 		cancel : 0,
 		//title : "Kopplung mit externen Lautsprechern/Empfängern",
 		persistent : true,
@@ -72,8 +74,6 @@ module.exports = function(_dark) {
 	}, 3000);
 
 	var MSearch = HBM10.createMSearch();
-	//MSearch.start();
-
 	var AirlinoBrowser = HBM10.createZeroConfBrowser({
 		dnstype : "dockset",
 		onchange : function(e) {
@@ -81,7 +81,6 @@ module.exports = function(_dark) {
 			updateSection(AIRLINO, e.devices, "ui/hifi/row" + AIRLINO);
 		}
 	});
-	//var GooglecastBrowser = require("ti.googlecast").createMediaRouter({}).start();
 
 	var btAvail = BTA2DP.Bluetooth.getAvailibility();
 	switch (btAvail) {
@@ -115,14 +114,37 @@ module.exports = function(_dark) {
 				BTA2DP.DiscoveryNearbyDevices.start();
 			}
 		});
-
 	}
 
 
+	Cast.addEventListener("changed", function(res) {
+		console.log("event");
+		res && res.routes.forEach(function(route) {
+			console.log(route.getDescription());
+			console.log(route.getName());
+		});
+		res && updateSection(CAST, res.routes, "ui/hifi/row" + CAST);
+
+	});
 	AirlinoBrowser.start();
+
+	Cast.start({
+		categories : [Cast.CATEGORY_LIVE_AUDIO, Cast.CATEGORY_REMOTE_PLAYBACK],
+		changed : function(routes) {
+			console.log("callback");
+			routes && routes.forEach(function(route) {
+
+				console.log(route.getDescription());
+				console.log(route.getName());
+
+			});
+			routes && updateSection(CAST, routes, "ui/hifi/row" + CAST);
+		}
+	});
 
 	$.addEventListener("click", function() {
 		AirlinoBrowser.stop();
+		Cast.stop();
 		//GooglecastBrowser.stop();
 		BTA2DP && BTA2DP.DiscoveryNearbyDevices.stop();
 		BTA2DP && BTA2DP.stopMonitorPairedDevices();

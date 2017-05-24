@@ -5,8 +5,10 @@ module.exports = function(_cb) {
 		options : ["10 min.", "15 min.", "30 min.", "45 min.", "1 Stunde", "2 Stunden", "ohne Abschaltung"]
 	});
 	$.addEventListener("click", function(e) {
-		if (_cb)
-			_cb(durations[e.index] * 60 * 1000);
+		if (e.index > -1) {
+			if (_cb)
+				_cb(durations[e.index] * 60 * 1000);
+		}
 	});
 	$.show();
 };
