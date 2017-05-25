@@ -37,6 +37,8 @@ function clean(foo) {
 		.replace(/Cavusoglu/gm, "Çavuşoğlu")//
 		.replace(/Isik/gm, "Işık")//
 		.replace(/Sislik/gm, "Şişlik")//
+		.replace(/&amp;/gm, "&")//
+		.replace(/&quot;/gm, "\"")//
 		.replace(/Incirlik/gm, "İncirlik")//
 		.replace(/`s /gm, "'s ")//
 		.replace(/"([^"]+)"/gm, '„$1“');
