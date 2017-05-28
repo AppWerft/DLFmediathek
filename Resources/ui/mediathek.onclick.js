@@ -26,13 +26,9 @@ module.exports = function(_e) {
 		item.fav.opacity = isfav ? 0.8 : 0.5;
 		_e.section.updateItemAt(_e.itemIndex, item);
 	} else if (_e.bindId && _e.bindId == 'share') {
-		var message = 'Höre gerade mit der #DRadioMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“';
-		Ti.UI.createNotification({
-			message : 'Verkürze URL des Beirags.\nEinen Augenblick …'
-		}).show();
 		require('vendor/socialshare')({
 			type : 'all',
-			message : message,
+			message : 'Höre gerade mit der #DLFMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“',
 			url : JSON.parse(_e.itemId).url,
 		});
 	} else if (_e.bindId && _e.bindId == 'playtrigger') {

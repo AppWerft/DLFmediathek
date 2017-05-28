@@ -39,7 +39,7 @@ module.exports = function(_item) {
 			text : e.title,
 			font : {
 				fontSize : 22,
-				fontFamily : 'Aller Bold'
+				fontFamily : 'ScalaSansBold'
 			},
 			color : "#461C9C"
 		}));
@@ -49,7 +49,7 @@ module.exports = function(_item) {
 			right : 10,
 			font : {
 				fontSize : 20,
-				fontFamily : 'Aller Bold'
+				fontFamily : 'ScalaSansBold'
 			},
 			color : "#333",
 			text : e.shorttext
@@ -61,7 +61,7 @@ module.exports = function(_item) {
 			color : "#333",
 			font : {
 				fontSize : 20,
-				fontFamily : 'Aller'
+				fontFamily : 'ScalaSans'
 			},
 			text : e.fulltext + "\n\n"
 		}));
@@ -84,7 +84,7 @@ module.exports = function(_item) {
 			text : "  " + e.overline + "  ",
 			font : {
 				fontSize : 20,
-				fontFamily : 'Aller Bold'
+				fontFamily : 'ScalaSansBold'
 			},
 
 		}));

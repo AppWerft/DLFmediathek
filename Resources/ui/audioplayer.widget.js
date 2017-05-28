@@ -80,7 +80,7 @@ var $ = function(args) {
 		height : 25,
 		font : {
 			fontSize : 16,
-			fontFamily : 'Aller Bold'
+			fontFamily : 'ScalaSansBold'
 		},
 		left : 80,
 	});
@@ -93,7 +93,7 @@ var $ = function(args) {
 		height : Ti.UI.SIZE,
 		font : {
 			fontSize : 34,
-			fontFamily : 'Aller Bold'
+			fontFamily : 'ScalaSansBold'
 		},
 		left : 5,
 		right : 5
@@ -107,7 +107,7 @@ var $ = function(args) {
 		height : Ti.UI.SIZE,
 		font : {
 			fontSize : 22,
-			fontFamily : 'Aller Bold'
+			fontFamily : 'ScalaSansBold'
 		},
 		left : 5,
 		right : 5

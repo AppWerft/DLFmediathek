@@ -1,11 +1,11 @@
 var Flip = require('de.manumaticx.androidflip'),
-    АктйонБар = require('com.alcoapps.actionbarextras'),
     Moment = require("vendor/moment"),
     lila = "#461C9C",
     DLF24controler = require("controls/dlf24konsole"),
     createDetailPage = require("ui/dlf24/detail.page");
 
 module.exports = function(_e) {
+	var  АктйонБар = require('com.alcoapps.actionbarextras');
 	var currentPageIndex = 0;
 	var numberOfPages;
 	var $ = Ti.UI.createWindow({
@@ -40,11 +40,12 @@ module.exports = function(_e) {
 		}
 
 	});
-
+	var oldtime = (new Date()).getTime();
 	DLF24controler.getNewsList(null, function(_res) {
+		console.log((new Date()).getTime() - oldtime);
 		numberOfPages = _res.items.length;
 		setSubtitle();
-		console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		console.log((new Date()).getTime() - oldtime);
 		function fillContent(ndx) {
 			[-1, 0, +1, +2].forEach(function(Δ) {
 				// unfilled and in range:
@@ -64,6 +65,7 @@ module.exports = function(_e) {
 		for (var i = 0; i < _res.items.length; i++) {
 			views[i] = Ti.UI.createView();
 		}
+		console.log((new Date()).getTime() - oldtime);
 		$.flipView = Flip.createFlipView({
 			top : 0,
 			currentPage : currentPageIndex,
@@ -79,6 +81,7 @@ module.exports = function(_e) {
 			setSubtitle();
 			fillContent(currentPageIndex);
 		});
+		console.log((new Date()).getTime() - oldtime);
 	});
 	$.open({
 		activityEnterAnimation : Ti.Android.R.anim.slide_in_right,

@@ -1,9 +1,10 @@
-var АктйонБар = require('com.alcoapps.actionbarextras'),
-    Moment = require("vendor/moment");
+
+var    Moment = require("vendor/moment");
 var DAYS = 2;
 var Adapter = require("controls/dlf24konsole");
 
 module.exports = function() {
+	var АктйонБар = require('com.alcoapps.actionbarextras');
 	var lastSubtitle;
 	var $ = Ti.UI.createWindow({
 		fullscreen : false,

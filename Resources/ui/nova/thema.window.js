@@ -1,10 +1,11 @@
 var Flip = require('de.manumaticx.androidflip');
-var АктйонБар = require('com.alcoapps.actionbarextras');
+
 var Moment = require("vendor/moment");
 var PAGES = 7;
 var themen = require("model/nova");
 
 module.exports = function(_thema) {
+	var АктйонБар = require('com.alcoapps.actionbarextras');
 	var activityworking = false;
 	var $ = Ti.UI.createWindow({
        fullscreen : false,
@@ -70,7 +71,7 @@ module.exports = function(_thema) {
 	$.refreshView = require('com.rkam.swiperefreshlayout').createSwipeRefresh({
 		view : $.mainlist,
 		top : 0,
-		backgroundColor : themen[_thema].color
+		backgroundColor : themen[_thema]? themen[_thema].color: "#999"
 	});
 
 	$.refreshView.addEventListener('refreshing', function() {

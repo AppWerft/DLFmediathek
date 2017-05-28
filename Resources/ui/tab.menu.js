@@ -81,13 +81,17 @@ function onPlayStopClickFn() {
 	playIcon.setVisible(false);
 	if (onAir == false) {
 		require("ui/snooze.dialog")(function(_duration) {
-			if (_duration != 0) {
+			console.log(">>>>>>>>>>>>>  callback from snoozydialog " + _duration);
+			if (_duration >= 0) {
 				Ti.Media.vibrate([30, 20]);
-				snoozy = setTimeout(onPlayStopClickFn, _duration);
-			}
+				if (_duration > 0)
+					snoozy = setTimeout(onPlayStopClickFn, _duration);
+				AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
+				onAir = true;
+			} else
+				playIcon.setVisible(true);
 		});
-		AudioStreamer.play(stations[currentStation].icyurl[0], onCallbackFn);
-		onAir = true;
+
 	} else {
 		AudioStreamer.stop(onCallbackFn);
 		LOG('onAir was true now setting  to false');
@@ -133,18 +137,20 @@ module.exports = function(_event) {
 	require('vendor/versionsreminder')();
 	var activity = _event.source.getActivity();
 	if (activity) {
-
 		activity.onCreateOptionsMenu = function(_menuevent) {
-			LOG('onCreateOptionsMenu');
 			_menuevent.menu.clear();
-			_menuevent.menu.add({
-				title : 'Start live Radio',
-				itemId : PLAY,
-				visible : false,
-				icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
-				showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-			}).addEventListener("click", onPlayStopClickFn);
-			playIcon = _menuevent.menu.findItem(PLAY);
+			try {
+				playIcon = _menuevent.menu.add({
+					title : 'Start live Radio',
+					itemId : PLAY,
+					visible : false,
+					icon : Ti.App.Android.R.drawable['ic_action_play_' + currentStation],
+					showAsAction : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+				});
+				playIcon.addEventListener && playIcon.addEventListener("click", onPlayStopClickFn);
+			} catch (E) {
+				AudioStreamer && AudioStreamer.stop(onCallbackFn);
+			}
 			searchMenu = _menuevent.menu.add({
 				title : L('MENU_SEARCH'),
 				groupId : 0,
@@ -300,6 +306,34 @@ module.exports = function(_event) {
 			}
 		};
 		activity.invalidateOptionsMenu();
+		_event.source.addEventListener("androidback", function() {
+			var message = 'Der Back-Button wurde gedrückt.';
+			if (onAir)
+				message += " Derweil läuft noch das Liveradio. ";
+			message += " Tatsächlich beenden?";
+			if (onAir)
+				message += "\n\nFalls das Radio nicht enden soll, jetzt abbrechen und einen der anderen Knöpfe am Handy betätigen";
+
+			var dialog = Ti.UI.createAlertDialog({
+				cancel : 1,
+				buttonNames : ['Jawoll', 'Abbruch'],
+				message : message,
+				title : 'Eventuelles Ende'
+			});
+			dialog.addEventListener('click', function(e) {
+				if (e.index === e.source.cancel) {
+				} else {
+					AudioStreamer.stop();
+					setTimeout(function() {
+						_event.source.close(onCallbackFn);
+					}, onAir ? 200 : 20);
+
+				}
+			});
+			dialog.show();
+			return false;
+		});
+
 	} else
 		LOG('no activity');
 

@@ -39,11 +39,6 @@ var versionCompare = function(v1, v2) {
 };
 
 module.exports = function() {
-	
-	if (!Ti.App.Properties.hasProperty("MOD")) {
-		alert("Am 1. Mai stellt der Deutschlandfunk seine Webseite um. Möglicherweise ändern sich auch technische Dinge, so daß gegebenenfalls die App nicht wirklich funktioniert.\n\nWir werden das schnellstens fixen und bitten um Geduld.");
-		Ti.App.Properties.setString("MOD","");
-	}
 	var thisversion = Ti.App.getVersion();
 	var url = (arguments[0] || {}, "https://play.google.com/store/apps/details?id=" + Ti.App.getId()),
 	    xhr = Ti.Network.createHTTPClient({

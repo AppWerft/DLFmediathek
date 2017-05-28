@@ -16,13 +16,13 @@ module.exports = {
 		name : 'Dlf Kultur',
 		dayplan : 'http://www.deutschlandfunkkultur.de/programmvorschau.282.de.rss',
 		playlist : 'http://www.dradio.de/streaming/dkultur.m3u',
-		icyurl : ['icy://dradio_mp3_dkultur_m.akacast.akamaistream.net/7/530/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dkultur_m'],
+		icyurl : ['http://st02.dlf.de/dlf/02/128/mp3/stream.mp3'],
 		mediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=3&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'
 	},
 	drw : {
 		color : '#FF01953C',
 		name : 'Dlf Nova',
-		icyurl : ['http://dradio_mp3_dwissen_m.akacast.akamaistream.net/7/728/142684/v1/gnl.akacast.akamaistream.net/dradio_mp3_dwissen_m'],
+		icyurl : ['http://st03.dlf.de/dlf/03/128/mp3/stream.mp3'],
 		mediathek : 'http://srv.deutschlandradio.de/aodlistaudio.1706.de.rpc?drau:station_id=1&drau:from=_DATE_&drau:to=_DATE_&drau:page=1&drau:limit=500'
 	}
 	

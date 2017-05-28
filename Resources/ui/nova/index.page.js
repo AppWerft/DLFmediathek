@@ -12,29 +12,43 @@ module.exports = function(_args) {
 	function onMenuFn() {
 		require("ui/nova/thema.dialog")();
 	}
+
 	function onScrollStartFn() {
 		$.menubutton.hide();
 	}
+
 	function onScrollEndFn() {
 		$.menubutton.show();
 	}
+
 	function onClickFn(_e) {
 		var data = JSON.parse(_e.itemId);
-		if (_e.bindId && _e.bindId == 'button') {
-			require("ui/nova/thema.window")(data.thema, data.sendung);
-			return;
-		} else
+		console.log(data);
+		switch (_e.bindId) {
+		case 'button':
+			require("ui/nova/thema.window")(data.thema.replace("https://www.deutschlandfunknova.de/","")//
+			.replace("serien/wissensnachrichten-1","podcasts/download/wissensnachrichten"));
+			break;
+		case 'share':
+			require('vendor/socialshare')({
+				type : 'all',
+				message : 'Höre gerade mit der #DLFMediathekApp „' + JSON.parse(_e.itemId).subtitle + '“',
+				url : JSON.parse(_e.itemId).link,
+			});
+			break;
+		default:
 			require('ui/audioplayer.window').createAndStartPlayer({
 				color : '#000',
 				url : data.link,
 				duration : data.duration,
 				title : data.sendung,
 				subtitle : data.title,
-				description: data.text,
+				description : data.text,
 				station : 'drw',
 				image : data.image,
 				pubdate : data.pubdate || 'unbekannt'
 			});
+		}
 	}
 
 	var $ = Ti.UI.createView({
@@ -98,7 +112,7 @@ module.exports = function(_args) {
 	});
 	$.updateMediathekList();
 	$.menubutton = require("ui/nova/menu.button")();
-	$.menubutton.addEventListener("click",onMenuFn);
+	$.menubutton.addEventListener("click", onMenuFn);
 	$.add($.menubutton);
 	$.mainlist.addEventListener("itemclick", onClickFn);
 	$.mainlist.addEventListener("scrollstart", onScrollStartFn);
@@ -107,7 +121,7 @@ module.exports = function(_args) {
 		$.mainlist.removeEventListener("itemclick", onClickFn);
 		$.mainlist.removeEventListener("scrollstart", onScrollStartFn);
 		$.mainlist.removeEventListener("scrollstart", onScrollEndFn);
-		$.menubutton.removeEventListener("click",onMenuFn);
+		$.menubutton.removeEventListener("click", onMenuFn);
 	});
 	return $;
 };

@@ -33,7 +33,7 @@ exports.schema = {
 			font : {
 				fontSize : 22,
 
-				fontFamily : 'Aller'
+				fontFamily : 'ScalaSans'
 			},
 		}
 	}, {
@@ -66,7 +66,7 @@ exports.schema = {
 				top : 5,
 				font : {
 					fontSize : TITLESIZE,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				left : 0,
 				width : Ti.UI.FILL,
@@ -83,7 +83,7 @@ exports.schema = {
 				touchEnabled : false,
 				font : {
 					fontSize : 16,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -98,7 +98,7 @@ exports.schema = {
 				touchEnabled : false,
 				font : {
 					fontSize : 16,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#888'
 			}
@@ -145,7 +145,7 @@ exports.podcastlist = {
 				top : 5,
 				font : {
 					fontSize : TITLESIZE,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				left : 0,
 				width : Ti.UI.FILL,
@@ -161,7 +161,7 @@ exports.podcastlist = {
 				touchEnabled : false,
 				font : {
 					fontSize : 16,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -175,7 +175,7 @@ exports.podcastlist = {
 				color : '#777',
 				font : {
 					fontSize : 16,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 			}
 		}, {
@@ -188,7 +188,7 @@ exports.podcastlist = {
 				color : '#777',
 				font : {
 					fontSize : 16,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 			}
 		}, {
@@ -201,7 +201,7 @@ exports.podcastlist = {
 				color : '#777',
 				font : {
 					fontSize : 14,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 			}
 		}]
@@ -225,7 +225,7 @@ exports.mediathek = {
 			color : '#555',
 			font : {
 				fontSize : 22,
-				fontFamily : 'Aller'
+				fontFamily : 'ScalaSans'
 			},
 		}
 	}, {
@@ -284,7 +284,7 @@ exports.mediathek = {
 				touchEnabled : false,
 				font : {
 					fontSize : 20,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				color : '#555'
 			}
@@ -299,7 +299,7 @@ exports.mediathek = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -313,7 +313,7 @@ exports.mediathek = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -328,7 +328,7 @@ exports.mediathek = {
 				touchEnabled : false,
 				font : {
 					fontSize : 18,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -375,7 +375,7 @@ exports.merkliste = {
 			bottom : 5,
 			font : {
 				fontSize : 16,
-				fontFamily : 'Aller'
+				fontFamily : 'ScalaSans'
 			},
 			left : 5,
 			textAlign : 'left',
@@ -408,7 +408,7 @@ exports.merkliste = {
 				top : 5,
 				font : {
 					fontSize : 22,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				left : 0,
 				width : Ti.UI.FILL,
@@ -424,7 +424,7 @@ exports.merkliste = {
 				touchEnabled : false,
 				font : {
 					fontSize : TITLESIZE,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				color : '#555'
 			}
@@ -438,7 +438,7 @@ exports.merkliste = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -452,7 +452,7 @@ exports.merkliste = {
 				color : '#777',
 				font : {
 					fontSize : 14,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 			}
 		}]
@@ -498,7 +498,7 @@ exports.merklisteactive = {
 			bottom : 5,
 			font : {
 				fontSize : 18,
-				fontFamily : 'Aller'
+				fontFamily : 'ScalaSans'
 			},
 			left : 5,
 			textAlign : 'left',
@@ -531,7 +531,7 @@ exports.merklisteactive = {
 				top : 5,
 				font : {
 					fontSize : 22,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				left : 0,
 				width : Ti.UI.FILL,
@@ -563,7 +563,7 @@ exports.merklisteactive = {
 				color : '#eee',
 				font : {
 					fontSize : 14,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 			}
 		}]
@@ -604,7 +604,7 @@ exports.mypodcasts = {
 				top : 5,
 				font : {
 					fontSize : TITLESIZE,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				left : 0,
 				width : Ti.UI.FILL,
@@ -620,7 +620,7 @@ exports.mypodcasts = {
 				touchEnabled : false,
 				font : {
 					fontSize : 16,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#555'
 			}
@@ -634,7 +634,7 @@ exports.mypodcasts = {
 				color : '#777',
 				font : {
 					fontSize : 14,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 			}
 		}, {
@@ -647,7 +647,7 @@ exports.mypodcasts = {
 				color : '#777',
 				font : {
 					fontSize : 14,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 			}
 		}]
@@ -720,7 +720,7 @@ exports.search = {
 				ellipsize : Ti.UI.TEXT_ELLIPSIZE_TRUNCATE_END,
 				font : {
 					fontSize : TITLESIZE,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				color : '#333'
 			}
@@ -734,7 +734,7 @@ exports.search = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -748,7 +748,7 @@ exports.search = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -762,7 +762,7 @@ exports.search = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -776,7 +776,7 @@ exports.search = {
 				touchEnabled : false,
 				font : {
 					fontSize : 18,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				color : '#333'
 			}
@@ -793,7 +793,7 @@ exports.recents = {
 		"longpress" : function(event) {
 			var item = event.section.getItemAt(event.itemIndex);
 			event.section.deleteItemsAt(event.itemIndex, 1);
-			Cache.deleteURL({
+			Cache.delesteURL({
 				url : JSON.parse(event.itemId).url,
 				station : JSON.parse(event.itemId).station
 			});
@@ -832,7 +832,7 @@ exports.recents = {
 				touchEnabled : false,
 				font : {
 					fontSize : TITLESIZE,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				color : '#333'
 			}
@@ -846,7 +846,7 @@ exports.recents = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -860,7 +860,7 @@ exports.recents = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -874,7 +874,7 @@ exports.recents = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -888,7 +888,7 @@ exports.recents = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -902,7 +902,7 @@ exports.recents = {
 				touchEnabled : false,
 				font : {
 					fontSize : 12,
-					fontFamily : 'Aller'
+					fontFamily : 'ScalaSans'
 				},
 				color : '#333'
 			}
@@ -916,7 +916,7 @@ exports.recents = {
 				touchEnabled : false,
 				font : {
 					fontSize : 16,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				},
 				color : '#555'
 			}
@@ -989,7 +989,6 @@ exports.nova = {
 	childTemplates : [{
 		type : 'Ti.UI.View',
 		bindId : "button",
-		bubbleParent : false,
 		properties : {
 			top : 0,
 			right : 0,
@@ -1010,11 +1009,24 @@ exports.nova = {
 			height : 'auto',
 		}
 	}, {
+		type : 'Ti.UI.ImageView',
+		bindId : 'share',
+		properties : {
+			touchEnabled : true,
+			top : 0,
+			bindId : 'share',
+			left : 0,
+			image : "/images/share_drw.png",
+			width : 50,
+			height : 71,
+			opacity:0.6
+		}
+	}, {
 		type : 'Ti.UI.Label',
 		bindId : 'play',
 		properties : {
 			width : Ti.UI.SIZE,
-			
+			bindId : 'play',
 			height : Ti.UI.SIZE,
 			color : require("model/stations").drw.color,
 			touchEnabled : false,
@@ -1030,10 +1042,9 @@ exports.nova = {
 		properties : {
 			bottom : 0,
 			right : 0,
-			touchEnabled : false,
+			touchEnabled : true,
 			height : "auto",
-			backgroundColor : '#8801953C',
-			touchEnabled : false
+			backgroundColor : '#8801953C'
 		},
 		childTemplates : [{
 			type : 'Ti.UI.Label',
@@ -1047,7 +1058,7 @@ exports.nova = {
 				right : 5,
 				font : {
 					fontSize : 22,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				}
 			}
 
@@ -1064,7 +1075,7 @@ exports.nova = {
 			right : 0,
 			font : {
 				fontSize : 18,
-				fontFamily : 'Aller'
+				fontFamily : 'ScalaSans'
 			}
 		}
 	}]
@@ -1102,7 +1113,7 @@ exports.novathema = {
 			bottom : 0,
 			right : 0,
 			height : "auto",
-			width: Ti.UI.FILL,
+			width : Ti.UI.FILL,
 			backgroundColor : '#8801953C',
 			touchEnabled : false
 		},
@@ -1118,7 +1129,7 @@ exports.novathema = {
 				right : 5,
 				font : {
 					fontSize : 22,
-					fontFamily : 'Aller Bold'
+					fontFamily : 'ScalaSansBold'
 				}
 			}
 
@@ -1162,7 +1173,7 @@ exports.dlf24 = {
 			touchEnabled : false,
 			font : {
 				fontSize : TITLESIZE,
-				fontFamily : 'Aller Bold'
+				fontFamily : 'ScalaSansBold'
 			},
 			color : "#461C9C"
 		}
@@ -1177,7 +1188,7 @@ exports.dlf24 = {
 			touchEnabled : false,
 			font : {
 				fontSize : 16,
-				fontFamily : 'Aller Bold'
+				fontFamily : 'ScalaSansBold'
 			},
 			color : '#555'
 		}
@@ -1192,7 +1203,7 @@ exports.dlf24 = {
 			touchEnabled : false,
 			font : {
 				fontSize : 14,
-				fontFamily : 'Aller'
+				fontFamily : 'ScalaSans'
 			},
 			color : '#555'
 		}
